@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authentication</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" type="text/css" href="../css/auth.css" />
+  </head>
+  <body>
+    <div id="content_container">
+      <div id="form_container">
+        <div id="form_header_container">
+          <a href="../index.html" id="form_header">test</a>
+        </div>
+        <div id="form_content_container">
+          <div id="form_content_inner_container">
+            <input type="text" id="username" placeholder="Username" />
+            <input type="email" id="email" placeholder="Email" />
+            <input type="password" id="password" placeholder="New Password" />
+            <div id="button_container">
+              <button onclick="login()">Login</button>
+              <button type="button" onclick="googleSignIn()">
+                <i class="fab fa-google"></i>
+              </button>
+            </div>
+            <div id="button_container">
+              <button onclick="register()">Register</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <!-- <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDCW0iJbOjSfZ8QYuPhDTJQi6Hq6SuOLXI",
+        authDomain: "km-balikpapan-team17.firebaseapp.com",
+        databaseURL:
+          "https://km-balikpapan-team17-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "km-balikpapan-team17",
+        storageBucket: "km-balikpapan-team17.appspot.com",
+        messagingSenderId: "621633907233",
+        appId: "1:621633907233:web:0f02c8b05222da50b8d160",
+      };
+
+      const app = initializeApp(firebaseConfig);
+    </script> -->
+  </body>
+</html>
