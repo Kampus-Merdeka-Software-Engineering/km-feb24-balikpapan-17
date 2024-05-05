@@ -27,6 +27,10 @@
     <link rel="stylesheet" href="./css/home.css" />
   </head>
   <body>
+    <div id="loadingScreen" style="display: none">
+      <div>Loading...</div>
+    </div>
+
     <header>
       <nav id="navbar" class="navbar" id="navbarLeft">
         <div class="navbar-left">
@@ -40,18 +44,25 @@
             <li><a href="#about">About</a></li>
             <li><a href="#menu">Menu's</a></li>
             <li><a href="#team">Team</a></li>
-            <li class="submenu-li">
+            <li class="submenu-li" id="loginLi">
               <a href="#">
                 <i class="fa-solid fa-mug-hot fa-lg"></i>
               </a>
               <ul class="submenu">
                 <li>
-                  <a href="#"
+                  <a href="./pages/profile.html"
+                    ><i class="fas fa-user"></i> Profile</a
+                  >
+                </li>
+                <li id="dashboardLi">
+                  <a href="./pages/dashboard.html"
                     ><i class="fa-solid fa-chalkboard"></i> Dashboard</a
                   >
                 </li>
                 <li>
-                  <a href="#"><i class="fas fa-user"></i> Profile</a>
+                  <a href="#" id="logoutButton"
+                    ><i class="fa-solid fa-power-off"></i> Logout</a
+                  >
                 </li>
               </ul>
             </li>
@@ -106,5 +117,9 @@
 
     <script src="./js/navbar.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="../js/auth.js"></script>
   </body>
 </html>

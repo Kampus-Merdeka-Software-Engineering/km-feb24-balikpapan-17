@@ -38,6 +38,29 @@ header {
   color: var(--text-color-lght);
 }
 
+#loginButton {
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  display: block;
+  background-color: var(--text-color-drk);
+  border: 1px solid transparent;
+  color: var(--text-color-lght);
+  font-weight: 200;
+  -webkit-border-radius: 18px;
+  border-radius: 12px;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+#loginButton:hover {
+  background-color: var(--text-color-lght);
+  color: var(--button-color);
+  font-weight: 600;
+  border-color: var(--button-color);
+}
+
 .dropdown {
   display: none;
 }
