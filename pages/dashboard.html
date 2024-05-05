@@ -23,5 +23,59 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="../js/auth.js"></script>
+
+    <script>
+      function showLoadingScreen() {
+        document.getElementById("loadingScreen").style.display = "block";
+      }
+
+      function hideLoadingScreen() {
+        document.getElementById("loadingScreen").style.display = "none";
+      }
+
+      function checkAuthStatus() {
+        showLoadingScreen();
+
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            firestore
+              .collection("users")
+              .doc(user.uid)
+              .get()
+              .then((doc) => {
+                if (doc.exists) {
+                  const userData = doc.data();
+                  const userRole = userData.role;
+                  if (userRole === "admin") {
+                    console.log("Welcome Admin!");
+                  } else {
+                    console.log("User is not authorized");
+                    window.location.href = "../index.html";
+                  }
+                } else {
+                  console.log("User data not found");
+                  window.location.href = "./auth.html";
+                }
+              })
+              .catch((error) => {
+                console.error("Error getting user data:", error);
+                window.location.href = "./auth.html";
+              })
+              .finally(() => {
+                hideLoadingScreen();
+              });
+          } else {
+            console.log("User is signed out");
+            window.location.href = "./auth.html";
+
+            hideLoadingScreen();
+          }
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        checkAuthStatus();
+      });
+    </script>
   </body>
 </html>
