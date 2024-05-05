@@ -21,5 +21,34 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="../js/auth.js"></script>
+
+    <script>
+      function showLoadingScreen() {
+        document.getElementById("loadingScreen").style.display = "block";
+      }
+
+      function hideLoadingScreen() {
+        document.getElementById("loadingScreen").style.display = "none";
+      }
+
+      function checkAuthStatus() {
+        showLoadingScreen();
+
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            console.log("User is signed in");
+            hideLoadingScreen();
+          } else {
+            console.log("User is signed out");
+            hideLoadingScreen();
+            window.location.href = "./auth.html";
+          }
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        checkAuthStatus();
+      });
+    </script>
   </body>
 </html>

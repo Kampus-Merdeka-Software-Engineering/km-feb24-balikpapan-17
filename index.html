@@ -121,5 +121,88 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="../js/auth.js"></script>
+
+    <script>
+      function showLoadingScreen() {
+        console.log("Loading started...");
+        document.getElementById("loadingScreen").style.display = "flex";
+      }
+
+      function hideLoadingScreen() {
+        console.log("Loading finished...");
+        document.getElementById("loadingScreen").style.display = "none";
+      }
+
+      showLoadingScreen();
+
+      setTimeout(hideLoadingScreen, 500);
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const loginLi = document.getElementById("loginLi");
+        const submenuUl = document.querySelector(".submenu");
+
+        auth.onAuthStateChanged((user) => {
+          if (!user) {
+            loginLi.innerHTML = '<button id="loginButton">Login</button>';
+            document
+              .getElementById("loginButton")
+              .addEventListener("click", function () {
+                window.location.href = "./pages/auth.html";
+              });
+          } else {
+            loginLi.innerHTML = `
+              <a href="#">
+                <i class="fa-solid fa-mug-hot fa-lg"></i>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="./pages/profile.html"><i class="fas fa-user"></i> Profile</a>
+                </li>
+                <li id="dashboardLi"> <!-- ID untuk elemen <li> menu Dashboard -->
+                  <a href="./pages/dashboard.html"><i class="fa-solid fa-chalkboard"></i> Dashboard</a>
+                </li>
+                <li>
+                  <a href="#" id="logoutButton"><i class="fa-solid fa-power-off"></i> Logout</a>
+                </li>
+              </ul>
+            `;
+            firestore
+              .collection("users")
+              .doc(user.uid)
+              .get()
+              .then((doc) => {
+                if (doc.exists) {
+                  const userData = doc.data();
+                  const userRole = userData.role;
+                  if (userRole !== "admin") {
+                    const dashboardLi = document.getElementById("dashboardLi");
+                    if (dashboardLi) {
+                      dashboardLi.remove();
+                    }
+                  }
+                } else {
+                  console.log("User information not found!");
+                }
+              })
+              .catch((error) => {
+                console.error("Error getting user data:", error);
+              });
+
+            document
+              .getElementById("logoutButton")
+              .addEventListener("click", function () {
+                auth
+                  .signOut()
+                  .then(() => {
+                    window.location.href = "./pages/auth.html";
+                  })
+                  .catch((error) => {
+                    alert(error.message);
+                  });
+              });
+          }
+        });
+      });
+    </script>
   </body>
 </html>
