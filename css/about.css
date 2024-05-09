@@ -1,0 +1,109 @@
+#about {
+  background: conic-gradient(
+    hsl(19, 40%, 26%) 0%,
+    hsl(240, 5%, 84%) 50%,
+    hsl(240, 5%, 84%) 86%,
+    hsl(19, 40%, 26%) 100%
+  );
+  background-repeat: no-repeat;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.about-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem;
+  gap: 3rem;
+}
+
+.Info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  justify-content: space-between;
+}
+
+.about-content .styled-list {
+  text-indent: 20px;
+  text-align: justify;
+  font-size: 16px;
+}
+.about-text {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.styled-list ol {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.styled-list ol li {
+  counter-increment: custom-counter;
+  color: var(--text-color);
+  padding-left: 30px;
+  text-indent: 0px;
+  margin-bottom: 10px;
+  position: relative;
+  line-height: 1.4;
+}
+
+.styled-list ol li::before {
+  content: counter(custom-counter);
+  font-weight: bold;
+  color: var(--text-hov);
+  margin-right: 10px;
+}
+.video-container {
+  flex: 1.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-size: cover;
+}
+
+.video-container video {
+  transform: perspective(1000px) rotateX(8deg) rotateY(14deg) rotateZ(-4deg);
+  max-width: 100%;
+  max-height: 100%;
+  opacity: 0.9;
+  border-radius: 1.2rem;
+  box-shadow: -10px 2px 29px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: -10px 2px 29px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -10px 2px 29px 0px rgba(0, 0, 0, 0.75);
+}
+
+@media (max-width: 290px) {
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .about-content .video-container video {
+    transform: none;
+  }
+}
+
+@media (min-width: 291px) and (max-width: 767px) {
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .about-content .video-container video {
+    transform: none;
+  }
+}

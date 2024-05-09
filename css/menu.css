@@ -1,0 +1,13 @@
+#menu {
+  background: conic-gradient(
+    hsl(240, 5%, 84%) 0%,
+    hsl(355, 10%, 74%) 10.1%,
+    hsl(240, 5%, 84%) 50%
+  );
+  background-repeat: no-repeat;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
