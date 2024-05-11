@@ -4,7 +4,7 @@
   font-style: normal;
   color: var(--text-color-drk);
   scroll-behavior: smooth;
-  transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease;
 }
 
 html,
