@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
         sessionStorage.setItem("activePage", contentId);
 
         loadPage(contentId);
+        window.location.reload();
       }
     });
   });
@@ -51,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function initializePage(pageName) {
   switch (pageName) {
+    case "transaction":
     case "sales":
     case "product":
       loadScript("../js/chart.js");
@@ -63,6 +65,7 @@ function initializePage(pageName) {
 function loadPage(pageName) {
   switch (pageName) {
     case "dashboard":
+    case "transaction":
     case "sales":
     case "product":
       break;

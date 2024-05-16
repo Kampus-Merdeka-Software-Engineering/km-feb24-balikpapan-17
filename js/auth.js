@@ -183,6 +183,10 @@ function logout() {
     });
 }
 
+function goHome() {
+  window.location.href = "../index.html";
+}
+
 function validate_email(email) {
   expression = /^[^@]+@\w+(\.\w+)+\w$/;
   if (expression.test(email) == true) {

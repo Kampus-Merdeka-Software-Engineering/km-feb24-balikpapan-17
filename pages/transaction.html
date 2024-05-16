@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DataTables Example</title>
+    <link
+      href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .dt-orderable-asc {
+        background-color: #5e3229;
+        color: #fff;
+      }
+      .dt-orderable-asc .dt-column-title {
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #transactionTable tbody tr:nth-child(odd) {
+        background-color: #f2f2f2;
+      }
+
+      #transactionTable tbody tr:nth-child(even) {
+        background-color: #fff;
+      }
+
+      #transactionTable tbody td {
+        color: #333;
+      }
+
+      #transactionTable tbody tr:hover {
+        background-color: #ccc;
+      }
+
+      #transactionTable tbody tr td {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <table id="transactionTable" class="display" style="width: 100%">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Product ID</th>
+          <th>Product Category</th>
+          <th>Quantity</th>
+          <th>Unit Price</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+    <script src="../js/table.js"></script>
+  </body>
+</html>
