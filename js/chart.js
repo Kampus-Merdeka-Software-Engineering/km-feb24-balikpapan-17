@@ -70,6 +70,8 @@ fetch("../js/data.json")
     createTopSellingProductsChart(data);
     createRevenueByProductChart(data);
     createRevenueByProductDoughnutChart(data);
+    createRevenueBySalesDoughnutChart(data);
+    createSalesRevenueRelationChart(data);
   })
   .catch((error) => console.error("Error fetching data:", error));
 
@@ -104,8 +106,7 @@ function createProductSalesChart(data) {
         {
           label: "Total Product Sales",
           data: dataValues,
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
-          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "#90C114",
           borderWidth: 1,
         },
       ],
@@ -117,8 +118,17 @@ function createProductSalesChart(data) {
             beginAtZero: true,
           },
           grid: {
-            color: "rgba(200, 200, 200, 0.08)",
-            lineWidth: 1,
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+        x: {
+          ticks: {
+            beginAtZero: true,
+          },
+          grid: {
+            color: "#21212100",
+            lineWidth: 0.2,
           },
         },
       },
@@ -203,15 +213,13 @@ function createRevenueAndSalesChart(data) {
         {
           label: "Revenue",
           data: revenueData,
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
-          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "#5e3229",
           borderWidth: 1,
         },
         {
           label: "Total Sales",
           data: salesData,
-          backgroundColor: "rgba(54, 162, 235, 0.2)",
-          borderColor: "rgba(54, 162, 235, 1)",
+          backgroundColor: "#90C114",
           borderWidth: 1,
         },
       ],
@@ -223,7 +231,16 @@ function createRevenueAndSalesChart(data) {
             beginAtZero: true,
           },
           grid: {
-            color: "rgba(200, 200, 200, 0.08)",
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+        x: {
+          ticks: {
+            beginAtZero: true,
+          },
+          grid: {
+            color: "rgba(200, 200, 200,0)",
             lineWidth: 1,
           },
         },
@@ -254,7 +271,6 @@ function createForecastChart(data) {
 
   var ctx = document.getElementById("forecastChart").getContext("2d");
 
-  // Hancurkan grafik yang sudah ada dengan membersihkan kanvas
   if (window.forecastChart) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
@@ -267,16 +283,16 @@ function createForecastChart(data) {
         {
           label: "Monthly Revenue",
           data: mergedData.map((item) => item.revenue),
-          borderColor: "rgba(75, 192, 192, 1)",
-          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderColor: "#5e3229",
+          backgroundColor: "#5e3229",
           borderWidth: 1,
           fill: false,
         },
         {
           label: "Forecast",
           data: mergedData.map((item) => item.forecast),
-          borderColor: "rgba(255, 99, 132, 1)",
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
+          borderColor: "#CCFF00",
+          backgroundColor: "#CCFF00",
           borderWidth: 1,
           fill: false,
         },
@@ -289,8 +305,17 @@ function createForecastChart(data) {
             beginAtZero: true,
           },
           grid: {
-            color: "rgba(200, 200, 200, 0.08)",
-            lineWidth: 1,
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+        x: {
+          ticks: {
+            beginAtZero: true,
+          },
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
           },
         },
       },
@@ -316,7 +341,6 @@ function createRevenueByMonthChart(data) {
 
   var ctx = document.getElementById("revenueByMonthChart").getContext("2d");
 
-  // Hancurkan grafik yang sudah ada dengan membersihkan kanvas
   if (window.revenueByMonthChart) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
@@ -329,14 +353,14 @@ function createRevenueByMonthChart(data) {
         {
           label: "Revenue",
           data: revenueData,
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
-          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "#5e3229",
+          borderColor: "#5e3229",
           borderWidth: 1,
         },
         {
           label: "Average Revenue",
           data: averageRevenueData,
-          backgroundColor: "rgba(54, 162, 235, 0.2)",
+          backgroundColor: "rgb(54, 162, 235)",
           borderColor: "rgba(54, 162, 235, 1)",
           borderWidth: 1,
         },
@@ -347,10 +371,21 @@ function createRevenueByMonthChart(data) {
         y: {
           ticks: {
             beginAtZero: true,
+            z: 1,
           },
           grid: {
-            color: "rgba(200, 200, 200, 0.08)",
-            lineWidth: 1,
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+        x: {
+          ticks: {
+            beginAtZero: true,
+            z: 1,
+          },
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
           },
         },
       },
@@ -376,7 +411,6 @@ function createRevenueGrowthChart(data) {
 
   var ctx = document.getElementById("revenueGrowthChart").getContext("2d");
 
-  // Hancurkan grafik yang sudah ada dengan membersihkan kanvas
   if (window.revenueGrowthChart) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
@@ -389,8 +423,8 @@ function createRevenueGrowthChart(data) {
         {
           label: "Revenue Growth (%)",
           data: growthData,
-          borderColor: "rgba(75, 192, 192, 1)",
-          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderColor: "#5e3229",
+          backgroundColor: "#CCFF00",
           borderWidth: 1,
           fill: false,
           tension: 0.3,
@@ -404,8 +438,17 @@ function createRevenueGrowthChart(data) {
             beginAtZero: true,
           },
           grid: {
-            color: "rgba(200, 200, 200, 0.08)",
-            lineWidth: 1,
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+        x: {
+          ticks: {
+            beginAtZero: true,
+          },
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
           },
         },
       },
@@ -440,16 +483,32 @@ function createTopSellingProductsChart(data) {
       labels: labels,
       datasets: [
         {
-          label: "Total Sales",
+          label: "Total Product Sales",
           data: dataValues,
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
-          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "#90C114",
+          borderColor: "#90C114",
           borderWidth: 1,
         },
       ],
     },
     options: {
       indexAxis: "y",
+      scales: {
+        x: {
+          ticks: {
+            beginAtZero: true,
+          },
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+        y: {
+          grid: {
+            display: false,
+          },
+        },
+      },
     },
   });
 }
@@ -482,10 +541,10 @@ function createRevenueByProductChart(data) {
       labels: labels,
       datasets: [
         {
-          label: "Total Revenue",
+          label: "Product Revenue",
           data: dataValues,
-          backgroundColor: "rgba(255, 159, 64, 0.2)",
-          borderColor: "rgba(255, 159, 64, 1)",
+          backgroundColor: "#90C114",
+          borderColor: "#90C114",
           borderWidth: 1,
         },
       ],
@@ -579,7 +638,7 @@ function createRevenueByProductDoughnutChart(data) {
     options: {
       responsive: true,
       legend: {
-        position: "left",
+        position: "right",
       },
       tooltips: {
         callbacks: {
@@ -591,6 +650,178 @@ function createRevenueByProductDoughnutChart(data) {
             const label = data.labels[tooltipItem.index];
             return `${datasetLabel}: $${value}%`;
           },
+        },
+      },
+    },
+  });
+}
+
+function createRevenueBySalesDoughnutChart(data) {
+  const productRevenue = {};
+  data.forEach((entry) => {
+    if (productRevenue[entry.product_unique]) {
+      productRevenue[entry.product_unique] += entry.total_sales;
+    } else {
+      productRevenue[entry.product_unique] = entry.total_sales;
+    }
+  });
+
+  const totalRevenue = Object.values(productRevenue).reduce(
+    (acc, curr) => acc + curr,
+    0
+  );
+
+  const productsWithPercentage = Object.entries(productRevenue).map(
+    ([product, revenue]) => ({
+      product,
+      revenue,
+      percentage: ((revenue / totalRevenue) * 100).toFixed(2),
+    })
+  );
+
+  const sortedProducts = productsWithPercentage.sort(
+    (a, b) => b.revenue - a.revenue
+  );
+
+  const labels = sortedProducts.map(({ product }) => product);
+  const revenueData = sortedProducts.map(({ revenue }) => revenue);
+  const percentageData = sortedProducts.map(({ percentage }) => percentage);
+  const backgroundColors = [
+    "rgba(255, 99, 132, 1)",
+    "rgba(54, 162, 235, 1)",
+    "rgba(255, 206, 86, 1)",
+    "rgba(75, 192, 192, 1)",
+    "rgba(153, 102, 255, 1)",
+  ];
+  const borderColors = [
+    "rgba(255, 99, 132, 1)",
+    "rgba(54, 162, 235, 1)",
+    "rgba(255, 206, 86, 1)",
+    "rgba(75, 192, 192, 1)",
+    "rgba(153, 102, 255, 1)",
+  ];
+
+  var ctx = document
+    .getElementById("revenueBySalesDoughnutChart")
+    .getContext("2d");
+  if (window.revenueBySalesDoughnutChart) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
+  window.revenueBySalesDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Total Sales",
+          data: revenueData,
+          backgroundColor: backgroundColors,
+          borderColor: borderColors,
+          borderWidth: 1,
+        },
+        {
+          label: "Percentage",
+          data: percentageData,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      legend: {
+        position: "right",
+      },
+      tooltips: {
+        callbacks: {
+          label: function (tooltipItem, data) {
+            const datasetLabel =
+              data.datasets[tooltipItem.datasetIndex].label || "";
+            const value =
+              data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+            const label = data.labels[tooltipItem.index];
+            return `${datasetLabel}: $${value}%`;
+          },
+        },
+      },
+    },
+  });
+}
+
+function createSalesRevenueRelationChart(data) {
+  const groupedData = data.reduce((acc, curr) => {
+    const monthYear = `${curr.month_name} ${curr.year}`;
+    if (!acc[monthYear]) {
+      acc[monthYear] = {
+        totalRevenue: 0,
+        totalTransactions: 0,
+        transactions: [],
+      };
+    }
+    acc[monthYear].totalRevenue += curr.revenue;
+    acc[monthYear].totalTransactions += curr.transaction_qty;
+    acc[monthYear].transactions.push({
+      date: curr.transaction_date,
+      revenue: curr.revenue,
+      transaction_qty: curr.transaction_qty,
+    });
+    return acc;
+  }, {});
+
+  const salesRevenueData = Object.entries(groupedData).map(
+    ([monthYear, values]) => ({
+      r: monthYear,
+      y: values.totalTransactions,
+      x: values.totalRevenue / 1000,
+      transactions: values.transactions,
+    })
+  );
+
+  const ctx = document
+    .getElementById("salesRevenueRelationChart")
+    .getContext("2d");
+
+  if (window.salesRevenueRelationChart instanceof Chart) {
+    window.salesRevenueRelationChart.destroy();
+  }
+
+  window.salesRevenueRelationChart = new Chart(ctx, {
+    type: "bubble",
+    data: {
+      datasets: [
+        {
+          label: "Sales & Revenue Relation",
+          data: salesRevenueData,
+          backgroundColor: "rgba(255, 99, 132, 0.6)",
+          borderColor: "rgba(255, 99, 132, 1)",
+        },
+      ],
+    },
+    options: {
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Revenue",
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: "Transaction Quantity",
+          },
+        },
+      },
+    },
+    tooltips: {
+      callbacks: {
+        label: (tooltipItem, data) => {
+          const dataset = data.datasets[tooltipItem.datasetIndex];
+          const dataPoint = dataset.data[tooltipItem.index];
+          const transactions = dataPoint.transactions.map(
+            (transaction) =>
+              `Date: ${transaction.date}, Revenue: ${transaction.revenue}, Total Sales: ${transaction.transaction_qty}`
+          );
+          return transactions.join("\n");
         },
       },
     },
