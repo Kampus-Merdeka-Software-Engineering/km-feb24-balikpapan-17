@@ -4,25 +4,251 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
     <link rel="stylesheet" href="../css/style.css" />
   </head>
-  <body>
+  <body id="dashboardContent" class="dashboard-container">
     <div id="loadingScreen" style="display: none">
       <div>Loading...</div>
     </div>
+    <div class="app-left sidebar">
+      <div class="top-menu">
+        <div class="app-logo">
+          <i class="fa-solid fa-chart-simple fa-lg"></i>
+          <span>Dashboard Maven</span>
+        </div>
+        <button class="close-menu">
+          <i class="fa-solid fa-xmark fa-lg"></i>
+        </button>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-list-item active">
+          <a class="nav-list-link" id="dashboard" href="#">
+            <i class="fa-regular fa-eye fa-lg"></i>
+            Overview
+          </a>
+        </li>
+        <li class="nav-list-item">
+          <a class="nav-list-link" id="sales" href="#">
+            <i class="fa-solid fa-chart-column fa-lg"></i>
+            Sales
+          </a>
+        </li>
+        <li class="nav-list-item">
+          <a class="nav-list-link" id="product" href="#">
+            <i class="fa-solid fa-box-open fa-lg"></i>
+            Product
+          </a>
+        </li>
 
-    <div id="dashboardContent" class="dashboard-container">
-      <h2>Dashboard</h2>
-      <p>Welcome to the admin dashboard!</p>
-      <p><a href="../index.html">Home</a></p>
-      <p><a href="#" onclick="logout()">Logout</a></p>
+        <li class="nav-list-item">
+          <a class="nav-list-link" href="#" onclick="logout()">
+            <i class="fa-solid fa-power-off fa-lg"></i>
+            LogOut
+          </a>
+        </li>
+      </ul>
     </div>
 
+    <div class="main-header-line">
+      <h1>Dashboard</h1>
+      <div class="action-buttons">
+        <button class="open-right-area">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-activity"
+          >
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+          </svg>
+        </button>
+        <button class="menu-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-menu"
+          >
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="app-main content" id="main-content">
+      <div class="chart-row three">
+        <div class="chart-container-wrapper">
+          <div class="chart-container">
+            <div class="chart-info-wrapper">
+              <h2>Total Revenue</h2>
+              <span id="totalRevenue"></span>
+            </div>
+            <div class="chart-svg">
+              <div class="circular-chart">
+                <i class="fa-solid fa-circle-dollar-to-slot"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container-wrapper">
+          <div class="chart-container">
+            <div class="chart-info-wrapper">
+              <h2>#Of Transaction</h2>
+              <span id="totalTransaction"></span>
+            </div>
+            <div class="chart-svg">
+              <div class="circular-chart">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container-wrapper">
+          <div class="chart-container">
+            <div class="chart-info-wrapper">
+              <h2>Sales Amount</h2>
+              <span id="salesAmount"></span>
+            </div>
+            <div class="chart-svg">
+              <div class="circular-chart">
+                <i class="fa-solid fa-money-bill-transfer"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container-wrapper">
+          <div class="chart-container">
+            <div class="chart-info-wrapper">
+              <h2>Avg Rev Growth</h2>
+              <span>/ Month</span>
+            </div>
+            <div class="chart-percent">
+              <svg viewBox="0 0 36 36" class="circular-chart orange">
+                <path
+                  class="circle-bg"
+                  d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
+                ></path>
+                <path
+                  class="circle"
+                  stroke-dasharray="11.66, 100"
+                  d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
+                ></path>
+                <text
+                  x="18"
+                  y="20.35"
+                  id="averageRevenueGrowth"
+                  class="percentage"
+                ></text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-row two">
+        <div class="chart-container-wrapper big">
+          <div class="chart-container">
+            <div class="chart-container-header">
+              <h2>Lorem</h2>
+              <span>lorem</span>
+            </div>
+            <div class="line-chart">
+              <canvas id="revenueAndSalesChart"></canvas>
+            </div>
+            <div class="chart-data-details">
+              <div class="chart-details-header"></div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container-wrapper big">
+          <div class="chart-container">
+            <div class="chart-container-header">
+              <h2>Lorem</h2>
+              <span>lorem</span>
+            </div>
+            <div class="line-chart">
+              <canvas id="forecastChart"></canvas>
+            </div>
+            <div class="chart-data-details">
+              <div class="chart-details-header"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-row two">
+        <div class="chart-container-wrapper big">
+          <div class="chart-container">
+            <div class="chart-container-header">
+              <h2>Lorem</h2>
+              <span>lorem</span>
+            </div>
+            <div class="line-chart">
+              <canvas id="productSalesChart"></canvas>
+            </div>
+            <div class="chart-data-details">
+              <div class="chart-details-header"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="app-right"><button class="close-right"></button></div>
+    <div class="d-none" style="display: none; opacity: 0">
+      <canvas id="productSalesChart"></canvas>
+      <canvas id="productChart"></canvas>
+      <canvas id="forecastChart"></canvas>
+      <canvas id="revenueAndSalesChart"></canvas>
+      <canvas id="revenueByMonthChart"></canvas>
+      <canvas id="revenueGrowthChart"></canvas>
+      <canvas id="topSellingProductsChart"></canvas>
+      <canvas id="revenueByProductChart"></canvas>
+      <canvas id="revenueByProductDoughnutChart"></canvas>
+      <span id="totalRevenue"></span>
+      <span id="totalTransaction"></span>
+      <span id="salesAmount"></span>
+      <span id="averageRevenueGrowth"></span>
+    </div>
+
+    <script src="../js/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@^2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@^1"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="../js/auth.js"></script>
+    <script src="../js/dashboard.js"></script>
 
     <script>
       function showLoadingScreen() {
