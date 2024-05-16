@@ -1,0 +1,19 @@
+.items{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 30px 20px;
+    grid-column-gap: 20px;
+    grid-row-gap: 30px;
+}
+
+.item img{
+    width:30%;
+    height: 100px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.item img:hover{
+    transform: scale(1.04);
+}
