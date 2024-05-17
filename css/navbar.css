@@ -112,7 +112,17 @@ header {
 }
 
 .show {
-  display: block !important;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#loginA {
+  background-color: transparent;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: 900;
 }
 
 @media screen and (max-width: 768px) {

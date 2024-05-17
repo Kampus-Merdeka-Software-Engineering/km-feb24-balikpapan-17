@@ -23,7 +23,7 @@
 
 .menu-card {
   background-color: #f3e2e2;
-  border-radius: 20px;
+  border-radius: 25px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   display: flex;
@@ -36,7 +36,7 @@
 .menu-card img {
   width: 170px;
   height: auto;
-  border-radius: 20px;
+  border-radius: 25px;
   object-fit: cover;
 }
 
@@ -64,10 +64,12 @@ p {
     height: fit-content;
   }
   .menu-section {
-    padding: 2%;
+    padding-block: 2%;
+    padding-inline: 5%;
     gap: 16px;
   }
   .menu-card {
+    width: 360px;
     max-height: none;
   }
 
@@ -78,7 +80,13 @@ p {
 }
 
 @media (max-width: 480px) {
+  .menu-section {
+    padding-block: 2%;
+    padding-inline: 5%;
+    gap: 16px;
+  }
   .menu-card {
+    width: 350px;
     max-height: none;
   }
 
