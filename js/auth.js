@@ -26,12 +26,12 @@ function register() {
   const password = document.getElementById("password").value;
   const username = document.getElementById("username").value;
 
-  if (!validate_gmail(email)) {
-    alert("Please use a valid Gmail address!!");
+  if (!validate_email(email)) {
+    alert("Please enter a valid email address!!");
     return;
   }
 
-  if (!validate_password(password)) {
+  if (password.length < 6) {
     alert("Password should be at least 6 characters long!!");
     return;
   }
@@ -45,27 +45,51 @@ function register() {
     .createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-      const user_data = {
-        email: email,
-        username: username,
-        last_login: firebase.firestore.FieldValue.serverTimestamp(),
-      };
 
-      if (validate_gmail(email)) {
-        firestore
-          .collection("users")
-          .doc(user.uid)
-          .set(user_data)
-          .then(() => {
-            alert("User Created!!");
-            window.location.href = "./profile.html";
-          })
-          .catch((error) => {
-            alert(error.message);
-          });
-      } else {
-        alert("Invalid Gmail address. User registration aborted.");
-      }
+      user
+        .sendEmailVerification()
+        .then(() => {
+          alert(
+            "Verification email sent. Please verify your email to complete the registration."
+          );
+
+          const checkEmailVerified = setInterval(() => {
+            user
+              .reload()
+              .then(() => {
+                if (user.emailVerified) {
+                  clearInterval(checkEmailVerified);
+
+                  const user_data = {
+                    email: email,
+                    username: username,
+                    role: "user",
+                    last_login: firebase.firestore.FieldValue.serverTimestamp(),
+                  };
+
+                  firestore
+                    .collection("users")
+                    .doc(user.uid)
+                    .set(user_data)
+                    .then(() => {
+                      alert("User Created!!");
+                      window.location.href = "./profile.html";
+                    })
+                    .catch((error) => {
+                      console.error("Error saving user data:", error);
+                      alert(error.message);
+                    });
+                }
+              })
+              .catch((error) => {
+                console.error("Error reloading user:", error);
+              });
+          }, 1000);
+        })
+        .catch((error) => {
+          console.error("Error sending verification email:", error);
+          alert(error.message);
+        });
     })
     .catch((error) => {
       alert(error.message);
@@ -172,8 +196,7 @@ function logout() {
   sessionStorage.removeItem("isAuthenticated");
   sessionStorage.removeItem("userRole");
 
-  firebase
-    .auth()
+  auth
     .signOut()
     .then(function () {
       window.location.href = "../pages/auth.html";
@@ -185,23 +208,6 @@ function logout() {
 
 function goHome() {
   window.location.href = "../index.html";
-}
-
-function validate_email(email) {
-  expression = /^[^@]+@\w+(\.\w+)+\w$/;
-  if (expression.test(email) == true) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function validate_password(password) {
-  if (password < 6) {
-    return false;
-  } else {
-    return true;
-  }
 }
 
 function validate_field(field) {

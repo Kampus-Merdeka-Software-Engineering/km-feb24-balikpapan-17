@@ -13,6 +13,11 @@
     <div class="profile-container">
       <h2>Profile</h2>
       <p>Welcome to your profile page!</p>
+      <div id="userData">
+        <p><strong>Username:</strong> <span id="username"></span></p>
+        <p><strong>Email:</strong> <span id="email"></span></p>
+        <p><strong>Role:</strong> <span id="role"></span></p>
+      </div>
       <p><a href="../index.html">Home</a></p>
       <p><a href="#" onclick="logout()">Logout</a></p>
     </div>
@@ -38,6 +43,26 @@
           if (user) {
             console.log("User is signed in");
             hideLoadingScreen();
+            // Get user data and display it
+            firestore
+              .collection("users")
+              .doc(user.uid)
+              .get()
+              .then((doc) => {
+                if (doc.exists) {
+                  const userData = doc.data();
+                  document.getElementById("username").textContent =
+                    userData.username;
+                  document.getElementById("email").textContent = userData.email;
+                  document.getElementById("role").textContent =
+                    userData.role || "User";
+                } else {
+                  console.log("No such document!");
+                }
+              })
+              .catch((error) => {
+                console.log("Error getting document:", error);
+              });
           } else {
             console.log("User is signed out");
             hideLoadingScreen();
