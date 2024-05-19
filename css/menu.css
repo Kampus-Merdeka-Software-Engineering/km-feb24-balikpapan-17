@@ -1,96 +1,138 @@
 #menu {
-  background: conic-gradient(
-    hsl(240, 5%, 84%) 0%,
-    hsl(355, 10%, 74%) 10.2%,
-    hsl(355, 10%, 74%) 22%,
-    hsl(240, 5%, 84%) 50%
-  );
-  background-repeat: no-repeat;
+  background-color: var(--text-color-lght);
   padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.menu-section {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 15px;
-  gap: 30px;
-}
-
-.menu-card {
-  background-color: #f3e2e2;
-  border-radius: 25px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  display: flex;
-  flex-direction: row;
-  width: 400px;
-  max-width: 100%;
-  max-height: 200px;
-}
-
-.menu-card img {
-  width: 170px;
-  height: auto;
-  border-radius: 25px;
-  object-fit: cover;
-}
-
-.menu-info {
-  padding: 15px;
-  margin: 0;
-  gap: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  height: auto;
 }
 
-.menu-info h3,
-p {
+.menu-container {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding-inline: 10rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10%;
+  background-color: #dadbdd00;
+  backdrop-filter: blur(35px) saturate(85%) contrast(100%);
+  -webkit-backdrop-filter: blur(35px) saturate(85%) contrast(100%);
+}
+
+.main-image {
+  width: 300px;
+  height: auto;
+  border-radius: 0;
+}
+
+.menu-text {
+  max-width: 600px;
+  text-align: start;
+}
+
+.menu-text h1 {
+  margin: 0 0 7px;
+  font-size: 1.7em;
+  color: var(--text-color-lght);
+}
+
+.menu-text p {
+  color: var(--text-color-lght);
   margin: 0;
 }
 
-.price {
-  color: #101010;
+button.price {
+  margin: 10px 0;
+  cursor: auto;
+  background-color: transparent;
+  color: var(--text-color-lght);
   font-weight: bold;
+  padding: 7px 10px;
+  border-radius: 7px;
+  text-wrap: nowrap;
+  border: 2px solid var(--text-color-lght);
+}
+
+.menu-container:nth-child(2) {
+  background: url("../assets/images/coffeeEspresso.jpg") center/cover no-repeat;
+}
+
+.menu-container:nth-child(3) {
+  background: url("../assets/images/coffeeLatte.jpg") center/cover no-repeat;
+}
+
+.menu-container:nth-child(4) {
+  background: url("../assets/images/drinkChoco.jpg") center/cover no-repeat;
+}
+
+.menu-container:nth-child(5) {
+  background: url("../assets/images/looseTea.jpg") center/cover no-repeat;
+}
+
+.menu-container:nth-child(6) {
+  background: url("../assets/images/croissant.jpg") center/cover no-repeat;
+}
+
+.menu-container:nth-child(7) {
+  background: url("../assets/images/coffeBeans.jpg") center/cover no-repeat;
 }
 
 @media (max-width: 768px) {
-  #menu {
-    height: fit-content;
-  }
-  .menu-section {
-    padding-block: 2%;
-    padding-inline: 5%;
-    gap: 16px;
-  }
-  .menu-card {
-    width: 360px;
-    max-height: none;
+  .menu-content {
+    flex-direction: column;
+    justify-content: center;
+    padding-inline: 0;
+    text-align: center;
+    gap: 0;
   }
 
-  .menu-card img {
-    width: 30%;
+  .main-image {
+    margin-block: 10px;
+  }
+
+  .menu-text {
+    padding: 0 20px;
+    width: auto;
+    text-align: center;
+  }
+  .main-image {
+    width: 230px;
     height: auto;
+    border-radius: 0;
+  }
+
+  button.price {
+    width: auto;
+    text-wrap: nowrap;
   }
 }
 
-@media (max-width: 480px) {
-  .menu-section {
-    padding-block: 2%;
-    padding-inline: 5%;
-    gap: 16px;
+@media (min-width: 768px) and (max-width: 1024px) {
+  .menu-content {
+    padding-inline: 4rem;
+    gap: 5%;
   }
-  .menu-card {
-    width: 350px;
-    max-height: none;
+  .main-image {
+    width: 260px;
+    height: auto;
+    border-radius: 0;
   }
 
-  .menu-card img {
-    width: 30%;
+  .menu-text {
+    padding: 0 20px;
+    width: auto;
   }
 }
