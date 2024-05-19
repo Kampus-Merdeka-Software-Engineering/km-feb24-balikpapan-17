@@ -1,24 +1,18 @@
 #about {
-  /* background: conic-gradient(
-    hsl(19, 40%, 26%) 0%,
-    hsl(240, 5%, 84%) 50%,
-    hsl(240, 5%, 84%) 86%,
-    hsl(19, 40%, 26%) 100%
-  ); */
+  background-color: var(--text-color-lght);
   background-repeat: no-repeat;
   padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 80vh;
+  height: auto;
 }
 
 .about-content {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 6rem;
-  gap: 3rem;
+  padding: 6rem 4rem 0 4rem;
 }
 
 .Info {
@@ -31,9 +25,12 @@
 }
 
 .about-content .styled-list {
-  text-indent: 20px;
   text-align: justify;
   font-size: 16px;
+}
+.styled-list h1 {
+  margin: 0 0 10px;
+  font-size: 1.5rem;
 }
 .about-text {
   display: flex;
@@ -42,43 +39,19 @@
   white-space: nowrap;
 }
 
-.styled-list ol {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.styled-list ol li {
-  counter-increment: custom-counter;
-  color: var(--text-color);
-  padding-left: 30px;
-  text-indent: 0px;
-  margin-bottom: 10px;
-  position: relative;
-  line-height: 1.4;
-}
-
-.styled-list ol li::before {
-  content: counter(custom-counter);
-  font-weight: bold;
-  color: var(--text-hov);
-  margin-right: 10px;
-}
 .video-container {
-  flex: 1.5;
+  flex: 1;
   display: flex;
-  justify-content: center;
   align-items: center;
   position: relative;
   background-size: cover;
 }
 
 .video-container video {
-  transform: perspective(1000px) rotateX(8deg) rotateY(14deg) rotateZ(-4deg);
-  max-width: 100%;
+  max-width: 90%;
   max-height: 100%;
   opacity: 0.9;
-  border-radius: 1.2rem;
+  border-radius: 0;
   box-shadow: -10px 2px 29px 0px rgba(0, 0, 0, 0.75);
   -webkit-box-shadow: -10px 2px 29px 0px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: -10px 2px 29px 0px rgba(0, 0, 0, 0.75);
@@ -96,14 +69,138 @@
   }
 }
 
-@media (min-width: 291px) and (max-width: 767px) {
+@media (max-width: 768px) {
   .about-content {
-    display: flex;
     flex-direction: column;
     padding: 1rem;
     gap: 1rem;
   }
-  .about-content .video-container video {
-    transform: none;
+  .video-container {
+    justify-content: center;
   }
+  .styled-list h1 {
+    text-align: center;
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+  }
+  .styled-list {
+    width: 90%;
+  }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+  .about-content {
+    flex-direction: column;
+    align-items: start;
+    padding: 3rem;
+    gap: 4rem;
+  }
+  .video-container video {
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+#mision {
+  background-color: var(--text-color-lght);
+  background-repeat: no-repeat;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+}
+
+.mision-container {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 30px 5rem 30px;
+  box-sizing: border-box;
+}
+
+.column,
+.columns {
+  width: 100%;
+  float: left;
+  box-sizing: border-box;
+}
+.titleAb {
+  font-size: 2rem;
+}
+@media (min-width: 400px) {
+  .mision-container {
+    width: 85%;
+    padding: 0;
+  }
+}
+
+@media (min-width: 550px) {
+  .mision-container {
+    width: 80%;
+  }
+  .column,
+  .columns {
+    margin-left: 4%;
+  }
+  .column:first-child,
+  .columns:first-child {
+    margin-left: 0;
+  }
+  .one.column,
+  .one.columns {
+    width: 4.66666666667%;
+  }
+  .two.columns {
+    width: 13.3333333333%;
+  }
+  .three.columns {
+    width: 22%;
+  }
+  .four.columns {
+    width: 30.6666666667%;
+  }
+  .five.columns {
+    width: 39.3333333333%;
+  }
+  .six.columns {
+    width: 48%;
+  }
+  .seven.columns {
+    width: 56.6666666667%;
+  }
+  .eight.columns {
+    width: 65.3333333333%;
+  }
+  .nine.columns {
+    width: 74%;
+  }
+  .ten.columns {
+    width: 82.6666666667%;
+  }
+  .eleven.columns {
+    width: 91.3333333333%;
+  }
+  .twelve.columns {
+    width: 100%;
+    margin-left: 0;
+  }
+  .one-third.column {
+    width: 30.6666666667%;
+  }
+  .two-thirds.column {
+    width: 65.3333333333%;
+  }
+  .one-half.column {
+    width: 48%;
+  }
+}
+
+.block {
+  width: 70px;
+  height: 2px;
+  background: #5e3229;
+  background: -moz-linear-gradient(-45deg, #5e3229 0%, #f2f2f2 100%);
+  background: -webkit-linear-gradient(-45deg, #5e3229 0%, #f2f2f2 100%);
+  background: linear-gradient(135deg, #5e3229 0%, #f2f2f2 100%);
+  margin-bottom: 50px;
 }

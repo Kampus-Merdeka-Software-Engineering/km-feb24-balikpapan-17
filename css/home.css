@@ -1,41 +1,50 @@
 #home {
-  background: conic-gradient(
+  /* background: conic-gradient(
     from 180deg,
     hsl(19, 40%, 26%) 0%,
     hsl(240, 5%, 84%) 14%,
     hsl(240, 5%, 84%) 50%,
     hsl(19, 40%, 26%) 100%
   );
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; */
   padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background: url("../assets/images/bgThumbnail.jpg") center/cover no-repeat;
+}
+
+.home-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .home-content {
+  position: relative;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  max-width: 1200px;
-  max-height: 100vh;
-  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  margin: 0 60px;
 }
 
 .home-text {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: start;
   justify-content: space-between;
-  height: 50vh;
 }
 
 .home-text .maven-coffee {
   font-size: 7rem;
   font-weight: 300;
-  white-space: nowrap;
+  white-space: wrap;
   padding: 0;
   margin: 0;
 }
@@ -44,18 +53,13 @@
   width: 50%;
 }
 
-.home-image {
-  flex: 1;
-  max-width: 70vh;
-}
-
-.home-image img {
-  width: 100%;
+img.home-image {
+  width: 450px;
   height: auto;
   display: block;
 }
 
-button {
+.home-text button {
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.8rem 1.7rem;
@@ -70,24 +74,35 @@ button {
   -moz-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
 }
-button:hover {
+.home-text button:hover {
   background-color: var(--text-color-lght);
   color: var(--button-color);
   font-weight: 600;
   border-color: var(--button-color);
 }
 
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
   .home-content {
-    display: flex;
     flex-direction: column-reverse;
-    justify-content: center;
     align-items: center;
-    max-height: 1200px;
-    gap: 10%;
+    gap: 1.2rem;
+  }
+  .home-text .maven-coffee {
+    font-size: 2.8rem;
+    font-weight: 900;
+    white-space: wrap;
+  }
+  img.home-image {
+    width: 330px;
+    height: auto;
+  }
+
+  .home-text button {
+    font-size: 1rem;
   }
 
   .home-text {
+    justify-content: center;
     align-items: center;
     text-align: center;
   }
@@ -97,33 +112,38 @@ button:hover {
   }
 
   .home-text .maven-coffee {
-    font-size: 1rem;
+    font-size: 2.8rem;
+    font-weight: 500;
     white-space: wrap;
-  }
-  .home-image {
-    max-width: 40vh;
   }
 }
 
-@media screen and (max-width: 1025px) {
+@media (min-width: 768px) and (max-width: 1024px) {
   .home-content {
     padding-inline: 2.3rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 1000px;
+    margin: 0 auto;
   }
   .home-text .maven-coffee {
     font-size: 2.8rem;
+    font-weight: 500;
     white-space: wrap;
   }
-  .home-image {
-    max-width: 70vh;
+  img.home-image {
+    width: 350px;
+    height: auto;
   }
-  button {
+  .home-text p {
     font-size: 1rem;
-    color: var(--button-color);
-    background-color: var(--text-color-lght);
-    border: 2px solid var(--button-color);
+    width: 100%;
+  }
+  .home-text button {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  img.home-image {
+    width: 500px;
+    height: auto;
   }
 }
