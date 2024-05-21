@@ -69,7 +69,7 @@
             Product
           </a>
         </li>
-
+        <div id="filterInfo"></div>
         <li class="nav-list-item">
           <a class="nav-list-link" href="#" onclick="logout()">
             <i class="fa-solid fa-power-off fa-lg"></i>
@@ -87,6 +87,23 @@
       <div class="app-logo">
         <i class="fa-solid fa-chart-simple fa-lg"></i>
         <span>Dashboard Maven</span>
+      </div>
+      <select id="monthFilter">
+        <option value="all">All Month</option>
+      </select>
+      <div class="dropdown">
+        <button class="dropbtn">Select Categories</button>
+        <div class="dropdown-content" id="categoryFilterContainer">
+          <label
+            ><input
+              type="checkbox"
+              class="categoryFilter"
+              value="all"
+              checked
+            />
+            Semua Kategori</label
+          >
+        </div>
       </div>
       <div class="action-buttons">
         <button class="open-right-area">
