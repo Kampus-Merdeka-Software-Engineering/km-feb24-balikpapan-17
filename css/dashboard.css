@@ -226,7 +226,7 @@ button {
   line-height: 32px;
 }
 
-.main-header-line input {
+/* .main-header-line input {
   border-radius: 4px;
   border: none;
   border: 1px solid var(--color-light);
@@ -248,7 +248,7 @@ button {
 .main-header-line input:focus {
   border: 1px solid #3481d2;
   box-shadow: 0 0 0 3px var(--color-light);
-}
+} */
 
 .chart-row {
   display: flex;
@@ -418,6 +418,24 @@ button {
   cursor: pointer;
 } */
 
+#filterInfo {
+  height: 100px; /* Tinggi yang ditentukan, bisa disesuaikan */
+  overflow-y: auto; /* Aktifkan scroll vertikal jika isinya terlalu panjang */
+  border: 1px solid #ccc; /* Batas untuk elemen agar terlihat jelas */
+  padding: 10px; /* Padding untuk memberi ruang di sekitar teks */
+  background-color: #f9f9f9; /* Latar belakang yang sedikit berbeda untuk visibilitas */
+  margin-bottom: 20px; /* Spasi di bawah elemen untuk pemisahan dari elemen lainnya */
+}
+#filterInfo ul {
+  list-style-type: disc; /* Atur tipe list */
+  margin: 0; /* Hapus margin default */
+  padding-left: 20px; /* Tambahkan padding kiri untuk spasi */
+}
+
+#filterInfo li {
+  margin: 5px 0; /* Tambahkan margin atas dan bawah */
+}
+
 /* Style untuk tombol dropdown */
 .dropbtn {
   background-color: #4caf50;
@@ -457,7 +475,18 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+.categoryFilter:checked + label::before {
+  background-color: #3498db; /* Match your button color */
+  content: "\2713"; /* Unicode for checkmark symbol */
+  color: white;
+  font-size: 12px; /* Adjust font size for checkmark */
+}
 
+/* Styling for checked labels */
+.categoryFilter:checked + label {
+  font-weight: bold; /* Make checked labels bolder */
+  /* Optionally, add a background color or other styling */
+}
 /* Hover effect untuk dropdown content */
 .dropdown-content label:hover {
   background-color: #f1f1f1;
@@ -466,7 +495,7 @@ button {
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
-  display: grid;
+  display: block;
 }
 
 /* Change the background color of the dropdown button when the dropdown content is shown */

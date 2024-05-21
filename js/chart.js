@@ -2,7 +2,8 @@ function loadAndInitialize() {
   fetch("../data/data.json")
     .then((response) => response.json())
     .then((data) => {
-      window.data = data;
+      // window.data = data;
+      window.data = data.filter((item) => item.product_category !== "");
       populateMonthFilter(data);
       populateCategoryFilter(data);
       updateDashboard("all");
@@ -12,6 +13,13 @@ function loadAndInitialize() {
 
 function populateMonthFilter(data) {
   const monthFilter = document.getElementById("monthFilter");
+  monthFilter.innerHTML = "";
+
+  const allOption = document.createElement("option");
+  allOption.value = "all";
+  allOption.textContent = "All Month";
+  monthFilter.appendChild(allOption);
+
   const months = [
     ...new Set(data.map((item) => item.month_name).filter((month) => month)),
   ];
@@ -28,9 +36,13 @@ function populateCategoryFilter(data) {
   const categoryFilterContainer = document.getElementById(
     "categoryFilterContainer"
   );
-  categoryFilterContainer.innerHTML = ""; // Clear previous categories
+  categoryFilterContainer.innerHTML = "";
 
-  const categories = [...new Set(data.map((item) => item.product_category))];
+  const categories = [
+    ...new Set(
+      data.map((item) => item.product_category).filter((category) => category)
+    ),
+  ];
 
   const allLabel = document.createElement("label");
   const allCheckbox = document.createElement("input");
@@ -54,7 +66,6 @@ function populateCategoryFilter(data) {
     categoryFilterContainer.appendChild(label);
   });
 
-  // Event listener for checkboxes to update dashboard on change
   document.querySelectorAll(".categoryFilter").forEach((checkbox) => {
     checkbox.addEventListener("change", () => {
       const allCheckbox = document.querySelector(
@@ -92,11 +103,10 @@ document
     updateDashboard(document.getElementById("monthFilter").value);
   });
 
-// Fungsi untuk memperbarui dashboard berdasarkan bulan yang dipilih
 function updateDashboard(selectedMonth) {
   let filteredData = [];
   if (selectedMonth === "all") {
-    filteredData = window.data; // Gunakan data lengkap jika 'Semua Bulan' dipilih
+    filteredData = window.data;
   } else {
     filteredData = window.data.filter(
       (item) => item.month_name === selectedMonth
@@ -111,6 +121,8 @@ function updateDashboard(selectedMonth) {
       selectedCategories.includes(item.product_category)
     );
   }
+
+  updateFilterInfo(selectedMonth, selectedCategories);
 
   const totalRevenue = Math.round(
     filteredData.reduce((acc, curr) => acc + curr.revenue, 0) / 1000
@@ -168,7 +180,6 @@ function updateDashboard(selectedMonth) {
     "averageRevenueGrowth"
   ).textContent = `${averageMonthlyGrowth.toFixed(2)}%`;
 
-  // Hapus semua chart sebelumnya jika ada
   const charts = [
     "productSalesChart",
     "productChart",
@@ -197,9 +208,27 @@ function updateDashboard(selectedMonth) {
   createRevenueGrowthChart(filteredData);
   createTopSellingProductsChart(filteredData);
   createRevenueByProductChart(filteredData);
-  createRevenueByProductDoughnutChart(filteredData); // Ensure filtered data is used
-  createRevenueBySalesDoughnutChart(filteredData); // Ensure filtered data is used
+  createRevenueByProductDoughnutChart(filteredData);
+  createRevenueBySalesDoughnutChart(filteredData);
   createSalesRevenueRelationChart(filteredData);
+}
+
+function updateFilterInfo(selectedMonth, selectedCategories) {
+  const filterInfo = document.getElementById("filterInfo");
+
+  let monthText = selectedMonth === "all" ? "All Months" : selectedMonth;
+
+  let categoriesText = "";
+  if (selectedCategories.includes("all") || selectedCategories.length === 0) {
+    categoriesText = "All Categories";
+  } else {
+    categoriesText = `<ul>${selectedCategories
+      .map((product_category) => `<li>${product_category}</li>`)
+      .join("")}</ul>`;
+  }
+
+  filterInfo.innerHTML = `<p>Month: ${monthText}</p>
+                          <p>Categories: ${categoriesText}</p>`;
 }
 
 function createProductSalesChart(data) {
@@ -639,10 +668,10 @@ function createTopSellingProductsChart(data) {
 function createRevenueByProductChart(data) {
   const productRevenue = {};
   data.forEach((entry) => {
-    if (productRevenue[entry.product_unique]) {
-      productRevenue[entry.product_unique] += entry.product_revenue_total;
+    if (productRevenue[entry.product_category]) {
+      productRevenue[entry.product_category] += entry.revenue;
     } else {
-      productRevenue[entry.product_unique] = entry.product_revenue_total;
+      productRevenue[entry.product_category] = entry.revenue;
     }
   });
 
@@ -689,25 +718,25 @@ function createRevenueByProductChart(data) {
 }
 
 function createRevenueByProductDoughnutChart(data) {
-  const productRevenue = {};
+  const productRev = {};
   data.forEach((entry) => {
-    if (productRevenue[entry.product_unique]) {
-      productRevenue[entry.product_unique] += entry.product_revenue_total;
+    if (productRev[entry.product_category]) {
+      productRev[entry.product_category] += entry.revenue;
     } else {
-      productRevenue[entry.product_unique] = entry.product_revenue_total;
+      productRev[entry.product_category] = entry.revenue;
     }
   });
 
-  const totalRevenue = Object.values(productRevenue).reduce(
+  const totalRev = Object.values(productRev).reduce(
     (acc, curr) => acc + curr,
     0
   );
 
-  const productsWithPercentage = Object.entries(productRevenue).map(
+  const productsWithPercentage = Object.entries(productRev).map(
     ([product, revenue]) => ({
       product,
       revenue,
-      percentage: ((revenue / totalRevenue) * 100).toFixed(2),
+      percentage: ((revenue / totalRev) * 100).toFixed(2),
     })
   );
 
@@ -761,13 +790,13 @@ function createRevenueByProductDoughnutChart(data) {
   });
 }
 
-function createRevenueBySalesDoughnutChart(data) {
+function createRevenueBySalesDoughnutChart(filteredData) {
   const productSales = {};
-  data.forEach((entry) => {
-    if (productSales[entry.product_unique]) {
-      productSales[entry.product_unique] += entry.transaction_qty;
+  filteredData.forEach((entry) => {
+    if (productSales[entry.product_category]) {
+      productSales[entry.product_category] += entry.transaction_qty;
     } else {
-      productSales[entry.product_unique] = entry.transaction_qty;
+      productSales[entry.product_category] = entry.transaction_qty;
     }
   });
 
