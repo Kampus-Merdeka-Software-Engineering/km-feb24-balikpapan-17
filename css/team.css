@@ -1,0 +1,17 @@
+#team {
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url("../assets/images/flipThumbnail.jpg") center/cover no-repeat;
+}
+
+.team-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
