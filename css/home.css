@@ -54,7 +54,7 @@
 }
 
 img.home-image {
-  width: 450px;
+  width: 500px;
   height: auto;
   display: block;
 }
@@ -81,7 +81,7 @@ img.home-image {
   border-color: var(--button-color);
 }
 
-@media (max-width: 768px) {
+@media only screen and (max-width: 768px) {
   .home-content {
     flex-direction: column-reverse;
     align-items: center;
@@ -93,8 +93,7 @@ img.home-image {
     white-space: wrap;
   }
   img.home-image {
-    width: 330px;
-    height: auto;
+    width: calc(20rem + 2vw);
   }
 
   .home-text button {
@@ -129,21 +128,55 @@ img.home-image {
     white-space: wrap;
   }
   img.home-image {
-    width: 350px;
+    width: calc(17rem + 2vw);
     height: auto;
   }
   .home-text p {
-    font-size: 1rem;
+    font-size: 0.9rem;
     width: 100%;
   }
   .home-text button {
+    margin-top: 15px;
     font-size: 1rem;
   }
 }
 
-@media (min-width: 1025px) {
+@media only screen and (max-width: 667px) and (orientation: landscape) {
+  .home-content {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.2rem;
+    margin: 0 20px;
+  }
+
+  .home-text .maven-coffee {
+    font-size: 2.8rem;
+    font-weight: 400;
+    text-align: start;
+    white-space: nowrap;
+  }
+
   img.home-image {
-    width: 500px;
-    height: auto;
+    width: calc(16rem + 1vw);
+  }
+
+  .home-text button {
+    font-size: 1rem;
+  }
+
+  .home-text {
+    justify-content: center;
+    align-items: start;
+    text-align: start;
+  }
+
+  .home-text p {
+    font-size: 0.7rem;
+    width: 100%;
+  }
+
+  .home-text button {
+    margin-top: 15px;
+    font-size: 0.8rem;
   }
 }
