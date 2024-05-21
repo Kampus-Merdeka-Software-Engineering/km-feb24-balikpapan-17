@@ -78,13 +78,16 @@
   .video-container {
     justify-content: center;
   }
+  .video-container video {
+    max-width: 100%;
+  }
   .styled-list h1 {
     text-align: center;
     margin: 0 0 10px;
     font-size: 1.5rem;
   }
   .styled-list {
-    width: 90%;
+    width: 100%;
   }
 }
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -129,14 +132,14 @@
 }
 @media (min-width: 400px) {
   .mision-container {
-    width: 85%;
+    width: 100%;
     padding: 0;
   }
 }
 
 @media (min-width: 550px) {
   .mision-container {
-    width: 80%;
+    width: 100%;
   }
   .column,
   .columns {

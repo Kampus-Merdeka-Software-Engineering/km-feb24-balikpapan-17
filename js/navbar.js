@@ -39,34 +39,74 @@ document.addEventListener("DOMContentLoaded", function () {
 
 window.addEventListener("scroll", function () {
   var navbar = document.getElementById("navbar");
+  var aboutSection = document.getElementById("menu");
+
   if (window.scrollY > 50) {
     navbar.classList.add("navbar-scrolled");
   } else {
     navbar.classList.remove("navbar-scrolled");
   }
+
+  var aboutPosition = aboutSection.getBoundingClientRect();
+  if (aboutPosition.top <= 0 && aboutPosition.bottom >= 0) {
+    navbar.classList.add("navbar-about");
+  } else {
+    navbar.classList.remove("navbar-about");
+  }
 });
 
-window.addEventListener("scroll", function () {
+function updateActiveLinks() {
   var scrollPosition = window.scrollY;
 
   document.querySelectorAll(".section").forEach(function (section) {
     var sectionId = section.getAttribute("id");
-
     var sectionOffset = section.offsetTop;
-
     var sectionHeight = section.offsetHeight;
 
     if (
       scrollPosition >= sectionOffset &&
       scrollPosition < sectionOffset + sectionHeight
     ) {
-      navbarLinks.forEach(function (link) {
-        if (link.getAttribute("href").slice(1) === sectionId) {
-          link.classList.add("active");
-        } else {
-          link.classList.remove("active");
-        }
-      });
+      document
+        .querySelectorAll(".nav-menu a, .dropdown-content a")
+        .forEach(function (link) {
+          link.classList.toggle(
+            "active",
+            link.getAttribute("href").slice(1) === sectionId
+          );
+        });
     }
   });
+}
+
+function initScrollListener() {
+  window.addEventListener("scroll", updateActiveLinks, { passive: true });
+  updateActiveLinks();
+}
+
+function observeMutations(targetNodes) {
+  var config = { childList: true, subtree: true };
+
+  var callback = function (mutationsList, observer) {
+    for (var mutation of mutationsList) {
+      if (mutation.type === "childList") {
+        updateActiveLinks();
+      }
+    }
+  };
+
+  var observer = new MutationObserver(callback);
+  targetNodes.forEach(function (node) {
+    if (node) {
+      observer.observe(node, config);
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  initScrollListener();
+  observeMutations([
+    document.querySelector(".nav-menu"),
+    document.querySelector(".dropdown-content"),
+  ]);
 });
