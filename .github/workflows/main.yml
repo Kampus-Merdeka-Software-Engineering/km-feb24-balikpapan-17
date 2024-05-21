@@ -8,17 +8,14 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-    
-      - name: Sync and merge upstream repository with your current repository
-        uses: dabreadman/sync-upstream-repo@v1.3.0
-        with:
-          upstream_repo: https://github.com/Kampus-Merdeka-Software-Engineering/km-feb24-balikpapan-17.git
-          
-          upstream_branch: main
-          
-          downstream_branch: main
-          
-          token: ${{ secrets.GITHUB_TOKEN }}
-    
-              
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Fetch upstream
+        run: git fetch upstream
+        
+      - name: Merge changes
+        run: git merge upstream/main
+        
+      - name: Push changes
+        run: git push origin main
