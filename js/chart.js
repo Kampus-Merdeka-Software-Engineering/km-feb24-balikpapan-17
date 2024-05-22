@@ -6,24 +6,22 @@ function loadAndInitialize() {
       window.data = data.filter((item) => item.product_category !== "");
       populateMonthFilter(data);
       populateCategoryFilter(data);
-      updateDashboard("all");
+      loadMonthFilter();
+      loadCategoryFilters();
+
+      const selectedMonth = document.getElementById("monthFilter").value;
+      updateDashboard(selectedMonth);
     })
     .catch((error) => console.error("Error fetching data:", error));
 }
 
 function populateMonthFilter(data) {
   const monthFilter = document.getElementById("monthFilter");
-  monthFilter.innerHTML = "";
-
-  const allOption = document.createElement("option");
-  allOption.value = "all";
-  allOption.textContent = "All Month";
-  monthFilter.appendChild(allOption);
+  monthFilter.innerHTML = '<option value="all">All Month</option>';
 
   const months = [
     ...new Set(data.map((item) => item.month_name).filter((month) => month)),
   ];
-
   months.forEach((month) => {
     const option = document.createElement("option");
     option.value = month;
@@ -88,20 +86,77 @@ function populateCategoryFilter(data) {
         allCheckbox.checked = allChecked;
       }
 
+      saveCategoryFilters();
       updateDashboard(document.getElementById("monthFilter").value);
     });
   });
+
+  document
+    .getElementById("monthFilter")
+    .addEventListener("change", function () {
+      const selectedMonth = this.value;
+      saveMonthFilter(selectedMonth);
+      updateDashboard(selectedMonth);
+    });
 }
 
-document.getElementById("monthFilter").addEventListener("change", function () {
-  updateDashboard(this.value);
-});
+function saveMonthFilter(selectedMonth) {
+  localStorage.setItem("selectedMonth", selectedMonth);
+}
 
-document
-  .getElementById("categoryFilterContainer")
-  .addEventListener("change", function () {
-    updateDashboard(document.getElementById("monthFilter").value);
-  });
+function saveCategoryFilters() {
+  const selectedCategories = Array.from(
+    document.querySelectorAll(".categoryFilter:checked")
+  ).map((cb) => cb.value);
+  localStorage.setItem(
+    "selectedCategories",
+    JSON.stringify(selectedCategories)
+  );
+}
+
+function loadMonthFilter() {
+  const selectedMonth = localStorage.getItem("selectedMonth");
+  if (selectedMonth) {
+    document.getElementById("monthFilter").value = selectedMonth;
+  }
+}
+
+function loadCategoryFilters() {
+  const selectedCategories = JSON.parse(
+    localStorage.getItem("selectedCategories")
+  );
+  if (selectedCategories) {
+    document.querySelectorAll(".categoryFilter").forEach((cb) => {
+      cb.checked = selectedCategories.includes(cb.value);
+    });
+  }
+}
+
+function updateFilterInfoFromLocalStorage() {
+  const selectedMonth = localStorage.getItem("selectedMonth") || "all";
+  const selectedCategories =
+    JSON.parse(localStorage.getItem("selectedCategories")) || [];
+
+  updateFilterInfo(selectedMonth, selectedCategories);
+}
+
+function updateFilterInfo(selectedMonth, selectedCategories) {
+  const filterInfo = document.getElementById("filterInfo");
+
+  let monthText = selectedMonth === "all" ? "All Months" : selectedMonth;
+
+  let categoriesText = "";
+  if (selectedCategories.includes("all") || selectedCategories.length === 0) {
+    categoriesText = "All Categories";
+  } else {
+    categoriesText = `<ul>${selectedCategories
+      .map((product_category) => `<li>${product_category}</li>`)
+      .join("")}</ul>`;
+  }
+
+  filterInfo.innerHTML = `<p>Month: ${monthText}</p>
+                          <p>Categories: ${categoriesText}</p>`;
+}
 
 function updateDashboard(selectedMonth) {
   let filteredData = [];
@@ -121,8 +176,6 @@ function updateDashboard(selectedMonth) {
       selectedCategories.includes(item.product_category)
     );
   }
-
-  updateFilterInfo(selectedMonth, selectedCategories);
 
   const totalRevenue = Math.round(
     filteredData.reduce((acc, curr) => acc + curr.revenue, 0) / 1000
@@ -211,24 +264,6 @@ function updateDashboard(selectedMonth) {
   createRevenueByProductDoughnutChart(filteredData);
   createRevenueBySalesDoughnutChart(filteredData);
   createSalesRevenueRelationChart(filteredData);
-}
-
-function updateFilterInfo(selectedMonth, selectedCategories) {
-  const filterInfo = document.getElementById("filterInfo");
-
-  let monthText = selectedMonth === "all" ? "All Months" : selectedMonth;
-
-  let categoriesText = "";
-  if (selectedCategories.includes("all") || selectedCategories.length === 0) {
-    categoriesText = "All Categories";
-  } else {
-    categoriesText = `<ul>${selectedCategories
-      .map((product_category) => `<li>${product_category}</li>`)
-      .join("")}</ul>`;
-  }
-
-  filterInfo.innerHTML = `<p>Month: ${monthText}</p>
-                          <p>Categories: ${categoriesText}</p>`;
 }
 
 function createProductSalesChart(data) {
@@ -717,6 +752,22 @@ function createRevenueByProductChart(data) {
   });
 }
 
+function getColor(product) {
+  const colorMap = {
+    Tea: "rgba(139, 69, 19, 1)",
+    "D.Choco": "rgba(210, 105, 30, 1)",
+    Coffee: "rgba(75, 54, 33, 1)",
+    Bakery: "rgba(255, 223, 186, 1)",
+    Flavours: "rgba(238, 130, 238, 1)",
+    "Cff.Beans": "rgba(160, 82, 45, 1)",
+    "Loose Tea": "rgba(143, 188, 143, 1)",
+    "Pack.Choco": "rgba(210, 180, 140, 1)",
+    Branded: "rgba(220, 20, 60, 1)",
+  };
+
+  return colorMap[product] || "rgba(0, 0, 0, 1)";
+}
+
 function createRevenueByProductDoughnutChart(data) {
   const productRev = {};
   data.forEach((entry) => {
@@ -747,15 +798,7 @@ function createRevenueByProductDoughnutChart(data) {
   const labels = sortedProducts.map(({ product }) => product);
   const revenueData = sortedProducts.map(({ revenue }) => revenue);
   const percentageData = sortedProducts.map(({ percentage }) => percentage);
-  const backgroundColors = [
-    "rgba(255, 99, 132, 1)",
-    "rgba(54, 162, 235, 1)",
-    "rgba(255, 206, 86, 1)",
-    "rgba(75, 192, 192, 1)",
-    "rgba(153, 102, 255, 1)",
-    "rgba(255, 159, 64, 1)",
-    "rgba(199, 199, 199, 1)",
-  ];
+  const backgroundColors = labels.map((product) => getColor(product));
 
   const ctx = document
     .getElementById("revenueByProductDoughnutChart")
@@ -770,11 +813,24 @@ function createRevenueByProductDoughnutChart(data) {
           label: "Revenue",
           data: revenueData,
           backgroundColor: backgroundColors,
+          borderColor: "#f2f2f200",
         },
       ],
     },
     options: {
+      responsive: true,
+      animation: {
+        duration: 1000,
+        easing: "easeOutBack",
+      },
+      layout: {
+        padding: 30,
+      },
       plugins: {
+        legend: {
+          display: true,
+          position: "right",
+        },
         tooltip: {
           callbacks: {
             label: function (context) {
@@ -820,15 +876,7 @@ function createRevenueBySalesDoughnutChart(filteredData) {
   const labels = sortedProducts.map(({ product }) => product);
   const salesData = sortedProducts.map(({ sales }) => sales);
   const percentageData = sortedProducts.map(({ percentage }) => percentage);
-  const backgroundColors = [
-    "rgba(255, 99, 132, 1)",
-    "rgba(54, 162, 235, 1)",
-    "rgba(255, 206, 86, 1)",
-    "rgba(75, 192, 192, 1)",
-    "rgba(153, 102, 255, 1)",
-    "rgba(255, 159, 64, 1)",
-    "rgba(199, 199, 199, 1)",
-  ];
+  const backgroundColors = labels.map((product) => getColor(product));
 
   const ctx = document
     .getElementById("revenueBySalesDoughnutChart")
@@ -843,11 +891,24 @@ function createRevenueBySalesDoughnutChart(filteredData) {
           label: "Sales",
           data: salesData,
           backgroundColor: backgroundColors,
+          borderColor: "#f2f2f200",
         },
       ],
     },
     options: {
+      responsive: true,
+      animation: {
+        duration: 1000,
+        easing: "easeOutBack",
+      },
+      layout: {
+        padding: 30,
+      },
       plugins: {
+        legend: {
+          display: true,
+          position: "right",
+        },
         tooltip: {
           callbacks: {
             label: function (context) {
@@ -944,4 +1005,7 @@ function createSalesRevenueRelationChart(data) {
   });
 }
 
-loadAndInitialize();
+window.addEventListener("DOMContentLoaded", () => {
+  updateFilterInfoFromLocalStorage();
+  loadAndInitialize();
+});
