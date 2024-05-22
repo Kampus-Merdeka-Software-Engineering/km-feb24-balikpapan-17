@@ -1,14 +1,36 @@
-#content_container {
+@import url("https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap");
+* {
+  box-sizing: border-box;
+}
+
+body,
+h1,
+p,
+input,
+button {
+  margin: 0;
+  padding: 0;
+  font-family: "Urbanist", sans-serif;
+}
+
+body {
+  background-color: #f0f2f5;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
 
+#content_container {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 400px;
+}
+
 #form_container {
-  background-color: #f0f0f0;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 40px;
 }
 
 #form_header_container {
@@ -17,16 +39,92 @@
 }
 
 #form_header {
-  font-size: 2.5rem;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
   color: #333;
 }
 
 #form_content_container {
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 #form_content_inner_container {
+  width: 100%;
+}
+
+#form_content_inner_container input {
+  width: 100%;
+  padding: 10px 15px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+#form_content_inner_container input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  width: calc(100% - 40px);
+  display: inline-block;
+}
+
+.password-container i {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #aaa;
+  transition: color 0.3s;
+}
+
+.password-container i:hover {
+  color: #333;
+}
+
+#button_container {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+#button_container button {
+  width: 48%;
+  padding: 10px 0;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#button_container button:hover {
+  background-color: #0056b3;
+}
+
+#button_container button[type="button"] {
+  background-color: #db4437;
+}
+
+#button_container button[type="button"]:hover {
+  background-color: #c23321;
+}
+
+#button_container i {
+  margin-right: 8px;
 }
