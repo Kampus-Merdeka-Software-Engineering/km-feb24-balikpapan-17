@@ -88,23 +88,30 @@
         <i class="fa-solid fa-chart-simple fa-lg"></i>
         <span>Dashboard Maven</span>
       </div>
-      <select id="monthFilter">
-        <option value="all">All Month</option>
-      </select>
-      <div class="dropdown">
-        <button class="dropbtn">Select Categories</button>
-        <div class="dropdown-content" id="categoryFilterContainer">
-          <label
-            ><input
-              type="checkbox"
-              class="categoryFilter"
-              value="all"
-              checked
-            />
-            Semua Kategori</label
-          >
+
+      <div class="filter-container">
+        <div class="custom-select">
+          <select id="monthFilter">
+            <option value="all">All Month</option>
+          </select>
+        </div>
+
+        <div class="dropdown">
+          <button id="dropdownBtn" class="dropbtn">Select Categories</button>
+          <div class="dropdown-content" id="categoryFilterContainer">
+            <label>
+              <input
+                type="checkbox"
+                class="categoryFilter"
+                value="all"
+                checked
+              />
+              Semua Kategori
+            </label>
+          </div>
         </div>
       </div>
+
       <div class="action-buttons">
         <button class="open-right-area">
           <i class="fa-solid fa-bars"></i>

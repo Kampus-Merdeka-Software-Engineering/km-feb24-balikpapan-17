@@ -114,3 +114,20 @@ document.querySelector(".menu-button").addEventListener("click", function () {
 document.querySelector(".close-menu").addEventListener("click", function () {
   document.querySelector(".app-left").classList.remove("show");
 });
+
+document
+  .getElementById("dropdownBtn")
+  .addEventListener("click", function (event) {
+    var dropdownContent = document.getElementById("categoryFilterContainer");
+    dropdownContent.classList.toggle("show");
+
+    event.stopPropagation();
+  });
+
+window.addEventListener("click", function (event) {
+  var dropdownContent = document.getElementById("categoryFilterContainer");
+  var dropdownBtn = document.getElementById("dropdownBtn");
+  if (event.target !== dropdownBtn && !dropdownContent.contains(event.target)) {
+    dropdownContent.classList.remove("show");
+  }
+});
