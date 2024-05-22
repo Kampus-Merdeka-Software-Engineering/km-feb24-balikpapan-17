@@ -17,13 +17,18 @@
     <div id="content_container">
       <div id="form_container">
         <div id="form_header_container">
-          <a href="../index.html" id="form_header">test</a>
+          <a href="../index.html" id="form_header">
+            <img src="../assets/images/nvlogo.png" alt="logo" id="logoImage" />
+          </a>
         </div>
         <div id="form_content_container">
           <div id="form_content_inner_container">
             <input type="text" id="username" placeholder="Username" />
             <input type="email" id="email" placeholder="Email" />
-            <input type="password" id="password" placeholder="New Password" />
+            <div class="password-container">
+              <input type="password" id="password" placeholder="New Password" />
+              <i class="fas fa-eye" id="togglePassword"></i>
+            </div>
             <div id="button_container">
               <button onclick="login()">Login</button>
               <button type="button" onclick="googleSignIn()">
@@ -42,24 +47,22 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="../js/auth.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const togglePassword = document.getElementById("togglePassword");
+        const password = document.getElementById("password");
 
-    <!-- <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-      import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-      import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+        togglePassword.addEventListener("click", function () {
+          // Toggle the type attribute
+          const type =
+            password.getAttribute("type") === "password" ? "text" : "password";
+          password.setAttribute("type", type);
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyDCW0iJbOjSfZ8QYuPhDTJQi6Hq6SuOLXI",
-        authDomain: "km-balikpapan-team17.firebaseapp.com",
-        databaseURL:
-          "https://km-balikpapan-team17-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "km-balikpapan-team17",
-        storageBucket: "km-balikpapan-team17.appspot.com",
-        messagingSenderId: "621633907233",
-        appId: "1:621633907233:web:0f02c8b05222da50b8d160",
-      };
-
-      const app = initializeApp(firebaseConfig);
-    </script> -->
+          // Toggle the eye / eye slash icon
+          this.classList.toggle("fa-eye");
+          this.classList.toggle("fa-eye-slash");
+        });
+      });
+    </script>
   </body>
 </html>
