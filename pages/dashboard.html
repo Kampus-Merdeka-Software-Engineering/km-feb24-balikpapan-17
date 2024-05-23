@@ -65,7 +65,7 @@
         </li>
         <li class="nav-list-item">
           <a class="nav-list-link" id="product" href="#">
-            <i class="fa-solid fa-box-open fa-lg"></i>
+            <i class="fa-solid fa-boxes-packing fa-lg"></i>
             Product
           </a>
         </li>
@@ -97,7 +97,7 @@
         </div>
 
         <div class="dropdown">
-          <button id="dropdownBtn" class="dropbtn">Select Categories</button>
+          <button id="dropdownBtn" class="dropbtn">--</button>
           <div class="dropdown-content" id="categoryFilterContainer">
             <label>
               <input
@@ -106,7 +106,7 @@
                 value="all"
                 checked
               />
-              Semua Kategori
+              All
             </label>
           </div>
         </div>
@@ -228,19 +228,6 @@
 
     <div class="app-right"><button class="close-right"></button></div>
     <div class="d-none" style="display: none; opacity: 0">
-      <table id="transactionTable" class="display" style="width: 100%">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Product ID</th>
-            <th>Product Category</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
       <canvas id="productSalesChart"></canvas>
       <canvas id="productChart"></canvas>
       <canvas id="forecastChart"></canvas>
@@ -267,15 +254,11 @@
     <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
     <script src="../js/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/luxon@^2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@^1"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/dashboard.js"></script>
-    <script src="../js/table.js"></script>
-
     <script>
       function showLoadingScreen() {
         document.getElementById("loadingScreen").style.display = "block";

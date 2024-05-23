@@ -1,18 +1,37 @@
 function loadAndInitialize() {
-  fetch("../data/data.json")
-    .then((response) => response.json())
-    .then((data) => {
-      // window.data = data;
-      window.data = data.filter((item) => item.product_category !== "");
+  $.ajax({
+    url: "../data/data.json",
+    dataType: "json",
+    success: function (data) {
+      // window.data = data.filter(
+      //   (item) => item.product_category !== "" && item.monthly_revenue !== ""
+      // );
+      window.data = data;
+
+      var table = $("#transactionTable").DataTable({
+        scrollX: true,
+        responsive: true,
+        pageLength: 25,
+      });
+
       populateMonthFilter(data);
       populateCategoryFilter(data);
       loadMonthFilter();
       loadCategoryFilters();
 
-      const selectedMonth = document.getElementById("monthFilter").value;
+      const selectedMonth = localStorage.getItem("selectedMonth") || "all";
+      const selectedCategories = JSON.parse(
+        localStorage.getItem("selectedCategories")
+      ) || ["all"];
+
       updateDashboard(selectedMonth);
-    })
-    .catch((error) => console.error("Error fetching data:", error));
+      updateFilterInfo(selectedMonth, selectedCategories);
+      updateDropdownBtnText(selectedCategories);
+    },
+    error: function (xhr, status, error) {
+      console.error("Error fetching data:", error);
+    },
+  });
 }
 
 function populateMonthFilter(data) {
@@ -49,7 +68,7 @@ function populateCategoryFilter(data) {
   allCheckbox.value = "all";
   allCheckbox.checked = true;
   allLabel.appendChild(allCheckbox);
-  allLabel.appendChild(document.createTextNode(" Semua Kategori"));
+  allLabel.appendChild(document.createTextNode("All"));
   categoryFilterContainer.appendChild(allLabel);
 
   categories.forEach((category) => {
@@ -85,23 +104,45 @@ function populateCategoryFilter(data) {
         );
         allCheckbox.checked = allChecked;
       }
+      const selectedMonth = document.getElementById("monthFilter").value;
+      const selectedCategories = Array.from(
+        document.querySelectorAll(".categoryFilter:checked")
+      ).map((cb) => cb.value);
 
       saveCategoryFilters();
-      updateDashboard(document.getElementById("monthFilter").value);
+      updateDashboard(selectedMonth);
+      updateFilterInfo(selectedMonth, selectedCategories);
+      updateDropdownBtnText(selectedCategories);
     });
   });
-
-  document
-    .getElementById("monthFilter")
-    .addEventListener("change", function () {
-      const selectedMonth = this.value;
-      saveMonthFilter(selectedMonth);
-      updateDashboard(selectedMonth);
-    });
 }
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const options = { day: "2-digit", month: "short", year: "numeric" };
+  return date.toLocaleDateString("en-GB", options);
+}
+
+document.getElementById("monthFilter").addEventListener("change", function () {
+  const selectedMonth = this.value;
+  saveMonthFilter(selectedMonth);
+  const selectedCategories = Array.from(
+    document.querySelectorAll(".categoryFilter:checked")
+  ).map((cb) => cb.value);
+
+  updateDashboard(selectedMonth);
+  updateFilterInfo(selectedMonth, selectedCategories);
+});
 
 function saveMonthFilter(selectedMonth) {
   localStorage.setItem("selectedMonth", selectedMonth);
+}
+
+function loadMonthFilter() {
+  const selectedMonth = localStorage.getItem("selectedMonth");
+  if (selectedMonth) {
+    document.getElementById("monthFilter").value = selectedMonth;
+  }
 }
 
 function saveCategoryFilters() {
@@ -112,13 +153,6 @@ function saveCategoryFilters() {
     "selectedCategories",
     JSON.stringify(selectedCategories)
   );
-}
-
-function loadMonthFilter() {
-  const selectedMonth = localStorage.getItem("selectedMonth");
-  if (selectedMonth) {
-    document.getElementById("monthFilter").value = selectedMonth;
-  }
 }
 
 function loadCategoryFilters() {
@@ -132,12 +166,32 @@ function loadCategoryFilters() {
   }
 }
 
+function updateDropdownBtnText(selectedCategories) {
+  const dropdownBtn = document.getElementById("dropdownBtn");
+  if (selectedCategories.length === 0) {
+    dropdownBtn.textContent = "Select Categories";
+  } else if (
+    selectedCategories.length === 0 &&
+    !selectedCategories.includes("all")
+  ) {
+    dropdownBtn.textContent = "Select Categories";
+  } else {
+    dropdownBtn.textContent = `(${selectedCategories.length}) Categories`;
+  }
+
+  if (selectedCategories.includes("all") && selectedCategories.length > 1) {
+    dropdownBtn.textContent = "All Categories";
+  }
+}
+
 function updateFilterInfoFromLocalStorage() {
   const selectedMonth = localStorage.getItem("selectedMonth") || "all";
-  const selectedCategories =
-    JSON.parse(localStorage.getItem("selectedCategories")) || [];
+  const selectedCategories = JSON.parse(
+    localStorage.getItem("selectedCategories")
+  ) || ["all"];
 
   updateFilterInfo(selectedMonth, selectedCategories);
+  updateDropdownBtnText(selectedCategories);
 }
 
 function updateFilterInfo(selectedMonth, selectedCategories) {
@@ -146,8 +200,10 @@ function updateFilterInfo(selectedMonth, selectedCategories) {
   let monthText = selectedMonth === "all" ? "All Months" : selectedMonth;
 
   let categoriesText = "";
-  if (selectedCategories.includes("all") || selectedCategories.length === 0) {
-    categoriesText = "All Categories";
+  if (selectedCategories.includes("all")) {
+    categoriesText = "All";
+  } else if (selectedCategories.length === 0) {
+    categoriesText = "None";
   } else {
     categoriesText = `<ul>${selectedCategories
       .map((product_category) => `<li>${product_category}</li>`)
@@ -176,6 +232,20 @@ function updateDashboard(selectedMonth) {
       selectedCategories.includes(item.product_category)
     );
   }
+
+  var table = $("#transactionTable").DataTable();
+  table.clear();
+  filteredData.forEach(function (item) {
+    table.row.add([
+      formatDate(item.transaction_date),
+      item.transaction_time,
+      item.product_id,
+      item.product_category,
+      item.transaction_qty,
+      item.unit_price,
+    ]);
+  });
+  table.draw();
 
   const totalRevenue = Math.round(
     filteredData.reduce((acc, curr) => acc + curr.revenue, 0) / 1000
@@ -266,6 +336,182 @@ function updateDashboard(selectedMonth) {
   createSalesRevenueRelationChart(filteredData);
 }
 
+// ## OVERVIEW CHART ##
+
+function createRevenueAndSalesChart(data) {
+  const groupedData = data.reduce((acc, curr) => {
+    if (!acc[curr.month_name]) {
+      acc[curr.month_name] = { revenue: 0, sales: 0 };
+    }
+    acc[curr.month_name].revenue += curr.revenue;
+    acc[curr.month_name].sales += curr.transaction_qty;
+    return acc;
+  }, {});
+
+  const labels = Object.keys(groupedData);
+  const revenueData = Object.values(groupedData).map((item) => item.revenue);
+  const salesData = Object.values(groupedData).map((item) => item.sales);
+
+  var ctx = document.getElementById("revenueAndSalesChart").getContext("2d");
+
+  if (window.revenueAndSalesChart) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
+  window.revenueAndSalesChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Revenue",
+          data: revenueData,
+          backgroundColor: "#5e3229",
+          borderWidth: 1,
+        },
+        {
+          label: "Total Sales",
+          data: salesData,
+          backgroundColor: "#90C114",
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: "Revenue",
+            font: {
+              weight: "bold",
+            },
+          },
+          ticks: {
+            beginAtZero: true,
+          },
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+        x: {
+          title: {
+            display: true,
+            text: "Month",
+            font: {
+              weight: "bold",
+            },
+          },
+          ticks: {
+            beginAtZero: true,
+          },
+          grid: {
+            color: "#21212100",
+            lineWidth: 0.2,
+          },
+        },
+      },
+    },
+  });
+}
+
+function createForecastChart(data) {
+  const monthlyRevenue = data.reduce((acc, curr) => {
+    acc[curr.month_S2] = curr.monthly_revenue;
+    return acc;
+  }, {});
+
+  const forecastData = data.reduce((acc, curr) => {
+    acc[curr.month_S2] = curr.Forecast;
+    return acc;
+  }, {});
+
+  const labels = Object.keys(monthlyRevenue);
+  const mergedData = labels.map((month) => {
+    return {
+      month: month,
+      revenue: monthlyRevenue[month],
+      forecast: forecastData[month] || 0,
+    };
+  });
+
+  var ctx = document.getElementById("forecastChart").getContext("2d");
+
+  if (window.forecastChart) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
+  window.forecastChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Monthly Revenue",
+          data: mergedData.map((item) => item.revenue),
+          borderColor: "#5e3229",
+          backgroundColor: "#5e3229",
+          borderWidth: 2,
+          fill: false,
+        },
+        {
+          label: "Forecast",
+          data: mergedData.map((item) => item.forecast),
+          borderColor: "#CCFF00",
+          backgroundColor: "#CCFF00",
+          borderWidth: 3,
+          fill: false,
+          borderDash: [10, 10],
+          pointHitRadius: 5,
+          pointBorderWidth: 1,
+          pointBorderColor: "#CCFF0000",
+          // showLine: false,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: "Monthly Revenue vs Forecast",
+            font: {
+              weight: "bold",
+            },
+          },
+          ticks: {
+            beginAtZero: true,
+            stepSize: 25000,
+          },
+          stacked: true,
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+        x: {
+          title: {
+            display: true,
+            text: "Month",
+            font: {
+              weight: "bold",
+            },
+          },
+          ticks: {
+            beginAtZero: true,
+          },
+          stacked: true,
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+      },
+    },
+  });
+}
+
 function createProductSalesChart(data) {
   const productSales = {};
   data.forEach((entry) => {
@@ -284,6 +530,8 @@ function createProductSalesChart(data) {
   const dataValues = sortedProductSales.map(([_, value]) => value);
 
   const ctx = document.getElementById("productSalesChart").getContext("2d");
+  const globalFontFamily = "Urbanist";
+  Chart.defaults.font.family = globalFontFamily;
 
   window.productSalesChart = new Chart(ctx, {
     type: "bar",
@@ -301,6 +549,13 @@ function createProductSalesChart(data) {
     options: {
       scales: {
         y: {
+          title: {
+            display: true,
+            text: "Total Product Sales",
+            font: {
+              weight: "bold",
+            },
+          },
           ticks: {
             beginAtZero: true,
           },
@@ -310,11 +565,373 @@ function createProductSalesChart(data) {
           },
         },
         x: {
+          title: {
+            display: true,
+            text: "Product Category",
+            font: {
+              weight: "bold",
+            },
+          },
           ticks: {
             beginAtZero: true,
           },
           grid: {
             color: "#21212100",
+            lineWidth: 0.2,
+          },
+        },
+      },
+    },
+  });
+}
+
+// ## SALES CHART ##
+
+function createRevenueByMonthChart(data) {
+  const groupedData = data.reduce((acc, curr) => {
+    if (!acc[curr.month_year]) {
+      acc[curr.month_year] = {
+        totalRevenue: 0,
+        count: 0,
+        totalMonthlyRevenue: 0,
+      };
+    }
+    acc[curr.month_year].totalRevenue += curr.revenue || 0;
+    if (curr.monthly_revenue) {
+      acc[curr.month_year].totalMonthlyRevenue += curr.monthly_revenue;
+      acc[curr.month_year].count++;
+    }
+    return acc;
+  }, {});
+
+  const labels = Object.keys(groupedData);
+  const revenueData = labels.map((month) => groupedData[month].totalRevenue);
+  const totalMonthlyRevenue = Object.values(groupedData).reduce(
+    (acc, item) => acc + item.totalMonthlyRevenue,
+    0
+  );
+  const totalCount = Object.values(groupedData).reduce(
+    (acc, item) => acc + item.count,
+    0
+  );
+  const averageRevenue =
+    totalCount !== 0 ? (totalMonthlyRevenue / totalCount).toFixed(2) : 0;
+
+  const averageRevenueData = labels.map(() => averageRevenue);
+
+  var ctx = document.getElementById("revenueByMonthChart").getContext("2d");
+
+  if (window.revenueByMonthChart) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
+  window.revenueByMonthChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Revenue",
+          data: revenueData,
+          backgroundColor: "#5e3229",
+          borderColor: "#5e3229",
+          borderWidth: 1,
+          fill: false,
+        },
+        {
+          label: "Average Revenue",
+          data: averageRevenueData,
+          backgroundColor: "#CCFF00",
+          borderColor: "#CCFF00",
+          borderWidth: 5,
+          fill: false,
+          borderDash: [10, 10],
+          pointHitRadius: 5,
+          pointBorderWidth: 1,
+          pointBorderColor: "#CCFF0000",
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: "Revenue & Average Revenue",
+            font: {
+              weight: "bold",
+            },
+          },
+          min: 0,
+          ticks: {
+            stepSize: 10000,
+          },
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+        x: {
+          title: {
+            display: true,
+            text: "Month",
+            font: {
+              weight: "bold",
+            },
+          },
+          min: 0,
+          ticks: {
+            beginAtZero: true,
+          },
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+      },
+    },
+  });
+}
+
+function createSalesRevenueRelationChart(data) {
+  const groupedData = data.reduce((acc, curr) => {
+    const key = formatDate(curr.transaction_date);
+    if (!acc[key]) {
+      acc[key] = {
+        totalRevenue: 0,
+        totalTransactions: 0,
+      };
+    }
+    acc[key].totalRevenue += curr.revenue;
+    acc[key].totalTransactions += curr.transaction_qty;
+    return acc;
+  }, {});
+
+  const salesRevenueData = Object.entries(groupedData).map(
+    ([date, values]) => ({
+      x: values.totalRevenue,
+      y: values.totalTransactions,
+      r: 7,
+      date: date,
+    })
+  );
+
+  const ctx = document
+    .getElementById("salesRevenueRelationChart")
+    .getContext("2d");
+  if (window.salesRevenueRelationChart instanceof Chart) {
+    window.salesRevenueRelationChart.destroy();
+  }
+  window.salesRevenueRelationChart = new Chart(ctx, {
+    type: "bubble",
+    data: {
+      datasets: [
+        {
+          label: "Sales & Revenue Relation",
+          data: salesRevenueData,
+          backgroundColor: "rgba(94, 50, 41, 1)",
+          borderColor: "rgba(242, 242, 242, 1)",
+        },
+      ],
+    },
+    options: {
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Revenue",
+            font: {
+              weight: "bold",
+            },
+          },
+          min: 0,
+          ticks: {
+            stepSize: 500,
+          },
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: "Total Sales",
+            font: {
+              weight: "bold",
+            },
+          },
+          min: 0,
+          ticks: {
+            stepSize: 250,
+          },
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              const data = context.raw;
+              return [
+                `Date: ${data.date}`,
+                `-`,
+                `Revenue: $${data.x.toFixed(0)}`,
+                `Total Sales: ${data.y}`,
+              ];
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+function createRevenueGrowthChart(data) {
+  const groupedData = data.reduce((acc, curr) => {
+    if (!acc[curr.month_year]) {
+      acc[curr.month_year] = [];
+    }
+    acc[curr.month_year].push(curr.growth_rev);
+    return acc;
+  }, {});
+
+  const labels = Object.keys(groupedData);
+  const growthData = labels.map((month) => {
+    const growthValues = groupedData[month];
+    const minGrowth = Math.min(...growthValues);
+    return minGrowth.toFixed(2);
+  });
+
+  var ctx = document.getElementById("revenueGrowthChart").getContext("2d");
+
+  if (window.revenueGrowthChart) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
+  window.revenueGrowthChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Revenue Growth (%)",
+          data: growthData,
+          borderColor: "#5e3229",
+          backgroundColor: "#CCFF00",
+          borderWidth: 1,
+          fill: false,
+          tension: 0.3,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: "Revenue Growth(%)",
+            font: {
+              weight: "bold",
+            },
+          },
+          ticks: {
+            beginAtZero: true,
+          },
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+        x: {
+          title: {
+            display: true,
+            text: "Month",
+            font: {
+              weight: "bold",
+            },
+          },
+          ticks: {
+            beginAtZero: true,
+          },
+          grid: {
+            color: "#212121",
+            lineWidth: 0.2,
+          },
+        },
+      },
+    },
+  });
+}
+
+// ## PRODUCT CHART ##
+
+function createTopSellingProductsChart(data) {
+  const productSales = {};
+  data.forEach((entry) => {
+    if (productSales[entry.product_category]) {
+      productSales[entry.product_category] += entry.transaction_qty;
+    } else {
+      productSales[entry.product_category] = entry.transaction_qty;
+    }
+  });
+
+  const sortedCategories = Object.entries(productSales)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+  const labels = sortedCategories.map((category) => category[0]);
+  const dataValues = sortedCategories.map((category) => category[1]);
+
+  var ctx = document.getElementById("topSellingProductsChart").getContext("2d");
+  if (window.topSellingProductsChart) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
+  window.topSellingProductsChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Total Product Sales",
+          data: dataValues,
+          backgroundColor: "#90C114",
+          borderColor: "#90C114",
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      indexAxis: "y",
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: "Product Category",
+            font: {
+              weight: "bold",
+            },
+          },
+          grid: {
+            display: false,
+          },
+        },
+        x: {
+          title: {
+            display: true,
+            text: "Total Product Sales",
+            font: {
+              weight: "bold",
+            },
+          },
+          ticks: {
+            beginAtZero: true,
+          },
+          grid: {
+            color: "#212121",
             lineWidth: 0.2,
           },
         },
@@ -367,405 +984,25 @@ function createProductChart(data) {
             lineWidth: 1,
           },
         },
-      },
-    },
-  });
-}
-
-function createRevenueAndSalesChart(data) {
-  const groupedData = data.reduce((acc, curr) => {
-    if (!acc[curr.month_year]) {
-      acc[curr.month_year] = { revenue: 0, sales: 0 };
-    }
-    acc[curr.month_year].revenue += curr.revenue;
-    acc[curr.month_year].sales += curr.transaction_qty;
-    return acc;
-  }, {});
-
-  const labels = Object.keys(groupedData);
-  const revenueData = Object.values(groupedData).map((item) => item.revenue);
-  const salesData = Object.values(groupedData).map((item) => item.sales);
-
-  var ctx = document.getElementById("revenueAndSalesChart").getContext("2d");
-
-  if (window.revenueAndSalesChart) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  }
-
-  window.revenueAndSalesChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Revenue",
-          data: revenueData,
-          backgroundColor: "#5e3229",
-          borderWidth: 1,
-        },
-        {
-          label: "Total Sales",
-          data: salesData,
-          backgroundColor: "#90C114",
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      scales: {
-        y: {
-          ticks: {
-            beginAtZero: true,
-          },
-          grid: {
-            color: "#212121",
-            lineWidth: 0.2,
-          },
-        },
         x: {
+          title: {
+            display: true,
+            text: "Month",
+            font: {
+              weight: "bold",
+            },
+          },
           ticks: {
             beginAtZero: true,
           },
           grid: {
-            color: "rgba(200, 200, 200,0)",
-            lineWidth: 1,
-          },
-        },
-      },
-    },
-  });
-}
-
-function createForecastChart(data) {
-  const monthlyRevenue = data.reduce((acc, curr) => {
-    acc[curr.month_S2] = curr.monthly_revenue;
-    return acc;
-  }, {});
-
-  const forecastData = data.reduce((acc, curr) => {
-    acc[curr.month_S2] = curr.Forecast;
-    return acc;
-  }, {});
-
-  const labels = Object.keys(monthlyRevenue);
-  const mergedData = labels.map((month) => {
-    return {
-      month: month,
-      revenue: monthlyRevenue[month],
-      forecast: forecastData[month] || 0,
-    };
-  });
-
-  var ctx = document.getElementById("forecastChart").getContext("2d");
-
-  if (window.forecastChart) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  }
-
-  window.forecastChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Monthly Revenue",
-          data: mergedData.map((item) => item.revenue),
-          borderColor: "#5e3229",
-          backgroundColor: "#5e3229",
-          borderWidth: 1,
-          fill: false,
-        },
-        {
-          label: "Forecast",
-          data: mergedData.map((item) => item.forecast),
-          borderColor: "#CCFF00",
-          backgroundColor: "#CCFF00",
-          borderWidth: 1,
-          fill: false,
-        },
-      ],
-    },
-    options: {
-      scales: {
-        y: {
-          ticks: {
-            beginAtZero: true,
-          },
-          grid: {
-            color: "#212121",
-            lineWidth: 0.2,
-          },
-        },
-        x: {
-          ticks: {
-            beginAtZero: true,
-          },
-          grid: {
-            color: "#212121",
+            color: "#21212100",
             lineWidth: 0.2,
           },
         },
       },
     },
   });
-}
-
-function createRevenueByMonthChart(data) {
-  const groupedData = data.reduce((acc, curr) => {
-    if (!acc[curr.month_name]) {
-      acc[curr.month_name] = { revenue: 0, count: 0 };
-    }
-    acc[curr.month_name].revenue += curr.revenue;
-    acc[curr.month_name].count++;
-    return acc;
-  }, {});
-
-  const labels = Object.keys(groupedData);
-  const revenueData = Object.values(groupedData).map((item) => item.revenue);
-  const averageRevenueData = Object.values(groupedData).map((item) =>
-    (item.revenue / item.count).toFixed(2)
-  );
-
-  var ctx = document.getElementById("revenueByMonthChart").getContext("2d");
-
-  if (window.revenueByMonthChart) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  }
-
-  window.revenueByMonthChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Revenue",
-          data: revenueData,
-          backgroundColor: "#5e3229",
-          borderColor: "#5e3229",
-          borderWidth: 1,
-        },
-        {
-          label: "Average Revenue",
-          data: averageRevenueData,
-          backgroundColor: "rgb(54, 162, 235)",
-          borderColor: "rgba(54, 162, 235, 1)",
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      scales: {
-        y: {
-          ticks: {
-            beginAtZero: true,
-            z: 1,
-          },
-          grid: {
-            color: "#212121",
-            lineWidth: 0.2,
-          },
-        },
-        x: {
-          ticks: {
-            beginAtZero: true,
-            z: 1,
-          },
-          grid: {
-            color: "#212121",
-            lineWidth: 0.2,
-          },
-        },
-      },
-    },
-  });
-}
-
-function createRevenueGrowthChart(data) {
-  const groupedData = data.reduce((acc, curr) => {
-    if (!acc[curr.month_year]) {
-      acc[curr.month_year] = [];
-    }
-    acc[curr.month_year].push(curr.growth_rev);
-    return acc;
-  }, {});
-
-  const labels = Object.keys(groupedData);
-  const growthData = labels.map((month) => {
-    const growthValues = groupedData[month];
-    const minGrowth = Math.min(...growthValues);
-    return minGrowth.toFixed(2);
-  });
-
-  var ctx = document.getElementById("revenueGrowthChart").getContext("2d");
-
-  if (window.revenueGrowthChart) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  }
-
-  window.revenueGrowthChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Revenue Growth (%)",
-          data: growthData,
-          borderColor: "#5e3229",
-          backgroundColor: "#CCFF00",
-          borderWidth: 1,
-          fill: false,
-          tension: 0.3,
-        },
-      ],
-    },
-    options: {
-      scales: {
-        y: {
-          ticks: {
-            beginAtZero: true,
-          },
-          grid: {
-            color: "#212121",
-            lineWidth: 0.2,
-          },
-        },
-        x: {
-          ticks: {
-            beginAtZero: true,
-          },
-          grid: {
-            color: "#212121",
-            lineWidth: 0.2,
-          },
-        },
-      },
-    },
-  });
-}
-
-function createTopSellingProductsChart(data) {
-  const productSales = {};
-  data.forEach((entry) => {
-    if (productSales[entry.product_category]) {
-      productSales[entry.product_category] += entry.transaction_qty;
-    } else {
-      productSales[entry.product_category] = entry.transaction_qty;
-    }
-  });
-
-  const sortedCategories = Object.entries(productSales)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
-  const labels = sortedCategories.map((category) => category[0]);
-  const dataValues = sortedCategories.map((category) => category[1]);
-
-  var ctx = document.getElementById("topSellingProductsChart").getContext("2d");
-  if (window.topSellingProductsChart) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  }
-
-  window.topSellingProductsChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Total Product Sales",
-          data: dataValues,
-          backgroundColor: "#90C114",
-          borderColor: "#90C114",
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      indexAxis: "y",
-      scales: {
-        x: {
-          ticks: {
-            beginAtZero: true,
-          },
-          grid: {
-            color: "#212121",
-            lineWidth: 0.2,
-          },
-        },
-        y: {
-          grid: {
-            display: false,
-          },
-        },
-      },
-    },
-  });
-}
-
-function createRevenueByProductChart(data) {
-  const productRevenue = {};
-  data.forEach((entry) => {
-    if (productRevenue[entry.product_category]) {
-      productRevenue[entry.product_category] += entry.revenue;
-    } else {
-      productRevenue[entry.product_category] = entry.revenue;
-    }
-  });
-
-  const sortedProducts = Object.entries(productRevenue).sort(
-    (a, b) => b[1] - a[1]
-  );
-
-  const labels = sortedProducts.map((product) => product[0]);
-  const dataValues = sortedProducts.map((product) => product[1]);
-
-  var ctx = document.getElementById("revenueByProductChart").getContext("2d");
-  if (window.revenueByProductChart) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  }
-
-  window.revenueByProductChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Product Revenue",
-          data: dataValues,
-          backgroundColor: "#90C114",
-          borderColor: "#90C114",
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      scales: {
-        y: {
-          ticks: {
-            beginAtZero: true,
-          },
-          grid: {
-            color: "rgba(200, 200, 200, 0.08)",
-            lineWidth: 1,
-          },
-        },
-      },
-    },
-  });
-}
-
-function getColor(product) {
-  const colorMap = {
-    Tea: "rgba(139, 69, 19, 1)",
-    "D.Choco": "rgba(210, 105, 30, 1)",
-    Coffee: "rgba(75, 54, 33, 1)",
-    Bakery: "rgba(255, 223, 186, 1)",
-    Flavours: "rgba(238, 130, 238, 1)",
-    "Cff.Beans": "rgba(160, 82, 45, 1)",
-    "Loose Tea": "rgba(143, 188, 143, 1)",
-    "Pack.Choco": "rgba(210, 180, 140, 1)",
-    Branded: "rgba(220, 20, 60, 1)",
-  };
-
-  return colorMap[product] || "rgba(0, 0, 0, 1)";
 }
 
 function createRevenueByProductDoughnutChart(data) {
@@ -924,88 +1161,95 @@ function createRevenueBySalesDoughnutChart(filteredData) {
   });
 }
 
-function createSalesRevenueRelationChart(data) {
-  const groupedData = data.reduce((acc, curr) => {
-    const monthYear = `${curr.month_name} ${curr.year}`;
-    if (!acc[monthYear]) {
-      acc[monthYear] = {
-        totalRevenue: 0,
-        totalTransactions: 0,
-        transactions: [],
-      };
+function createRevenueByProductChart(data) {
+  const productRevenue = {};
+  data.forEach((entry) => {
+    if (productRevenue[entry.product_category]) {
+      productRevenue[entry.product_category] += entry.revenue;
+    } else {
+      productRevenue[entry.product_category] = entry.revenue;
     }
-    acc[monthYear].totalRevenue += curr.revenue;
-    acc[monthYear].totalTransactions += curr.transaction_qty;
-    acc[monthYear].transactions.push({
-      date: curr.transaction_date,
-      revenue: curr.revenue,
-      transaction_qty: curr.transaction_qty,
-    });
-    return acc;
-  }, {});
+  });
 
-  const salesRevenueData = Object.entries(groupedData).map(
-    ([monthYear, values]) => ({
-      r: monthYear,
-      y: values.totalTransactions,
-      x: values.totalRevenue / 1000,
-      transactions: values.transactions,
-    })
+  const sortedProducts = Object.entries(productRevenue).sort(
+    (a, b) => b[1] - a[1]
   );
 
-  const ctx = document
-    .getElementById("salesRevenueRelationChart")
-    .getContext("2d");
+  const labels = sortedProducts.map((product) => product[0]);
+  const dataValues = sortedProducts.map((product) => product[1]);
 
-  if (window.salesRevenueRelationChart instanceof Chart) {
-    window.salesRevenueRelationChart.destroy();
+  var ctx = document.getElementById("revenueByProductChart").getContext("2d");
+  if (window.revenueByProductChart) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
 
-  window.salesRevenueRelationChart = new Chart(ctx, {
-    type: "bubble",
+  window.revenueByProductChart = new Chart(ctx, {
+    type: "bar",
     data: {
+      labels: labels,
       datasets: [
         {
-          label: "Sales & Revenue Relation",
-          data: salesRevenueData,
-          backgroundColor: "rgba(255, 99, 132, 0.6)",
-          borderColor: "rgba(255, 99, 132, 1)",
+          label: "Product Revenue",
+          data: dataValues,
+          backgroundColor: "#90C114",
+          borderColor: "#90C114",
+          borderWidth: 1,
         },
       ],
     },
     options: {
       scales: {
-        x: {
-          title: {
-            display: true,
-            text: "Revenue",
-          },
-        },
         y: {
           title: {
             display: true,
-            text: "Transaction Quantity",
+            text: "Product Revenue",
+            font: {
+              weight: "bold",
+            },
+          },
+          ticks: {
+            beginAtZero: true,
+          },
+          grid: {
+            color: "rgba(200, 200, 200, 0.08)",
+            lineWidth: 1,
           },
         },
-      },
-    },
-    tooltips: {
-      callbacks: {
-        label: (tooltipItem, data) => {
-          const dataset = data.datasets[tooltipItem.datasetIndex];
-          const dataPoint = dataset.data[tooltipItem.index];
-          const transactions = dataPoint.transactions.map(
-            (transaction) =>
-              `Date: ${transaction.date}, Revenue: ${transaction.revenue}, Total Sales: ${transaction.transaction_qty}`
-          );
-          return transactions.join("\n");
+        x: {
+          title: {
+            display: true,
+            text: "Product Category",
+            font: {
+              weight: "bold",
+            },
+          },
+          ticks: {
+            beginAtZero: false,
+          },
         },
       },
     },
   });
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+function getColor(product) {
+  const colorMap = {
+    Tea: "rgba(139, 69, 19, 1)",
+    "D.Choco": "rgba(210, 105, 30, 1)",
+    Coffee: "rgba(75, 54, 33, 1)",
+    Bakery: "rgba(255, 223, 186, 1)",
+    Flavours: "rgba(238, 130, 238, 1)",
+    "Cff.Beans": "rgba(160, 82, 45, 1)",
+    "Loose Tea": "rgba(143, 188, 143, 1)",
+    "Pack.Choco": "rgba(210, 180, 140, 1)",
+    Branded: "rgba(220, 20, 60, 1)",
+  };
+
+  return colorMap[product] || "rgba(0, 0, 0, 1)";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
   updateFilterInfoFromLocalStorage();
-  loadAndInitialize();
 });
+
+loadAndInitialize();

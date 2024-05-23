@@ -55,7 +55,6 @@ function initializePage(pageName) {
     case "transaction":
     case "sales":
     case "product":
-      loadScript("../js/chart.js");
       break;
     default:
       break;
