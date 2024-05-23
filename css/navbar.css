@@ -154,9 +154,10 @@ a#loginA {
     position: relative;
     display: inline-block;
   }
-
-  i,
-  a#dropdownLogoutButton {
+  .dropdown-content #dropdownLogoutButton {
+    color: var(--text-color-lght);
+  }
+  .dropdown-content #dropdownLogoutButton i {
     color: var(--text-color-lght);
   }
 
