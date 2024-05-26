@@ -50,7 +50,9 @@ body {
   overflow-x: hidden;
   padding: 24px 0;
   transition: all 0.4s ease-in;
-  border-radius: 0 20px 20px 0;
+  box-shadow: 4px 0px 6px -1px rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: 4px 0px 6px -1px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 0px 6px -1px rgba(0, 0, 0, 0.4);
   z-index: 99999;
 }
 
@@ -74,18 +76,37 @@ body {
 }
 
 .app-right {
-  flex-basis: 0px;
-  width: 0px;
+  flex-basis: 200px;
+  width: 200px;
+  background-color: #d4d4d8;
   height: 100%;
-  padding: 64px 0 0 0;
-  display: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
   position: relative;
+  transition: all 0.4s ease-in;
+  z-index: 99999;
+}
+
+.app-right.show {
+  top: 0;
+  right: 0;
+  opacity: 1;
+  z-index: 99999;
+}
+
+.app-right-content {
+  flex: 1;
+  height: 100%;
+}
+
+.app-right-section {
+  margin-bottom: 16px;
 }
 
 .top-menu {
-  width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 100%;
   padding: 16px 35px;
@@ -100,6 +121,7 @@ body {
 }
 
 .app-loo {
+  display: none;
   opacity: 0;
   flex-basis: 200px;
 }
@@ -119,6 +141,22 @@ button.logo {
 }
 
 .close-menu {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  color: var(--main-color);
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 2px solid var(--main-color);
+  color: var(--main-color);
+  border-radius: 6px;
+}
+.app-right .close-right {
   display: none;
   align-items: center;
   justify-content: center;
@@ -190,6 +228,17 @@ button {
   height: 0;
 }
 
+.logout {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+.logout a,
+i {
+  font-size: 1rem;
+  font-weight: 900;
+}
+
 .sidebar a.active::after {
   content: "";
   height: 100%;
@@ -208,14 +257,10 @@ button {
   font-weight: 900;
 }
 
-.open-right-area {
-  display: none;
-}
-
 .main-header-line {
   display: flex;
   position: fixed;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 100%;
   padding: 16px 35px;
@@ -479,6 +524,19 @@ button {
   position: relative;
 }
 
+.filter-button {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid var(--main-color);
+  background-color: transparent;
+  color: var(--main-color);
+  border-radius: 6px;
+  height: 40px;
+  width: 40px;
+  padding: 0;
+}
+
 .menu-button {
   width: 40px;
   height: 40px;
@@ -490,6 +548,11 @@ button {
   border: 2px solid var(--main-color);
   color: var(--main-color);
   border-radius: 6px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 2%;
 }
 
 .acquisitions-bar {
@@ -578,18 +641,21 @@ div#topProductContainer {
 .filter-container {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
-  /* width: 100%; */
+  width: 100%;
   gap: 7px;
 }
 
 #filterInfo {
-  /* height: 300px; */
-  overflow-y: auto;
-  border: 1px solid #ccc;
+  height: 100%;
+  overflow: auto;
+  /* border: 1px solid #ccc; */
+  box-shadow: 0px 4px 17px -1px rgba(0, 0, 0, 0.4) inset;
+  -webkit-box-shadow: 0px 4px 17px -1px rgba(0, 0, 0, 0.4) inset;
+  -moz-box-shadow: 0px 4px 17px -1px rgba(0, 0, 0, 0.4) inset;
+  background: url("../assets/images/bgThumbnail.jpg") center/cover no-repeat;
   padding: 10px;
-  background-color: #f9f9f9;
-  margin-bottom: 20px;
 }
 
 #filterInfo ul {
@@ -604,7 +670,7 @@ div#topProductContainer {
 
 .dropbtn {
   background-color: transparent;
-  border: 1px solid #ccc;
+  border: 1px solid #857e7e;
   padding: 10px;
   font-size: 14px;
   font-variant-numeric: tabular-nums;
@@ -616,10 +682,16 @@ div#topProductContainer {
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #f9f9f9;
+  left: 0.8rem;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
+}
+
+.dropdown-content.show {
+  position: absolute;
+  background-color: #f9f9f9;
+  border-radius: 12px;
 }
 
 .dropdown-content label {
@@ -664,7 +736,7 @@ option {
   -webkit-appearance: none;
   -moz-appearance: none;
   background-color: var(--app-left);
-  border: 1px solid #ccc;
+  border: 1px solid #857e7e;
   padding: 10px;
   font-size: 14px;
   cursor: pointer;
@@ -704,37 +776,61 @@ option {
 }
 
 @media screen and (max-width: 1200px) {
-  .app-right {
-    position: absolute;
+  .top-menu {
+    justify-content: space-between;
+  }
+  .main-header-line {
+    justify-content: space-between;
+  }
+  .app-loo {
     opacity: 0;
+    display: block;
+  }
+  .app-left.show {
+    position: absolute;
     top: 0;
+    right: 0;
     z-index: 2;
-    height: 100%;
-    width: 320px;
-    right: -100%;
+    margin: 0;
+    flex-basis: 240px;
+    width: 240px;
+    height: 100vh;
+    background-color: #1e212600;
+    backdrop-filter: blur(40px) saturate(85%) contrast(100%);
+    -webkit-backdrop-filter: blur(16px) saturate(100%) contrast(100%);
     box-shadow: 0 0 10px 5px rgba(1, 8, 31, 0.4);
   }
-  .app-right .close-right {
+
+  .app-right {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    display: none;
+    opacity: 0;
+    top: 0;
+  }
+  .app-right.show {
+    display: block;
+    opacity: 1;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    height: 100%;
+    box-shadow: 0 0 10px 5px rgba(1, 8, 31, 0.4);
+    background-color: #1e212600;
+    backdrop-filter: blur(40px) saturate(85%) contrast(100%);
+    -webkit-backdrop-filter: blur(16px) saturate(100%) contrast(100%);
+    z-index: 99999;
+  }
+  .app-right .close-right {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background-color: transparent;
-    padding: 0;
-    color: var(--main-color);
-    cursor: pointer;
   }
   .app-main {
-    padding: 12% 8px 8px 8px;
+    padding: 6% 8px 8px 8px;
   }
   .chart-info-wrapper h2 {
     text-wrap: wrap;
   }
 
-  .app-main .open-right-area {
+  .filter-button {
     display: flex;
     color: var(--main-color);
   }
@@ -768,6 +864,7 @@ option {
 }
 
 @media screen and (max-width: 920px) {
+  /* .filter-button, */
   .menu-button {
     display: flex;
   }
@@ -782,7 +879,6 @@ option {
     top: 0;
     right: 0;
     z-index: 2;
-    height: fit-content;
     margin: 0;
     width: 100vw;
     height: 100vh;
@@ -797,6 +893,31 @@ option {
   }
   .main-header-line {
     z-index: 1;
+  }
+}
+
+@media only screen and (max-width: 920px) and (orientation: landscape) {
+  .dropdown-content {
+    overflow: auto;
+    right: 0.8rem;
+  }
+
+  .dropdown-content.show {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    position: absolute;
+    padding: 5px;
+  }
+
+  .dropdown-content label {
+    padding: 12px 8px;
+    text-wrap: nowrap;
+    text-decoration: none;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: start;
+    align-items: center;
   }
 }
 

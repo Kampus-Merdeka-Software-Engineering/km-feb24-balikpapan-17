@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../assets/images/icon.png" />
     <title>Dashboard</title>
     <link
       rel="stylesheet"
@@ -74,14 +75,13 @@
             Product
           </a>
         </li>
-        <div id="filterInfo"></div>
-        <li class="nav-list-item">
-          <a class="nav-list-link" href="#" onclick="logout()">
-            <i class="fa-solid fa-power-off fa-lg"></i>
-            LogOut
-          </a>
-        </li>
       </ul>
+      <div class="nav-list-item logout">
+        <a class="nav-list-link" href="#" onclick="logout()">
+          <i class="fa-solid fa-power-off fa-lg"></i>
+          LogOut
+        </a>
+      </div>
     </div>
 
     <div class="main-header-line">
@@ -94,42 +94,9 @@
         <span>Dashboard Maven</span>
       </div>
 
-      <div class="filter-container">
-        <div class="month-filter-contianer">
-          <div class="custom-select">
-            <select id="startMonthFilter" class="monthFilter">
-              <option value="all">Start Month</option>
-            </select>
-          </div>
-          <div class="custom-select">
-            <span class="strip"></span>
-          </div>
-          <div class="custom-select">
-            <select id="endMonthFilter" class="monthFilter">
-              <option value="all">End Month</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="dropdown">
-          <button id="dropdownBtn" class="dropbtn">--</button>
-          <div class="dropdown-content" id="categoryFilterContainer">
-            <label>
-              <input
-                type="checkbox"
-                class="categoryFilter"
-                value="all"
-                checked
-              />
-              All
-            </label>
-          </div>
-        </div>
-      </div>
-
       <div class="action-buttons">
-        <button class="open-right-area">
-          <i class="fa-solid fa-bars"></i>
+        <button class="filter-button">
+          <i class="fa-solid fa-filter"></i>
         </button>
         <button class="menu-button">
           <i class="fa-solid fa-bars"></i>
@@ -198,7 +165,7 @@
           <div class="chart-container">
             <div class="chart-container-header">
               <h2>Revenue & Sales Trend</h2>
-              <span>lorem</span>
+              <span id="timeFrame"></span>
             </div>
             <div class="line-chart">
               <canvas id="revenueAndSalesChart"></canvas>
@@ -209,26 +176,7 @@
           </div>
         </div>
         <div class="chart-container-wrapper small">
-          <div class="chart-container">
-            <div class="chart-container-header">
-              <h2>Top Product</h2>
-              <span href="#">All Time</span>
-            </div>
-            <div class="acquisitions-bar">
-              <span class="bar-progress rejected" style="width: 8%"></span>
-              <span class="bar-progress on-hold" style="width: 10.7%"></span>
-              <span
-                class="bar-progress shortlisted"
-                style="width: 32.03%"
-              ></span>
-              <span
-                class="bar-progress applications"
-                style="width: 42.13%"
-              ></span>
-              <span class="bar-progress fivt" style="width: 5%"></span>
-            </div>
-            <div id="topProductContainer"></div>
-          </div>
+          <div class="chart-container" id="chartContainer"></div>
           <div class="chart-container">
             <div class="chart-container-header">
               <h2>--Rev Growth</h2>
@@ -265,7 +213,7 @@
           <div class="chart-container">
             <div class="chart-container-header">
               <h2>Revenue vs Forecast</h2>
-              <span>lorem</span>
+              <span id="timeFrame"></span>
             </div>
             <div class="line-chart">
               <canvas id="forecastChart"></canvas>
@@ -279,7 +227,7 @@
           <div class="chart-container">
             <div class="chart-container-header">
               <h2>Total Product Sales</h2>
-              <span>lorem</span>
+              <span id="timeFrame"></span>
             </div>
             <div class="line-chart">
               <canvas id="productSalesChart"></canvas>
@@ -292,7 +240,49 @@
       </div>
     </div>
 
-    <div class="app-right"><button class="close-right"></button></div>
+    <div class="app-right">
+      <div class="app-right-section">
+        <div class="top-menu">
+          <div class="dropdown">
+            <button id="dropdownBtn" class="dropbtn">--</button>
+            <div class="dropdown-content" id="categoryFilterContainer">
+              <label>
+                <input
+                  type="checkbox"
+                  class="categoryFilter"
+                  value="all"
+                  checked
+                />
+                All
+              </label>
+            </div>
+          </div>
+
+          <button class="close-right">
+            <i class="fa-solid fa-xmark fa-lg" style="color: #5e3229"></i>
+          </button>
+        </div>
+
+        <div class="filter-container">
+          <div class="month-filter-contianer">
+            <div class="custom-select">
+              <select id="startMonthFilter" class="monthFilter">
+                <option value="all">Start Month</option>
+              </select>
+            </div>
+            <div class="custom-select">
+              <span class="strip"></span>
+            </div>
+            <div class="custom-select">
+              <select id="endMonthFilter" class="monthFilter">
+                <option value="all">End Month</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="filterInfo"></div>
+    </div>
     <div class="d-none" style="display: none; opacity: 0">
       <canvas id="productSalesChart"></canvas>
       <canvas id="productChart"></canvas>
@@ -312,7 +302,6 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
-    <script src="../js/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -320,6 +309,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/dashboard.js"></script>
+    <script src="../js/chart.js"></script>
     <script>
       function showLoadingScreen() {
         document.getElementById("loadingScreen").style.display = "block";
