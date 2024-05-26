@@ -1,15 +1,27 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f3e2e2;
-}
-
-#team {
+/* #team {
   text-align: center;
   padding: 50px 0;
   background-color: #f3e2e2;
+  height: auto;
+} */
+
+#team {
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  background: url("../assets/images/flipThumbnail.jpg") center/cover no-repeat;
 }
+
+/* .team-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
 
 #team h2 {
   font-size: 2.5em;
@@ -18,11 +30,19 @@ body {
 }
 
 .team-container {
-  display: grid;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px; */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: center;
   gap: 20px;
-  padding: 0 20px;
-  justify-items: center;
+  /* padding: 0 20px; */
+  /* justify-items: center; */
 }
 
 .team-member {
@@ -32,21 +52,22 @@ body {
   transition: transform 0.3s, box-shadow 0.3s;
   width: 100%;
   max-width: 250px;
+  height: 300px;
   padding: 20px;
   text-align: center;
 }
 
 .team-member img {
-  border-radius: 50%;
-  width: 100px;
-  height: 100px;
+  border-radius: 5%;
+  width: 50%;
+  height: auto;
   object-fit: cover;
   margin-bottom: 10px;
 }
 
 .team-member h3 {
   font-size: 1.5em;
-  margin: 10px 0;
+  /* margin: 10px 0; */
   color: #333;
 }
 
@@ -56,6 +77,6 @@ body {
 }
 
 .team-member:hover {
-  transform: translateY(-10px);
+  transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }

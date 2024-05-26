@@ -3,29 +3,27 @@ function loadAndInitialize() {
     url: "../data/data.json",
     dataType: "json",
     success: function (data) {
-      // window.data = data.filter(
-      //   (item) => item.product_category !== "" && item.monthly_revenue !== ""
-      // );
       window.data = data;
-
-      var table = $("#transactionTable").DataTable({
-        scrollX: true,
-        responsive: true,
-        pageLength: 25,
-      });
 
       populateMonthFilter(data);
       populateCategoryFilter(data);
-      loadMonthFilter();
+      loadMonthFilters();
       loadCategoryFilters();
 
-      const selectedMonth = localStorage.getItem("selectedMonth") || "all";
+      const selectedStartMonth =
+        localStorage.getItem("selectedStartMonth") || "Jan";
+      const selectedEndMonth =
+        localStorage.getItem("selectedEndMonth") || "Jun";
       const selectedCategories = JSON.parse(
         localStorage.getItem("selectedCategories")
       ) || ["all"];
 
-      updateDashboard(selectedMonth);
-      updateFilterInfo(selectedMonth, selectedCategories);
+      updateDashboard(selectedStartMonth, selectedEndMonth);
+      updateFilterInfo(
+        selectedStartMonth,
+        selectedEndMonth,
+        selectedCategories
+      );
       updateDropdownBtnText(selectedCategories);
     },
     error: function (xhr, status, error) {
@@ -34,20 +32,167 @@ function loadAndInitialize() {
   });
 }
 
+function updateTopSellingProductsList(data) {
+  const productSales = {};
+  data.forEach((entry) => {
+    if (productSales[entry.product_category]) {
+      productSales[entry.product_category] += entry.transaction_qty;
+    } else {
+      productSales[entry.product_category] = entry.transaction_qty;
+    }
+  });
+
+  const sortedCategories = Object.entries(productSales)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  let listHTML = "";
+  sortedCategories.forEach((category, index) => {
+    const percentage = (
+      (category[1] /
+        data.reduce((acc, curr) => acc + curr.transaction_qty, 0)) *
+      100
+    ).toFixed(2);
+    let progressClass = "";
+    switch (index) {
+      case 0:
+        progressClass = "applications";
+        break;
+      case 1:
+        progressClass = "shortlisted";
+        break;
+      case 2:
+        progressClass = "on-hold";
+        break;
+      case 3:
+        progressClass = "rejected";
+        break;
+      case 4:
+        progressClass = "fivt";
+        break;
+      default:
+        progressClass = "";
+    }
+    listHTML += `
+      <div class="progress-bar-info ${progressClass}">
+        <span class="progress-color ${progressClass}"></span>
+        <span class="progress-type">${category[0]}</span>
+        <span class="progress-amount">${percentage}%</span>
+      </div>
+    `;
+  });
+
+  document.getElementById("topProductContainer").innerHTML = listHTML;
+}
+
+// ## ALL HANDLE ##
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const options = { day: "2-digit", month: "short", year: "numeric" };
+  return date.toLocaleDateString("en-GB", options);
+}
+
+const showErrorModal = (message) => {
+  Swal.fire({
+    title: "Error!",
+    text: message,
+    icon: "error",
+    width: 600,
+    padding: "3em",
+    customClass: {
+      title: "my-title-class",
+      content: "my-content-class",
+      confirmButton: "my-confirm-button-class",
+    },
+  });
+};
+
+// ## MONTH FILTER ##
+
 function populateMonthFilter(data) {
-  const monthFilter = document.getElementById("monthFilter");
-  monthFilter.innerHTML = '<option value="all">All Month</option>';
+  const startMonthFilter = document.getElementById("startMonthFilter");
+  const endMonthFilter = document.getElementById("endMonthFilter");
 
   const months = [
     ...new Set(data.map((item) => item.month_name).filter((month) => month)),
   ];
+
+  startMonthFilter.innerHTML = "";
+  endMonthFilter.innerHTML = "";
+
   months.forEach((month) => {
-    const option = document.createElement("option");
-    option.value = month;
-    option.textContent = month;
-    monthFilter.appendChild(option);
+    const optionStart = document.createElement("option");
+    optionStart.value = month;
+    optionStart.textContent = month;
+    startMonthFilter.appendChild(optionStart);
+
+    const optionEnd = document.createElement("option");
+    optionEnd.value = month;
+    optionEnd.textContent = month;
+    endMonthFilter.appendChild(optionEnd);
   });
+
+  startMonthFilter.value = "Jan";
+  endMonthFilter.value = "Jun";
 }
+
+const handleMonthFilterChange = (changedMonth) => {
+  const selectedStartMonth = document.getElementById("startMonthFilter").value;
+  const selectedEndMonth = document.getElementById("endMonthFilter").value;
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+
+  const startIndex = months.indexOf(selectedStartMonth);
+  const endIndex = months.indexOf(selectedEndMonth);
+
+  if (startIndex > endIndex) {
+    showErrorModal("End month cannot be before start month.");
+    document.getElementById("startMonthFilter").value =
+      localStorage.getItem("selectedStartMonth") || "Jan";
+    document.getElementById("endMonthFilter").value =
+      localStorage.getItem("selectedEndMonth") || "Jun";
+
+    return;
+  }
+
+  saveMonthFilters(selectedStartMonth, selectedEndMonth);
+  const selectedCategories = Array.from(
+    document.querySelectorAll(".categoryFilter:checked")
+  ).map((cb) => cb.value);
+
+  updateDashboard(selectedStartMonth, selectedEndMonth);
+  updateFilterInfo(selectedStartMonth, selectedEndMonth, selectedCategories);
+};
+
+document
+  .getElementById("startMonthFilter")
+  .addEventListener("change", function () {
+    handleMonthFilterChange(this, document.getElementById("endMonthFilter"));
+  });
+
+document
+  .getElementById("endMonthFilter")
+  .addEventListener("change", function () {
+    handleMonthFilterChange(this, document.getElementById("startMonthFilter"));
+  });
+
+function saveMonthFilters(selectedStartMonth, selectedEndMonth) {
+  localStorage.setItem("selectedStartMonth", selectedStartMonth);
+  localStorage.setItem("selectedEndMonth", selectedEndMonth);
+}
+
+function loadMonthFilters() {
+  const selectedStartMonth = localStorage.getItem("selectedStartMonth");
+  const selectedEndMonth = localStorage.getItem("selectedEndMonth");
+  if (selectedStartMonth) {
+    document.getElementById("startMonthFilter").value = selectedStartMonth;
+  }
+  if (selectedEndMonth) {
+    document.getElementById("endMonthFilter").value = selectedEndMonth;
+  }
+}
+
+// ## CATEGORY FILTER ##
 
 function populateCategoryFilter(data) {
   const categoryFilterContainer = document.getElementById(
@@ -104,45 +249,23 @@ function populateCategoryFilter(data) {
         );
         allCheckbox.checked = allChecked;
       }
-      const selectedMonth = document.getElementById("monthFilter").value;
+      const selectedStartMonth =
+        document.getElementById("startMonthFilter").value;
+      const selectedEndMonth = document.getElementById("endMonthFilter").value;
       const selectedCategories = Array.from(
         document.querySelectorAll(".categoryFilter:checked")
       ).map((cb) => cb.value);
 
       saveCategoryFilters();
-      updateDashboard(selectedMonth);
-      updateFilterInfo(selectedMonth, selectedCategories);
+      updateDashboard(selectedStartMonth, selectedEndMonth);
+      updateFilterInfo(
+        selectedStartMonth,
+        selectedEndMonth,
+        selectedCategories
+      );
       updateDropdownBtnText(selectedCategories);
     });
   });
-}
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const options = { day: "2-digit", month: "short", year: "numeric" };
-  return date.toLocaleDateString("en-GB", options);
-}
-
-document.getElementById("monthFilter").addEventListener("change", function () {
-  const selectedMonth = this.value;
-  saveMonthFilter(selectedMonth);
-  const selectedCategories = Array.from(
-    document.querySelectorAll(".categoryFilter:checked")
-  ).map((cb) => cb.value);
-
-  updateDashboard(selectedMonth);
-  updateFilterInfo(selectedMonth, selectedCategories);
-});
-
-function saveMonthFilter(selectedMonth) {
-  localStorage.setItem("selectedMonth", selectedMonth);
-}
-
-function loadMonthFilter() {
-  const selectedMonth = localStorage.getItem("selectedMonth");
-  if (selectedMonth) {
-    document.getElementById("monthFilter").value = selectedMonth;
-  }
 }
 
 function saveCategoryFilters() {
@@ -179,25 +302,36 @@ function updateDropdownBtnText(selectedCategories) {
     dropdownBtn.textContent = `(${selectedCategories.length}) Categories`;
   }
 
-  if (selectedCategories.includes("all") && selectedCategories.length > 1) {
+  if (selectedCategories.includes("all") && selectedCategories.length > 0) {
     dropdownBtn.textContent = "All Categories";
   }
 }
 
+// ## STORAGE MANAGEMENT ##
+
 function updateFilterInfoFromLocalStorage() {
-  const selectedMonth = localStorage.getItem("selectedMonth") || "all";
+  const selectedStartMonth =
+    localStorage.getItem("selectedStartMonth") || "Jan";
+  const selectedEndMonth = localStorage.getItem("selectedEndMonth") || "Jun";
   const selectedCategories = JSON.parse(
     localStorage.getItem("selectedCategories")
   ) || ["all"];
 
-  updateFilterInfo(selectedMonth, selectedCategories);
+  updateFilterInfo(selectedStartMonth, selectedEndMonth, selectedCategories);
   updateDropdownBtnText(selectedCategories);
 }
 
-function updateFilterInfo(selectedMonth, selectedCategories) {
+function updateFilterInfo(
+  selectedStartMonth,
+  selectedEndMonth,
+  selectedCategories
+) {
   const filterInfo = document.getElementById("filterInfo");
 
-  let monthText = selectedMonth === "all" ? "All Months" : selectedMonth;
+  let startMonthText =
+    selectedStartMonth === "all" ? "All Months" : selectedStartMonth;
+  let endMonthText =
+    selectedEndMonth === "all" ? "All Months" : selectedEndMonth;
 
   let categoriesText = "";
   if (selectedCategories.includes("all")) {
@@ -210,98 +344,38 @@ function updateFilterInfo(selectedMonth, selectedCategories) {
       .join("")}</ul>`;
   }
 
-  filterInfo.innerHTML = `<p>Month: ${monthText}</p>
+  filterInfo.innerHTML = `<p>Start Month: ${startMonthText}</p>
+                          <p>End Month: ${endMonthText}</p>
                           <p>Categories: ${categoriesText}</p>`;
 }
 
-function updateDashboard(selectedMonth) {
-  let filteredData = [];
-  if (selectedMonth === "all") {
-    filteredData = window.data;
-  } else {
-    filteredData = window.data.filter(
-      (item) => item.month_name === selectedMonth
-    );
+function updateDashboard(selectedStartMonth, selectedEndMonth) {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+  const startIndex = months.indexOf(selectedStartMonth);
+  const endIndex = months.indexOf(selectedEndMonth);
+
+  if (startIndex > endIndex) {
+    showErrorModal("End month cannot be before start month.");
+    return;
   }
+
+  var filteredData = window.data.filter((item) => {
+    const itemMonthIndex = months.indexOf(item.month_name);
+    return itemMonthIndex >= startIndex && itemMonthIndex <= endIndex;
+  });
 
   const selectedCategories = Array.from(
     document.querySelectorAll(".categoryFilter:checked")
   ).map((cb) => cb.value);
+
   if (!selectedCategories.includes("all")) {
     filteredData = filteredData.filter((item) =>
       selectedCategories.includes(item.product_category)
     );
   }
 
-  var table = $("#transactionTable").DataTable();
-  table.clear();
-  filteredData.forEach(function (item) {
-    table.row.add([
-      formatDate(item.transaction_date),
-      item.transaction_time,
-      item.product_id,
-      item.product_category,
-      item.transaction_qty,
-      item.unit_price,
-    ]);
-  });
-  table.draw();
-
-  const totalRevenue = Math.round(
-    filteredData.reduce((acc, curr) => acc + curr.revenue, 0) / 1000
-  );
-  const formattedTotalRevenue =
-    totalRevenue >= 1000
-      ? `$${(totalRevenue / 1000).toFixed(1)}k`
-      : `$${totalRevenue}k`;
-  document.getElementById("totalRevenue").textContent = formattedTotalRevenue;
-
-  const totalTransaction = Math.round(
-    filteredData.reduce((acc, curr) => acc + curr.transaction_qty, 0) / 1000
-  );
-  const formattedTotalTransaction =
-    totalTransaction >= 1000
-      ? `${(totalTransaction / 1000).toFixed(1)}k`
-      : `${totalTransaction}k`;
-  document.getElementById("totalTransaction").textContent =
-    formattedTotalTransaction;
-
-  const salesAmount = Math.round(
-    filteredData.reduce(
-      (acc, curr) => acc + curr.revenue * curr.transaction_qty,
-      0
-    ) / 1000
-  );
-  const formattedSalesAmount =
-    salesAmount >= 1000
-      ? `${(salesAmount / 1000).toFixed(1)}k`
-      : `${salesAmount}k`;
-  document.getElementById("salesAmount").textContent = formattedSalesAmount;
-
-  const groupedData = filteredData.reduce((acc, curr) => {
-    if (!acc[curr.month_year]) {
-      acc[curr.month_year] = [];
-    }
-    acc[curr.month_year].push(curr.monthly_growth);
-    return acc;
-  }, {});
-  const totalMonthlyGrowthByMonth = {};
-  for (const monthYear in groupedData) {
-    const totalMonthlyGrowth = groupedData[monthYear].reduce(
-      (acc, curr) => acc + curr,
-      0
-    );
-    totalMonthlyGrowthByMonth[monthYear] = totalMonthlyGrowth;
-  }
-  const monthsCount = Object.keys(groupedData).length;
-  const totalMonthlyGrowth = Object.values(totalMonthlyGrowthByMonth).reduce(
-    (acc, curr) => acc + curr,
-    0
-  );
-  const averageMonthlyGrowth = totalMonthlyGrowth / monthsCount;
-  document.getElementById(
-    "averageRevenueGrowth"
-  ).textContent = `${averageMonthlyGrowth.toFixed(2)}%`;
+  updateTable(filteredData);
+  updateMetrics(filteredData);
 
   const charts = [
     "productSalesChart",
@@ -334,6 +408,86 @@ function updateDashboard(selectedMonth) {
   createRevenueByProductDoughnutChart(filteredData);
   createRevenueBySalesDoughnutChart(filteredData);
   createSalesRevenueRelationChart(filteredData);
+  updateTopSellingProductsList(data);
+}
+
+// ## METRICS ##
+
+function updateTable(filteredData) {
+  var table = $("#transactionTable").DataTable({
+    scrollX: true,
+    responsive: true,
+    pageLength: 25,
+    retrieve: true,
+  });
+  table.clear();
+
+  filteredData.forEach(function (item, index) {
+    table.row.add([
+      index + 1,
+      formatDate(item.transaction_date),
+      item.transaction_time,
+      item.product_id,
+      item.product_category,
+      item.transaction_qty,
+      item.unit_price,
+    ]);
+  });
+
+  table.draw();
+}
+
+function updateMetrics(filteredData) {
+  function formatValue(value) {
+    return value >= 1000 ? `${(value / 1000).toFixed(1)}k` : `${value}k`;
+  }
+
+  const totalRevenue = Math.round(
+    filteredData.reduce((acc, curr) => acc + curr.revenue, 0) / 1000
+  );
+  document.getElementById("totalRevenue").textContent =
+    formatValue(totalRevenue);
+
+  const totalTransaction = Math.round(
+    filteredData.reduce((acc, curr) => acc + curr.transaction_qty, 0) / 1000
+  );
+  document.getElementById("totalTransaction").textContent =
+    formatValue(totalTransaction);
+
+  const salesAmount = Math.round(
+    filteredData.reduce(
+      (acc, curr) => acc + curr.revenue * curr.transaction_qty,
+      0
+    ) / 1000
+  );
+  document.getElementById("salesAmount").textContent = formatValue(salesAmount);
+
+  const groupedData = filteredData.reduce((acc, curr) => {
+    if (!acc[curr.month_name]) {
+      acc[curr.month_name] = [];
+    }
+    acc[curr.month_name].push(curr.growth_rev);
+    return acc;
+  }, {});
+
+  const totalMonthlyGrowthByMonth = {};
+  for (const monthYear in groupedData) {
+    const totalMonthlyGrowth = groupedData[monthYear].reduce(
+      (acc, curr) => acc + curr,
+      0
+    );
+    totalMonthlyGrowthByMonth[monthYear] = totalMonthlyGrowth;
+  }
+  const monthsCount = Object.keys(groupedData).length;
+  const totalMonthlyGrowth = Object.values(totalMonthlyGrowthByMonth).reduce(
+    (acc, curr) => acc + curr,
+    0
+  );
+  const averageMonthlyGrowth = totalMonthlyGrowth / monthsCount;
+  const roundedAverageMonthlyGrowth = (averageMonthlyGrowth / 10000).toFixed(2);
+  document.getElementById(
+    "averageRevenueGrowth"
+  ).textContent = `${roundedAverageMonthlyGrowth}%`;
 }
 
 // ## OVERVIEW CHART ##
@@ -417,24 +571,76 @@ function createRevenueAndSalesChart(data) {
 }
 
 function createForecastChart(data) {
-  const monthlyRevenue = data.reduce((acc, curr) => {
-    acc[curr.month_S2] = curr.monthly_revenue;
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const monthlyRevenue = data.reduce((acc, transaction) => {
+    const month = new Date(transaction.transaction_date).getMonth() + 1;
+    acc[month] = (acc[month] || 0) + transaction.revenue;
     return acc;
   }, {});
 
-  const forecastData = data.reduce((acc, curr) => {
-    acc[curr.month_S2] = curr.Forecast;
-    return acc;
-  }, {});
+  const revenueData = Object.keys(monthlyRevenue).map((month) => ({
+    bulan: parseInt(month),
+    pendapatan: monthlyRevenue[month],
+    monthName: monthNames[parseInt(month) - 1],
+  }));
 
-  const labels = Object.keys(monthlyRevenue);
-  const mergedData = labels.map((month) => {
-    return {
-      month: month,
-      revenue: monthlyRevenue[month],
-      forecast: forecastData[month] || 0,
-    };
-  });
+  function linearRegression(data) {
+    const n = data.length;
+    const sumX = data.reduce((sum, point) => sum + point.bulan, 0);
+    const sumY = data.reduce((sum, point) => sum + point.pendapatan, 0);
+    const sumXY = data.reduce(
+      (sum, point) => sum + point.bulan * point.pendapatan,
+      0
+    );
+    const sumX2 = data.reduce(
+      (sum, point) => sum + point.bulan * point.bulan,
+      0
+    );
+
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+
+    return { slope, intercept };
+  }
+
+  function forecastPendapatan(data, startMonth, endMonth) {
+    const { slope, intercept } = linearRegression(data);
+    const forecast = [];
+
+    for (let bulan = startMonth; bulan <= endMonth; bulan++) {
+      const prediksiPendapatan = slope * bulan + intercept;
+      forecast.push({
+        bulan,
+        pendapatan: prediksiPendapatan,
+        monthName: monthNames[bulan - 1],
+      });
+    }
+
+    return forecast;
+  }
+
+  const forecastData = forecastPendapatan(revenueData, 7, 12);
+  const combinedData = revenueData.concat(forecastData);
+
+  const labels = combinedData.map((point) => point.monthName);
+  const pendapatanActual = combinedData
+    .slice(0, 6)
+    .map((point) => point.pendapatan);
+  const pendapatanForecast = combinedData.map((point) => point.pendapatan);
 
   var ctx = document.getElementById("forecastChart").getContext("2d");
 
@@ -449,7 +655,7 @@ function createForecastChart(data) {
       datasets: [
         {
           label: "Monthly Revenue",
-          data: mergedData.map((item) => item.revenue),
+          data: pendapatanActual,
           borderColor: "#5e3229",
           backgroundColor: "#5e3229",
           borderWidth: 2,
@@ -457,7 +663,7 @@ function createForecastChart(data) {
         },
         {
           label: "Forecast",
-          data: mergedData.map((item) => item.forecast),
+          data: pendapatanForecast,
           borderColor: "#CCFF00",
           backgroundColor: "#CCFF00",
           borderWidth: 3,
@@ -466,7 +672,6 @@ function createForecastChart(data) {
           pointHitRadius: 5,
           pointBorderWidth: 1,
           pointBorderColor: "#CCFF0000",
-          // showLine: false,
         },
       ],
     },
@@ -484,7 +689,7 @@ function createForecastChart(data) {
             beginAtZero: true,
             stepSize: 25000,
           },
-          stacked: true,
+          stacked: false,
           grid: {
             color: "#212121",
             lineWidth: 0.2,
@@ -501,7 +706,7 @@ function createForecastChart(data) {
           ticks: {
             beginAtZero: true,
           },
-          stacked: true,
+          stacked: false,
           grid: {
             color: "#212121",
             lineWidth: 0.2,
@@ -589,33 +794,23 @@ function createProductSalesChart(data) {
 
 function createRevenueByMonthChart(data) {
   const groupedData = data.reduce((acc, curr) => {
-    if (!acc[curr.month_year]) {
-      acc[curr.month_year] = {
+    if (!acc[curr.month_name]) {
+      acc[curr.month_name] = {
         totalRevenue: 0,
         count: 0,
-        totalMonthlyRevenue: 0,
       };
     }
-    acc[curr.month_year].totalRevenue += curr.revenue || 0;
-    if (curr.monthly_revenue) {
-      acc[curr.month_year].totalMonthlyRevenue += curr.monthly_revenue;
-      acc[curr.month_year].count++;
-    }
+    acc[curr.month_name].totalRevenue += curr.revenue || 0;
+    acc[curr.month_name].count++;
     return acc;
   }, {});
 
   const labels = Object.keys(groupedData);
   const revenueData = labels.map((month) => groupedData[month].totalRevenue);
-  const totalMonthlyRevenue = Object.values(groupedData).reduce(
-    (acc, item) => acc + item.totalMonthlyRevenue,
-    0
-  );
-  const totalCount = Object.values(groupedData).reduce(
-    (acc, item) => acc + item.count,
-    0
-  );
+  const totalRevenue = revenueData.reduce((acc, value) => acc + value, 0);
+  const totalCount = labels.length;
   const averageRevenue =
-    totalCount !== 0 ? (totalMonthlyRevenue / totalCount).toFixed(2) : 0;
+    totalCount !== 0 ? (totalRevenue / totalCount).toFixed(2) : 0;
 
   const averageRevenueData = labels.map(() => averageRevenue);
 
@@ -792,10 +987,10 @@ function createSalesRevenueRelationChart(data) {
 
 function createRevenueGrowthChart(data) {
   const groupedData = data.reduce((acc, curr) => {
-    if (!acc[curr.month_year]) {
-      acc[curr.month_year] = [];
+    if (!acc[curr.month_name]) {
+      acc[curr.month_name] = [];
     }
-    acc[curr.month_year].push(curr.growth_rev);
+    acc[curr.month_name].push(curr.growth_rev);
     return acc;
   }, {});
 
@@ -1250,6 +1445,7 @@ function getColor(product) {
 
 document.addEventListener("DOMContentLoaded", () => {
   updateFilterInfoFromLocalStorage();
+  loadMonthFilters();
 });
 
 loadAndInitialize();

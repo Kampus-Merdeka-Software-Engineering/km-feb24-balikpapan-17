@@ -70,7 +70,7 @@ body {
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 5% 24px 24px 24px;
+  padding: 5% 8px 8px 8px;
 }
 
 .app-right {
@@ -262,7 +262,7 @@ button {
   margin: 0 auto;
 }
 .chart-row.three .chart-container-wrapper {
-  width: 33.3%;
+  width: 25.9%;
 }
 .chart-row.three .chart-container-wrapper .chart-container {
   align-items: center;
@@ -283,14 +283,18 @@ button {
   flex-direction: column;
 }
 .chart-row.two .small {
-  width: 33.3%;
+  width: 25%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
 }
 .chart-row.two .small .chart-container {
   flex-direction: column;
 }
-.chart-row.two .small .chart-container + .chart-container {
+/* .chart-row.two .small .chart-container + .chart-container {
   margin-top: 16px;
-}
+} */
 
 .line-chart {
   width: 100%;
@@ -299,6 +303,7 @@ button {
 
 .chart-container {
   width: 100%;
+  /* height: 100%; */
   border-radius: 18px;
   background-color: #d4d4d8;
   box-shadow: 3px 7px 9px -4px rgba(0, 0, 0, 0.52);
@@ -376,7 +381,84 @@ button {
   min-width: 30px;
   flex: 1;
 }
+.chart-progres {
+  position: relative;
+  width: 50%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  /* max-width: 90px;
+  min-width: 40px; */
+  flex: 1;
+}
 
+.progress-bar {
+  width: 100%;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+}
+.progress-bar-fill {
+  height: 20px;
+  border-radius: 5px;
+}
+.progress-color {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 1.2;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  -webkit-animation: progress 1s ease-out forwards;
+  animation: progress 1s ease-out forwards;
+}
+
+.circular-chart.orange .circle {
+  stroke: #ff9f00;
+}
+.circular-chart.orange .circle-bg {
+  stroke: #776547;
+}
+.circular-chart.blue .circle {
+  stroke: #00cfde;
+}
+.circular-chart.blue .circle-bg {
+  stroke: #557b88;
+}
+.circular-chart.pink .circle {
+  stroke: #ff7dcb;
+}
+.circular-chart.pink .circle-bg {
+  stroke: #6f5684;
+}
+
+.percentage {
+  fill: #fff;
+  font-size: 0.5em;
+  text-anchor: middle;
+  font-weight: 400;
+}
+
+@-webkit-keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
 .app-right-section-header {
   display: flex;
   justify-content: space-between;
@@ -409,14 +491,95 @@ button {
   color: var(--main-color);
   border-radius: 6px;
 }
+
+.acquisitions-bar {
+  width: 100%;
+  height: 4px;
+  border-radius: 4px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  display: flex;
+}
+
+.bar-progress {
+  height: 4px;
+  display: inline-block;
+}
+.bar-progress.applications {
+  background-color: #5e3229;
+}
+.bar-progress.shortlisted {
+  background-color: rgba(139, 69, 19, 1);
+}
+.bar-progress.on-hold {
+  background-color: rgba(255, 223, 186, 1);
+}
+.bar-progress.rejected {
+  background-color: rgba(210, 105, 30, 1);
+}
+.bar-progress.fivt {
+  background-color: rgba(238, 130, 238, 1);
+}
+
+.progress-bar-info {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.progress-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.progress-color.applications {
+  background-color: #5e3229;
+}
+.progress-color.shortlisted {
+  background-color: rgba(139, 69, 19, 1);
+}
+.progress-color.on-hold {
+  background-color: rgba(255, 223, 186, 1);
+}
+.progress-color.rejected {
+  background-color: rgba(210, 105, 30, 1);
+}
+.progress-color.fivt {
+  background-color: rgba(238, 130, 238, 1);
+}
+div#topProductContainer {
+  width: 100%;
+}
+
+.progress-type {
+  color: var(--secondary-color);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.progress-amount {
+  color: var(--secondary-color);
+  font-size: 12px;
+  line-height: 16px;
+  margin-left: auto;
+}
+
 .sorting_1 {
   text-wrap: nowrap;
 }
 
+.month-filter-contianer {
+  display: flex;
+  align-items: center;
+}
+
 .filter-container {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
-  width: fit-content;
+  /* width: 100%; */
   gap: 7px;
 }
 
@@ -444,6 +607,7 @@ button {
   border: 1px solid #ccc;
   padding: 10px;
   font-size: 14px;
+  font-variant-numeric: tabular-nums;
   cursor: pointer;
   width: 100%;
   border-radius: 5px;
@@ -478,6 +642,15 @@ button {
   display: inline-block;
 }
 
+.strip {
+  display: inline-block;
+  width: 10px;
+  height: 2px;
+  background-color: black;
+  margin: 0 5px;
+  vertical-align: middle;
+}
+
 select,
 option {
   all: unset;
@@ -486,7 +659,7 @@ option {
   -moz-appearance: none;
 }
 
-#monthFilter {
+.monthFilter {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -555,7 +728,7 @@ option {
     cursor: pointer;
   }
   .app-main {
-    padding: 12% 24px 24px 24px;
+    padding: 12% 8px 8px 8px;
   }
   .chart-info-wrapper h2 {
     text-wrap: wrap;
@@ -580,8 +753,11 @@ option {
   }
   .chart-row.two .small {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     width: 100%;
+    height: auto;
+    margin: 0 auto;
   }
   .chart-row.two .small .chart-container {
     width: calc(50% - 8px);

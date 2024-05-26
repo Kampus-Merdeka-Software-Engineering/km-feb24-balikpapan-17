@@ -29,7 +29,7 @@ i {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 9999999;
 }
 
 #loadingScreen div {
@@ -40,4 +40,12 @@ i {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.swal2-container {
+  z-index: 999999;
+}
+
+.swal2-popup {
+  border-radius: 25px;
 }
