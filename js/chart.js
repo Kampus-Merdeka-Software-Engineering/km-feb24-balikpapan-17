@@ -32,59 +32,6 @@ function loadAndInitialize() {
   });
 }
 
-function updateTopSellingProductsList(data) {
-  const productSales = {};
-  data.forEach((entry) => {
-    if (productSales[entry.product_category]) {
-      productSales[entry.product_category] += entry.transaction_qty;
-    } else {
-      productSales[entry.product_category] = entry.transaction_qty;
-    }
-  });
-
-  const sortedCategories = Object.entries(productSales)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
-
-  let listHTML = "";
-  sortedCategories.forEach((category, index) => {
-    const percentage = (
-      (category[1] /
-        data.reduce((acc, curr) => acc + curr.transaction_qty, 0)) *
-      100
-    ).toFixed(2);
-    let progressClass = "";
-    switch (index) {
-      case 0:
-        progressClass = "applications";
-        break;
-      case 1:
-        progressClass = "shortlisted";
-        break;
-      case 2:
-        progressClass = "on-hold";
-        break;
-      case 3:
-        progressClass = "rejected";
-        break;
-      case 4:
-        progressClass = "fivt";
-        break;
-      default:
-        progressClass = "";
-    }
-    listHTML += `
-      <div class="progress-bar-info ${progressClass}">
-        <span class="progress-color ${progressClass}"></span>
-        <span class="progress-type">${category[0]}</span>
-        <span class="progress-amount">${percentage}%</span>
-      </div>
-    `;
-  });
-
-  document.getElementById("topProductContainer").innerHTML = listHTML;
-}
-
 // ## ALL HANDLE ##
 
 function formatDate(dateString) {
@@ -344,9 +291,7 @@ function updateFilterInfo(
       .join("")}</ul>`;
   }
 
-  filterInfo.innerHTML = `<p>Start Month: ${startMonthText}</p>
-                          <p>End Month: ${endMonthText}</p>
-                          <p>Categories: ${categoriesText}</p>`;
+  filterInfo.innerHTML = `<p>Selected Categories :${categoriesText}</p>`;
 }
 
 function updateDashboard(selectedStartMonth, selectedEndMonth) {
@@ -408,7 +353,17 @@ function updateDashboard(selectedStartMonth, selectedEndMonth) {
   createRevenueByProductDoughnutChart(filteredData);
   createRevenueBySalesDoughnutChart(filteredData);
   createSalesRevenueRelationChart(filteredData);
-  updateTopSellingProductsList(data);
+  updateTopSellingProductsList(filteredData);
+
+  let timeFrame = selectedStartMonth;
+  if (selectedStartMonth !== selectedEndMonth) {
+    timeFrame += ` - ${selectedEndMonth}`;
+  }
+
+  const timeFrameElements = document.querySelectorAll("#timeFrame");
+  timeFrameElements.forEach((element) => {
+    element.textContent = timeFrame;
+  });
 }
 
 // ## METRICS ##
@@ -488,6 +443,145 @@ function updateMetrics(filteredData) {
   document.getElementById(
     "averageRevenueGrowth"
   ).textContent = `${roundedAverageMonthlyGrowth}%`;
+}
+
+function updateTopSellingProductsList(data) {
+  const productSalesPerMonth = {};
+  const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+
+  const selectedStartMonth =
+    localStorage.getItem("selectedStartMonth") || "Jan";
+  const selectedEndMonth = localStorage.getItem("selectedEndMonth") || "Jun";
+  const startMonthIndex = monthOrder.indexOf(selectedStartMonth);
+  const endMonthIndex = monthOrder.indexOf(selectedEndMonth);
+
+  data.forEach((entry) => {
+    const month = entry.month_name;
+    const monthIndex = monthOrder.indexOf(month);
+    if (monthIndex >= startMonthIndex && monthIndex <= endMonthIndex) {
+      if (!productSalesPerMonth[month]) {
+        productSalesPerMonth[month] = {};
+      }
+      const category = entry.product_category;
+      if (productSalesPerMonth[month][category]) {
+        productSalesPerMonth[month][category] += entry.transaction_qty;
+      } else {
+        productSalesPerMonth[month][category] = entry.transaction_qty;
+      }
+    }
+  });
+
+  let totalTransactionsInRange = 0;
+  for (
+    let monthIndex = startMonthIndex;
+    monthIndex <= endMonthIndex;
+    monthIndex++
+  ) {
+    const month = monthOrder[monthIndex];
+    if (productSalesPerMonth[month]) {
+      for (const category in productSalesPerMonth[month]) {
+        totalTransactionsInRange += productSalesPerMonth[month][category];
+      }
+    }
+  }
+
+  const topProductsOverall = {};
+
+  for (const month in productSalesPerMonth) {
+    for (const category in productSalesPerMonth[month]) {
+      if (topProductsOverall[category]) {
+        topProductsOverall[category] += productSalesPerMonth[month][category];
+      } else {
+        topProductsOverall[category] = productSalesPerMonth[month][category];
+      }
+    }
+  }
+
+  let timeFrame = selectedStartMonth;
+  if (selectedStartMonth !== selectedEndMonth) {
+    timeFrame += ` - ${selectedEndMonth}`;
+  }
+
+  const sortedCategoriesOverall = Object.entries(topProductsOverall)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  let listHTML = "";
+
+  listHTML += `
+    <div class="chart-container-header">
+      <h2>Top 5 Product</h2>
+      <span>${timeFrame}</span>
+    </div>
+    <div class="acquisitions-bar">`;
+
+  sortedCategoriesOverall.forEach((category, index) => {
+    const totalSales = category[1];
+    const percentage = ((totalSales / totalTransactionsInRange) * 100).toFixed(
+      2
+    );
+
+    let progressClass = "";
+    switch (index) {
+      case 0:
+        progressClass = "applications";
+        break;
+      case 1:
+        progressClass = "shortlisted";
+        break;
+      case 2:
+        progressClass = "on-hold";
+        break;
+      case 3:
+        progressClass = "rejected";
+        break;
+      case 4:
+        progressClass = "fivt";
+        break;
+      default:
+        progressClass = "";
+    }
+
+    const barWidth = percentage + "%";
+
+    listHTML += `
+      <span class="bar-progress ${progressClass}" style="width: ${barWidth}"></span>
+    `;
+  });
+
+  listHTML += `</div>`;
+
+  sortedCategoriesOverall.forEach((category, index) => {
+    const totalSales = category[1];
+    let progressClass = "";
+    switch (index) {
+      case 0:
+        progressClass = "applications";
+        break;
+      case 1:
+        progressClass = "shortlisted";
+        break;
+      case 2:
+        progressClass = "on-hold";
+        break;
+      case 3:
+        progressClass = "rejected";
+        break;
+      case 4:
+        progressClass = "fivt";
+        break;
+      default:
+        progressClass = "";
+    }
+
+    listHTML += `<div class="progress-bar-info ${progressClass}">
+      <span class="progress-color ${progressClass}"></span>
+      <span class="progress-type">${category[0]}</span>
+      <span class="progress-amount">${totalSales} units</span>
+    </div>`;
+  });
+
+  document.getElementById("chartContainer").innerHTML = listHTML;
 }
 
 // ## OVERVIEW CHART ##

@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (contentId === "dashboard") {
         window.location.hash = "#";
         sessionStorage.setItem("activePage", "dashboard");
+        loadAndInitialize();
         window.location.reload();
       } else {
         const newUrl = window.location.pathname + "#" + contentId;
@@ -22,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         sessionStorage.setItem("activePage", contentId);
 
         loadPage(contentId);
+        loadAndInitialize();
         window.location.reload();
       }
     });
@@ -96,11 +98,9 @@ function loadScript(scriptName) {
   document.body.appendChild(script);
 }
 
-document
-  .querySelector(".open-right-area")
-  .addEventListener("click", function () {
-    document.querySelector(".app-right").classList.add("show");
-  });
+document.querySelector(".filter-button").addEventListener("click", function () {
+  document.querySelector(".app-right").classList.add("show");
+});
 
 document.querySelector(".close-right").addEventListener("click", function () {
   document.querySelector(".app-right").classList.remove("show");
