@@ -33,6 +33,7 @@ header {
   text-decoration: none;
   transition: color 0.3s ease;
   font-size: calc(6px + 1vw);
+  color: var(--text-color-drk);
 }
 
 .nav-menu li a.active {

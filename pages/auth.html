@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Authentication</title>
+    <link rel="icon" type="image/x-icon" href="../assets/images/icon.png" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -11,57 +12,133 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" type="text/css" href="../css/auth.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/auth.css" />
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/style.css" />
   </head>
   <body>
-    <div id="content_container">
-      <div id="form_container">
-        <div id="form_header_container">
-          <a href="../index.html" id="form_header">
-            <img src="../assets/images/nvlogo.png" alt="logo" id="logoImage" />
-          </a>
-        </div>
-        <div id="form_content_container">
-          <div id="form_content_inner_container">
-            <input type="text" id="username" placeholder="Username" />
-            <input type="email" id="email" placeholder="Email" />
-            <div class="password-container">
-              <input type="password" id="password" placeholder="New Password" />
-              <i class="fas fa-eye" id="togglePassword"></i>
-            </div>
-            <div id="button_container">
-              <button onclick="login()">Login</button>
-              <button type="button" onclick="googleSignIn()">
-                <i class="fab fa-google"></i>
-              </button>
-            </div>
-            <div id="button_container">
-              <button onclick="register()">Register</button>
+    <header>
+      <div class="banner">
+        <a href="/index.html">
+          <img class="logo" src="../assets/images/lgo.png" alt="" />
+        </a>
+        <a href="/index.html">
+          <h1>Maven Coffee</h1>
+        </a>
+      </div>
+    </header>
+    <div class="menu-background">
+      <main>
+        <div class="container" id="container">
+          <div class="form-container register-container">
+            <form action="#">
+              <h1>Create an account</h1>
+              <div class="social-container">
+                <a onclick="googleSignIn()"
+                  ><img src="../assets/images/google.png"
+                /></a>
+              </div>
+              <span>or enter a new username and password</span>
+              <input type="text" id="username" placeholder="username" />
+              <input type="email" id="register_email" placeholder="Email" />
+              <div class="password-wrapper">
+                <input
+                  type="password"
+                  id="register_password"
+                  placeholder="Password"
+                />
+                <i class="fas fa-eye" id="toggleRegisterPassword"></i>
+              </div>
+              <button type="submit" onclick="register()">Register</button>
+            </form>
+          </div>
+          <div class="form-container login-container">
+            <form action="#">
+              <h1>Login Using</h1>
+              <div class="social-container">
+                <a onclick="googleSignIn()"
+                  ><img src="../assets/images/google.png"
+                /></a>
+              </div>
+              <span>or enter your username and password</span>
+              <input type="email" id="login_email" placeholder="Masuk/Email" />
+              <div class="password-wrapper">
+                <input
+                  type="password"
+                  id="login_password"
+                  placeholder="Password"
+                />
+                <i class="fas fa-eye" id="toggleLoginPassword"></i>
+              </div>
+              <a href="#">Lupa sandi?</a>
+              <button type="submit" onclick="login()">Login</button>
+            </form>
+          </div>
+          <div class="overlay-container">
+            <div class="overlay">
+              <div class="overlay-panel overlay-left">
+                <h1>Welcome!</h1>
+                <p>Already have an account? Click here!</p>
+                <button class="btn" id="login">Login Now</button>
+              </div>
+              <div class="overlay-panel overlay-right">
+                <h1>Don't have an account yet?</h1>
+                <p>Enter some data and start enjoying coffee with us!</p>
+                <button class="btn" id="register">Register Now</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
     <script src="../js/auth.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        const togglePassword = document.getElementById("togglePassword");
-        const password = document.getElementById("password");
+        const toggleRegisterPassword = document.getElementById(
+          "toggleRegisterPassword"
+        );
+        const registerPassword = document.getElementById("register_password");
 
-        togglePassword.addEventListener("click", function () {
-          // Toggle the type attribute
-          const type =
-            password.getAttribute("type") === "password" ? "text" : "password";
-          password.setAttribute("type", type);
+        const toggleLoginPassword = document.getElementById(
+          "toggleLoginPassword"
+        );
+        const loginPassword = document.getElementById("login_password");
 
-          // Toggle the eye / eye slash icon
-          this.classList.toggle("fa-eye");
-          this.classList.toggle("fa-eye-slash");
-        });
+        function togglePasswordVisibility(toggleIcon, passwordField) {
+          toggleIcon.addEventListener("click", function () {
+            const type =
+              passwordField.getAttribute("type") === "password"
+                ? "text"
+                : "password";
+            passwordField.setAttribute("type", type);
+            this.classList.toggle("fa-eye");
+            this.classList.toggle("fa-eye-slash");
+          });
+        }
+
+        togglePasswordVisibility(toggleRegisterPassword, registerPassword);
+        togglePasswordVisibility(toggleLoginPassword, loginPassword);
+      });
+
+      const registerButton = document.getElementById("register");
+      const loginButton = document.getElementById("login");
+      const container = document.getElementById("container");
+
+      registerButton.addEventListener("click", () => {
+        container.classList.add("right-panel-active");
+      });
+
+      loginButton.addEventListener("click", () => {
+        container.classList.remove("right-panel-active");
       });
     </script>
   </body>

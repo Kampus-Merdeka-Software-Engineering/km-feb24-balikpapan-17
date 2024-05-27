@@ -70,10 +70,10 @@ function updateActiveLinks() {
       document
         .querySelectorAll(".nav-menu a, .dropdown-content a")
         .forEach(function (link) {
-          link.classList.toggle(
-            "active",
-            link.getAttribute("href").slice(1) === sectionId
-          );
+          var href = link.getAttribute("href");
+          if (href) {
+            link.classList.toggle("active", href.slice(1) === sectionId);
+          }
         });
     }
   });
@@ -110,3 +110,5 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".dropdown-content"),
   ]);
 });
+
+updateActiveLinks();

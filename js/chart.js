@@ -44,7 +44,7 @@ const showErrorModal = (message) => {
   Swal.fire({
     title: "Error!",
     text: message,
-    icon: "error",
+    iconHtml: "<i class='fa-solid fa-bug'></i>",
     width: 600,
     padding: "3em",
     customClass: {
@@ -52,6 +52,7 @@ const showErrorModal = (message) => {
       content: "my-content-class",
       confirmButton: "my-confirm-button-class",
     },
+    buttonsStyling: false,
   });
 };
 
