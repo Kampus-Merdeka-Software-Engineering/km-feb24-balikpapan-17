@@ -1,3 +1,60 @@
+function checkAuthStatus() {
+  showLoadingScreen();
+
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      firestore
+        .collection("users")
+        .doc(user.uid)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const userData = doc.data();
+            const userRole = userData.role;
+            sessionStorage.setItem("userRole", userRole);
+
+            const pageName = sessionStorage.getItem("activePage");
+            if (pageName === "transaction" && userRole === "user") {
+              sessionStorage.setItem("activePage", "dashboard");
+              deniedModal(
+                "Access denied: Users are not authorized to access the Transaction page."
+              ).then(() => {
+                window.location.href = "../pages/dashboard.html";
+              });
+            } else {
+              loadPage(pageName || "dashboard");
+            }
+          } else {
+            console.log("User data not found");
+            window.location.href = "../index.html";
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting user data:", error);
+          window.location.href = "../index.html";
+        })
+        .finally(() => {
+          hideLoadingScreen();
+        });
+    } else {
+      deniedModal(
+        "Access denied: You must be logged in to access this page."
+      ).then(() => {
+        window.location.href = "../index.html";
+      });
+      hideLoadingScreen();
+    }
+  });
+}
+
+function showLoadingScreen() {
+  document.getElementById("loadingScreen").style.display = "block";
+}
+
+function hideLoadingScreen() {
+  document.getElementById("loadingScreen").style.display = "none";
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const links = document.querySelectorAll(".sidebar a");
 
@@ -5,6 +62,15 @@ document.addEventListener("DOMContentLoaded", function () {
     link.addEventListener("click", function (e) {
       e.preventDefault();
       const contentId = this.getAttribute("id");
+      const userRole = sessionStorage.getItem("userRole");
+
+      if (contentId === "transaction" && userRole === "user") {
+        deniedModal(
+          "Access denied: Users are not authorized to access the Transaction page."
+        );
+        sessionStorage.setItem("activePage", "dashboard");
+        return;
+      }
 
       links.forEach((link) => {
         link.classList.remove("active");
@@ -31,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const initialHash = window.location.hash.substring(1);
   const activePage = sessionStorage.getItem("activePage");
+
   if (activePage) {
     const linkToActivate = document.getElementById(activePage);
     if (linkToActivate) {
@@ -52,27 +119,19 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-function initializePage(pageName) {
-  switch (pageName) {
-    case "transaction":
-    case "sales":
-    case "product":
-      break;
-    default:
-      break;
-  }
-}
-
 function loadPage(pageName) {
-  switch (pageName) {
-    case "dashboard":
-    case "transaction":
-    case "sales":
-    case "product":
-      break;
-    default:
-      console.error(`Invalid page: ${pageName}`);
-      return;
+  if (!pageName) {
+    pageName = sessionStorage.getItem("activePage") || "dashboard";
+  }
+
+  const userRole = sessionStorage.getItem("userRole");
+  if (pageName === "transaction" && userRole === "user") {
+    deniedModal(
+      "Access denied: Users are not authorized to access the Transaction page."
+    );
+    sessionStorage.setItem("activePage", "dashboard");
+    window.location.href = "../pages/dashboard.html";
+    return;
   }
 
   const xhttp = new XMLHttpRequest();
@@ -92,11 +151,53 @@ function loadPage(pageName) {
   xhttp.send();
 }
 
+function initializePage(pageName) {
+  const userRole = sessionStorage.getItem("userRole");
+
+  if (pageName === "transaction" && userRole === "user") {
+    deniedModal(
+      "Access denied: Users are not authorized to access the Transaction page."
+    );
+    sessionStorage.setItem("activePage", "dashboard");
+    return;
+  }
+
+  switch (pageName) {
+    case "transaction":
+    case "sales":
+    case "product":
+      break;
+    default:
+      break;
+  }
+}
+
 function loadScript(scriptName) {
   const script = document.createElement("script");
   script.src = scriptName;
   document.body.appendChild(script);
 }
+
+const deniedModal = (message) => {
+  Swal.fire({
+    title: "Error!",
+    text: message,
+    iconHtml: "<i class='fa-solid fa-bug'></i>",
+    width: 600,
+    padding: "3em",
+    customClass: {
+      title: "my-title-class",
+      content: "my-content-class",
+      confirmButton: "my-confirm-button-class",
+    },
+    buttonsStyling: false,
+    showCancelButton: false,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = "../pages/dashboard.html";
+    }
+  });
+};
 
 document.querySelector(".filter-button").addEventListener("click", function () {
   document.querySelector(".app-right").classList.add("show");
@@ -129,4 +230,8 @@ window.addEventListener("click", function (event) {
   if (event.target !== dropdownBtn && !dropdownContent.contains(event.target)) {
     dropdownContent.classList.remove("show");
   }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  checkAuthStatus();
 });

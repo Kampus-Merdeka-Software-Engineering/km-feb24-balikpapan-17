@@ -47,6 +47,12 @@ const showErrorModal = (message) => {
     iconHtml: "<i class='fa-solid fa-bug'></i>",
     width: 600,
     padding: "3em",
+    showClass: {
+      popup: "swipe-in-from-bottom",
+    },
+    hideClass: {
+      popup: "swipe-out-to-bottom",
+    },
     customClass: {
       title: "my-title-class",
       content: "my-content-class",

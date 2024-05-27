@@ -468,7 +468,7 @@
                 <li>
                   <a href="./pages/profile.html"><i class="fas fa-user"></i> Profile</a>
                 </li>
-                <li id="dashboardLi"> <!-- ID untuk elemen <li> menu Dashboard -->
+                <li id="dashboardLi">
                   <a href="./pages/dashboard.html"><i class="fa-solid fa-chalkboard"></i> Dashboard</a>
                 </li>
                 <li>
@@ -486,35 +486,6 @@
               <a id="dropdownDashboardLink" href="./pages/dashboard.html">Dashboard</a>
               <a href="#" id="dropdownLogoutButton" onclick="logout()"><i class="fa-solid fa-power-off"></i> LogOut</a>
             `;
-
-            firestore
-              .collection("users")
-              .doc(user.uid)
-              .get()
-              .then((doc) => {
-                if (doc.exists) {
-                  const userData = doc.data();
-                  const userRole = userData.role;
-                  if (userRole !== "admin") {
-                    const dashboardLi = document.getElementById("dashboardLi");
-                    if (dashboardLi) {
-                      dashboardLi.remove();
-                    }
-
-                    const dropdownDashboardLink = document.getElementById(
-                      "dropdownDashboardLink"
-                    );
-                    if (dropdownDashboardLink) {
-                      dropdownDashboardLink.remove();
-                    }
-                  }
-                } else {
-                  console.log("User information not found!");
-                }
-              })
-              .catch((error) => {
-                console.error("Error getting user data:", error);
-              });
           }
         });
       });
