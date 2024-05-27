@@ -67,7 +67,6 @@ button.custom-cancel-button,
 
 .swal2-popup {
   border-radius: 25px;
-  /* background-color: var(--text-color-lght); */
 }
 
 div:where(.swal2-icon) {
@@ -83,4 +82,34 @@ div:where(.swal2-icon) {
   line-height: 5em;
   cursor: default;
   user-select: none;
+}
+
+@keyframes swipeInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes swipeOutToBottom {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.swipe-in-from-bottom {
+  animation: swipeInFromBottom 0.5s ease-out;
+}
+
+.swipe-out-to-bottom {
+  animation: swipeOutToBottom 0.5s ease-out;
 }

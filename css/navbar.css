@@ -107,6 +107,7 @@ header {
 }
 
 .dropdown-content a {
+  color: var(--text-color-drk);
   padding: 14px 20px;
   font-size: calc(12px + 1vw);
   text-align: center;

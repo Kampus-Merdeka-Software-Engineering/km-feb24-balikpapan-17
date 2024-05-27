@@ -28,6 +28,12 @@ const showEModal = (message) => {
     iconHtml: "<i class='fa-solid fa-bug'></i>",
     width: 600,
     padding: "3em",
+    showClass: {
+      popup: "swipe-in-from-bottom",
+    },
+    hideClass: {
+      popup: "swipe-out-to-bottom",
+    },
     customClass: {
       title: "my-title-class",
       content: "my-content-class",
@@ -44,6 +50,12 @@ const showNotifModal = (message) => {
     iconHtml: "<i class='fa-solid fa-triangle-exclamation'></i>",
     width: 600,
     padding: "3em",
+    showClass: {
+      popup: "swipe-in-from-bottom",
+    },
+    hideClass: {
+      popup: "swipe-out-to-bottom",
+    },
     customClass: {
       title: "my-title-class",
       content: "my-content-class",
@@ -60,6 +72,12 @@ const showSucModal = (message) => {
     iconHtml: "<i class='fa-regular fa-square-check'></i>",
     width: 600,
     padding: "3em",
+    showClass: {
+      popup: "swipe-in-from-bottom",
+    },
+    hideClass: {
+      popup: "swipe-out-to-bottom",
+    },
     customClass: {
       title: "my-title-class",
       content: "my-content-class",
@@ -120,8 +138,29 @@ function register() {
                     .doc(user.uid)
                     .set(user_data)
                     .then(() => {
-                      showSucModal("User Created!!");
-                      window.location.href = "./profile.html";
+                      sessionStorage.setItem("isAuthenticated", "true");
+                      sessionStorage.setItem("userRole", "user");
+
+                      Swal.fire({
+                        title: "Success!",
+                        text: "Your email has been verified. User created successfully!",
+                        iconHtml: "<i class='fa-solid fa-check'></i>",
+                        confirmButtonText: "OK",
+                        showClass: {
+                          popup: "swipe-in-from-bottom",
+                        },
+                        hideClass: {
+                          popup: "swipe-out-to-bottom",
+                        },
+                        customClass: {
+                          confirmButton: "my-confirm-button-class",
+                        },
+                        buttonsStyling: false,
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                          window.location.href = "../pages/profile.html";
+                        }
+                      });
                     })
                     .catch((error) => {
                       console.error("Error saving user data:", error);
@@ -171,22 +210,26 @@ function login() {
                 const userRole = userData.role;
                 sessionStorage.setItem("isAuthenticated", "true");
                 sessionStorage.setItem("userRole", userRole);
-                if (userRole === "admin") {
+                if (userRole === "admin" || userRole === "user") {
                   window.location.href = "../pages/dashboard.html";
                   sessionStorage.setItem("activePage", "dashboard");
                 } else {
-                  window.location.href = "../pages/profile.html";
+                  console.log("User role is not recognized");
+                  showEModal("User role is not recognized");
                 }
               } else {
                 console.log("User information not found!");
+                showEModal("User information not found!");
               }
             })
             .catch((error) => {
               console.error("Error getting user data:", error);
+              showEModal("Error getting user data: " + error.message);
             });
         })
         .catch((error) => {
           console.error("Error updating user data:", error);
+          showEModal("Error updating user data: " + error.message);
         });
     })
     .catch((error) => {
@@ -208,12 +251,15 @@ function googleSignIn() {
               email: user.email,
               username: user.displayName,
               last_login: firebase.firestore.FieldValue.serverTimestamp(),
+              role: "user",
             };
             userRef
               .set(user_data)
               .then(() => {
+                sessionStorage.setItem("isAuthenticated", "true");
+                sessionStorage.setItem("userRole", "user");
                 showSucModal("User Created!!");
-                window.location.href = "profile.html";
+                window.location.href = "../pages/profile.html";
               })
               .catch((error) => {
                 showEModal(error.message);
@@ -224,8 +270,13 @@ function googleSignIn() {
                 last_login: firebase.firestore.FieldValue.serverTimestamp(),
               })
               .then(() => {
-                showSucModal("User Logged In!!");
-                window.location.href = "../index.html";
+                sessionStorage.setItem("isAuthenticated", "true");
+                userRef.get().then((updatedDoc) => {
+                  const userRole = updatedDoc.data().role;
+                  sessionStorage.setItem("userRole", userRole);
+                  showSucModal("User Logged In!!");
+                  window.location.href = "../index.html";
+                });
               })
               .catch((error) => {
                 showEModal(error.message);
@@ -250,6 +301,12 @@ function logout() {
     confirmButtonColor: "#5e3229",
     cancelButtonColor: "#d33",
     confirmButtonText: "Yes, log out!",
+    showClass: {
+      popup: "swipe-in-from-bottom",
+    },
+    hideClass: {
+      popup: "swipe-out-to-bottom",
+    },
     customClass: {
       icon: "custom-warning-icon",
       confirmButton: "custom-confirm-button",
@@ -261,6 +318,12 @@ function logout() {
         title: "Logged out!",
         text: "You have been logged out successfully.",
         iconHtml: "<i class='fas fa-check-circle'></i>",
+        showClass: {
+          popup: "swipe-in-from-bottom",
+        },
+        hideClass: {
+          popup: "swipe-out-to-bottom",
+        },
         customClass: {
           icon: "custom-success-icon",
           confirmButton: "custom-confirm-button",
@@ -279,6 +342,12 @@ function logout() {
               title: "Error",
               text: "An error occurred during logout.",
               iconHtml: "<i class='fas fa-times-circle'></i>",
+              showClass: {
+                popup: "swipe-in-from-bottom",
+              },
+              hideClass: {
+                popup: "swipe-out-to-bottom",
+              },
               customClass: {
                 icon: "custom-error-icon",
                 confirmButton: "custom-confirm-button",

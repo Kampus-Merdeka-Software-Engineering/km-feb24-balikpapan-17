@@ -59,7 +59,12 @@
           </a>
         </li>
         <li class="nav-list-item">
-          <a class="nav-list-link" id="transaction" href="#">
+          <a
+            class="nav-list-link"
+            id="transaction"
+            href="#"
+            style="display: none"
+          >
             <i class="fa-solid fa-table fa-lg"></i>
             Transaction
           </a>
@@ -78,7 +83,7 @@
         </li>
       </ul>
       <div class="nav-list-item logout">
-        <h2 class="nav-list-link" href="#" onclick="logout()">
+        <h2 class="nav-list-link" id="loggedout" onclick="logout()">
           <i class="fa-solid fa-power-off fa-lg"></i>
           LogOut
         </h2>
@@ -308,6 +313,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/dashboard.js"></script>
     <script src="../js/chart.js"></script>
@@ -319,7 +325,6 @@
       function hideLoadingScreen() {
         document.getElementById("loadingScreen").style.display = "none";
       }
-
       function checkAuthStatus() {
         showLoadingScreen();
 
@@ -332,11 +337,19 @@
               .then((doc) => {
                 if (doc.exists) {
                   const userData = doc.data();
-                  const userRole = userData.role;
+                  const userRole =
+                    userData.role || sessionStorage.getItem("userRole");
+
                   if (userRole === "admin") {
                     console.log("Welcome Admin!");
+                    document.getElementById("transaction").style.display =
+                      "block";
+                  } else if (userRole === "user") {
+                    console.log("Welcome User!");
+                    document.getElementById("transaction").style.display =
+                      "none";
                   } else {
-                    console.log("User is not authorized");
+                    console.log("User role is not recognized");
                     window.location.href = "../index.html";
                   }
                 } else {
@@ -354,7 +367,6 @@
           } else {
             console.log("User is signed out");
             window.location.href = "./auth.html";
-
             hideLoadingScreen();
           }
         });
