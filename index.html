@@ -18,6 +18,10 @@
       href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/theme.css" />
@@ -47,7 +51,7 @@
             <li><a href="#menu">Menu's</a></li>
             <li><a href="#team">Team</a></li>
             <li class="submenu-li" id="loginLi">
-              <a href="#">
+              <a>
                 <i class="fa-solid fa-mug-hot fa-lg"></i>
               </a>
               <ul class="submenu">
@@ -412,6 +416,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
     <script src="../js/auth.js"></script>
 
     <script>
@@ -439,7 +444,7 @@
             document
               .getElementById("loginButton")
               .addEventListener("click", function () {
-                window.location.href = "./pages/auth.html";
+                window.location.href = "./pages/auth.html?#";
               });
 
             dropdownContent.innerHTML = `
@@ -447,16 +452,16 @@
               <a href="#about">About</a>
               <a href="#menu">Menu's</a>
               <a href="#team">Team</a>
-              <a id="loginA">Login</a>
+              <button id="loginA">Login</button>
             `;
             document
               .getElementById("loginA")
               .addEventListener("click", function () {
-                window.location.href = "./pages/auth.html";
+                window.location.href = "./pages/auth.html?#";
               });
           } else {
             loginLi.innerHTML = `
-              <a href="#">
+              <a >
                 <i class="fa-solid fa-mug-hot fa-lg"></i>
               </a>
               <ul class="submenu">
@@ -467,7 +472,7 @@
                   <a href="./pages/dashboard.html"><i class="fa-solid fa-chalkboard"></i> Dashboard</a>
                 </li>
                 <li>
-                  <a href="#" id="logoutButton"><i class="fa-solid fa-power-off"></i> Logout</a>
+                  <button  id="logoutButton" onclick="logout()"><i class="fa-solid fa-power-off"></i> Logout</button>
                 </li>
               </ul>
             `;
@@ -479,7 +484,7 @@
               <a href="#team">Team</a>
               <a href="./pages/profile.html">Profile</a>
               <a id="dropdownDashboardLink" href="./pages/dashboard.html">Dashboard</a>
-              <a href="#" id="dropdownLogoutButton"><i class="fa-solid fa-power-off"></i> LogOut</a>
+              <a href="#" id="dropdownLogoutButton" onclick="logout()"><i class="fa-solid fa-power-off"></i> LogOut</a>
             `;
 
             firestore
@@ -509,32 +514,6 @@
               })
               .catch((error) => {
                 console.error("Error getting user data:", error);
-              });
-
-            document
-              .getElementById("logoutButton")
-              .addEventListener("click", function () {
-                auth
-                  .signOut()
-                  .then(() => {
-                    window.location.href = "./pages/auth.html";
-                  })
-                  .catch((error) => {
-                    alert(error.message);
-                  });
-              });
-
-            document
-              .getElementById("dropdownLogoutButton")
-              .addEventListener("click", function () {
-                auth
-                  .signOut()
-                  .then(() => {
-                    window.location.href = "./pages/auth.html";
-                  })
-                  .catch((error) => {
-                    alert(error.message);
-                  });
               });
           }
         });

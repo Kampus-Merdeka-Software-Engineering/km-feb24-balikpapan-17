@@ -2,7 +2,6 @@
   font-family: "Urbanist", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  color: var(--text-color-drk);
   scroll-behavior: smooth;
   transition: all 0.5s ease;
 }
@@ -12,11 +11,31 @@ body {
   margin: 0;
   padding: 0;
 }
+
 section {
   height: 100vh;
 }
-i {
-  color: var(--text-color-drk);
+
+button {
+  border-radius: 8px;
+  border: none;
+  background-color: var(--text-color-drk);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  transition: transform 80ms ease-in;
+}
+
+button.custom-cancel-button,
+.custom-confirm-button {
+  border-radius: 12px !important;
+  color: #ffffff !important;
+  font-size: 12px !important;
+  font-weight: bold !important;
+  padding: 12px 45px !important;
+  text-transform: uppercase !important;
+  transition: transform 80ms ease-in !important;
 }
 
 #loadingScreen {
@@ -48,4 +67,20 @@ i {
 
 .swal2-popup {
   border-radius: 25px;
+  /* background-color: var(--text-color-lght); */
+}
+
+div:where(.swal2-icon) {
+  position: relative;
+  box-sizing: content-box;
+  justify-content: center;
+  width: 5em;
+  height: 5em;
+  margin: 0;
+  border: none !important;
+  border-color: transparent !important;
+  font-family: inherit;
+  line-height: 5em;
+  cursor: default;
+  user-select: none;
 }

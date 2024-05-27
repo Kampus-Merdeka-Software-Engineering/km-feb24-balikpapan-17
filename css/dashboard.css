@@ -232,9 +232,10 @@ button {
   position: fixed;
   bottom: 0;
   left: 0;
+  cursor: pointer;
 }
-.logout a,
-i {
+.logout h2,
+.logout i {
   font-size: 1rem;
   font-weight: 900;
 }
@@ -673,8 +674,11 @@ div#topProductContainer {
   border: 1px solid #857e7e;
   padding: 10px;
   font-size: 14px;
+  font-weight: normal;
+  color: var(--secondary-color);
   font-variant-numeric: tabular-nums;
   cursor: pointer;
+  text-transform: none;
   width: 100%;
   border-radius: 5px;
 }

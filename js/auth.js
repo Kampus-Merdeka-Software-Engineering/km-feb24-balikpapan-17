@@ -21,23 +21,71 @@ function validate_email(email) {
   return emailPattern.test(email);
 }
 
+const showEModal = (message) => {
+  Swal.fire({
+    title: "Error!",
+    text: message,
+    iconHtml: "<i class='fa-solid fa-bug'></i>",
+    width: 600,
+    padding: "3em",
+    customClass: {
+      title: "my-title-class",
+      content: "my-content-class",
+      confirmButton: "my-confirm-button-class",
+    },
+    buttonsStyling: false,
+  });
+};
+
+const showNotifModal = (message) => {
+  Swal.fire({
+    title: "Check!",
+    text: message,
+    iconHtml: "<i class='fa-solid fa-triangle-exclamation'></i>",
+    width: 600,
+    padding: "3em",
+    customClass: {
+      title: "my-title-class",
+      content: "my-content-class",
+      confirmButton: "my-confirm-button-class",
+    },
+    buttonsStyling: false,
+  });
+};
+
+const showSucModal = (message) => {
+  Swal.fire({
+    title: "Done!",
+    text: message,
+    iconHtml: "<i class='fa-regular fa-square-check'></i>",
+    width: 600,
+    padding: "3em",
+    customClass: {
+      title: "my-title-class",
+      content: "my-content-class",
+      confirmButton: "my-confirm-button-class",
+    },
+    buttonsStyling: false,
+  });
+};
+
 function register() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("register_email").value;
+  const password = document.getElementById("register_password").value;
   const username = document.getElementById("username").value;
 
   if (!validate_email(email)) {
-    alert("Please enter a valid email address!!");
+    showEModal("Please enter a valid Email Address!!");
     return;
   }
 
   if (password.length < 6) {
-    alert("Password should be at least 6 characters long!!");
+    showEModal("Password should be at least 6 characters long!!");
     return;
   }
 
   if (!validate_field(username)) {
-    alert("Username is required!!");
+    showEModal("Username is required!!");
     return;
   }
 
@@ -49,7 +97,7 @@ function register() {
       user
         .sendEmailVerification()
         .then(() => {
-          alert(
+          showNotifModal(
             "Verification email sent. Please verify your email to complete the registration."
           );
 
@@ -72,12 +120,12 @@ function register() {
                     .doc(user.uid)
                     .set(user_data)
                     .then(() => {
-                      alert("User Created!!");
+                      showSucModal("User Created!!");
                       window.location.href = "./profile.html";
                     })
                     .catch((error) => {
                       console.error("Error saving user data:", error);
-                      alert(error.message);
+                      showEModal(error.message);
                     });
                 }
               })
@@ -88,17 +136,17 @@ function register() {
         })
         .catch((error) => {
           console.error("Error sending verification email:", error);
-          alert(error.message);
+          showEModal(error.message);
         });
     })
     .catch((error) => {
-      alert(error.message);
+      showEModal(error.message);
     });
 }
 
 function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("login_email").value;
+  const password = document.getElementById("login_password").value;
 
   auth
     .signInWithEmailAndPassword(email, password)
@@ -125,6 +173,7 @@ function login() {
                 sessionStorage.setItem("userRole", userRole);
                 if (userRole === "admin") {
                   window.location.href = "../pages/dashboard.html";
+                  sessionStorage.setItem("activePage", "dashboard");
                 } else {
                   window.location.href = "../pages/profile.html";
                 }
@@ -141,7 +190,7 @@ function login() {
         });
     })
     .catch((error) => {
-      alert(error.message);
+      showEModal(error.message);
     });
 }
 
@@ -163,11 +212,11 @@ function googleSignIn() {
             userRef
               .set(user_data)
               .then(() => {
-                alert("User Created!!");
+                showSucModal("User Created!!");
                 window.location.href = "profile.html";
               })
               .catch((error) => {
-                alert(error.message);
+                showEModal(error.message);
               });
           } else {
             userRef
@@ -175,35 +224,70 @@ function googleSignIn() {
                 last_login: firebase.firestore.FieldValue.serverTimestamp(),
               })
               .then(() => {
-                alert("User Logged In!!");
+                showSucModal("User Logged In!!");
                 window.location.href = "../index.html";
               })
               .catch((error) => {
-                alert(error.message);
+                showEModal(error.message);
               });
           }
         })
         .catch((error) => {
-          alert(error.message);
+          showEModal(error.message);
         });
     })
     .catch((error) => {
-      alert(error.message);
+      showEModal(error.message);
     });
 }
 
 function logout() {
-  sessionStorage.removeItem("isAuthenticated");
-  sessionStorage.removeItem("userRole");
-
-  auth
-    .signOut()
-    .then(function () {
-      window.location.href = "../pages/auth.html";
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You will be logged out!",
+    iconHtml: "<i class='fas fa-exclamation-circle'></i>",
+    showCancelButton: true,
+    confirmButtonColor: "#5e3229",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, log out!",
+    customClass: {
+      icon: "custom-warning-icon",
+      confirmButton: "custom-confirm-button",
+      cancelButton: "custom-cancel-button",
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: "Logged out!",
+        text: "You have been logged out successfully.",
+        iconHtml: "<i class='fas fa-check-circle'></i>",
+        customClass: {
+          icon: "custom-success-icon",
+          confirmButton: "custom-confirm-button",
+        },
+      }).then(() => {
+        auth
+          .signOut()
+          .then(function () {
+            sessionStorage.removeItem("isAuthenticated");
+            sessionStorage.removeItem("userRole");
+            window.location.href = "../pages/auth.html?#";
+          })
+          .catch(function (error) {
+            console.error(error);
+            Swal.fire({
+              title: "Error",
+              text: "An error occurred during logout.",
+              iconHtml: "<i class='fas fa-times-circle'></i>",
+              customClass: {
+                icon: "custom-error-icon",
+                confirmButton: "custom-confirm-button",
+              },
+            });
+          });
+      });
+    }
+  });
 }
 
 function goHome() {
