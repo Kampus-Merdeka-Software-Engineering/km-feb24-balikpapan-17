@@ -1,3 +1,8 @@
+document.addEventListener("DOMContentLoaded", function () {
+  loadAndInitialize();
+  checkAuthStatus();
+});
+
 function checkAuthStatus() {
   showLoadingScreen();
 
@@ -11,40 +16,64 @@ function checkAuthStatus() {
           if (doc.exists) {
             const userData = doc.data();
             const userRole = userData.role;
-            sessionStorage.setItem("userRole", userRole);
 
-            const pageName = sessionStorage.getItem("activePage");
-            if (pageName === "transaction" && userRole === "user") {
-              sessionStorage.setItem("activePage", "dashboard");
-              deniedModal(
-                "Access denied: Users are not authorized to access the Transaction page."
-              ).then(() => {
-                window.location.href = "../pages/dashboard.html";
-              });
+            if (userRole === "admin") {
+              handleAdminAccess();
+            } else if (userRole === "user") {
+              handleUserAccess();
             } else {
-              loadPage(pageName || "dashboard");
+              handleUnknownRole();
             }
           } else {
-            console.log("User data not found");
-            window.location.href = "../index.html";
+            handleUserDataNotFound();
           }
         })
-        .catch((error) => {
-          console.error("Error getting user data:", error);
-          window.location.href = "../index.html";
-        })
-        .finally(() => {
-          hideLoadingScreen();
-        });
+        .catch(handleError)
+        .finally(hideLoadingScreen);
     } else {
-      deniedModal(
-        "Access denied: You must be logged in to access this page."
-      ).then(() => {
-        window.location.href = "../index.html";
-      });
+      handleUserSignedOut();
       hideLoadingScreen();
     }
   });
+}
+
+function handleAdminAccess() {
+  console.log("Welcome Admin!");
+  document.getElementById("transaction").style.display = "block";
+}
+
+function handleUserAccess() {
+  console.log("Welcome User!");
+  document.getElementById("transaction").style.display = "none";
+}
+
+function handleUnknownRole() {
+  console.log("User role is not recognized");
+  redirectToIndex();
+}
+
+function handleUserDataNotFound() {
+  console.log("User data not found");
+  redirectToAuthPage();
+}
+
+function handleError(error) {
+  console.error("Error:", error);
+  sessionStorage.setItem("activePage", "dashboard");
+  redirectToAuthPage();
+}
+
+function handleUserSignedOut() {
+  console.log("User is signed out");
+  redirectToAuthPage();
+}
+
+function redirectToIndex() {
+  window.location.href = "../index.html";
+}
+
+function redirectToAuthPage() {
+  window.location.href = "../pages/auth.html";
 }
 
 function showLoadingScreen() {
@@ -62,15 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
     link.addEventListener("click", function (e) {
       e.preventDefault();
       const contentId = this.getAttribute("id");
-      const userRole = sessionStorage.getItem("userRole");
-
-      if (contentId === "transaction" && userRole === "user") {
-        deniedModal(
-          "Access denied: Users are not authorized to access the Transaction page."
-        );
-        sessionStorage.setItem("activePage", "dashboard");
-        return;
-      }
 
       links.forEach((link) => {
         link.classList.remove("active");
@@ -81,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (contentId === "dashboard") {
         window.location.hash = "#";
         sessionStorage.setItem("activePage", "dashboard");
-        loadAndInitialize();
+
         window.location.reload();
       } else {
         const newUrl = window.location.pathname + "#" + contentId;
@@ -89,7 +109,6 @@ document.addEventListener("DOMContentLoaded", function () {
         sessionStorage.setItem("activePage", contentId);
 
         loadPage(contentId);
-        loadAndInitialize();
         window.location.reload();
       }
     });
@@ -120,56 +139,121 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function loadPage(pageName) {
+  showLoadingScreen();
+
   if (!pageName) {
     pageName = sessionStorage.getItem("activePage") || "dashboard";
   }
 
-  const userRole = sessionStorage.getItem("userRole");
-  if (pageName === "transaction" && userRole === "user") {
-    deniedModal(
-      "Access denied: Users are not authorized to access the Transaction page."
-    );
-    sessionStorage.setItem("activePage", "dashboard");
-    window.location.href = "../pages/dashboard.html";
-    return;
-  }
-
-  const xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function () {
-    if (this.readyState == 4) {
-      if (this.status == 200) {
-        if (pageName !== "dashboard") {
-          document.getElementById("main-content").innerHTML = this.responseText;
-        }
-        initializePage(pageName);
-      } else if (this.status == 404) {
-        console.error(`Page ${pageName}.html not found.`);
+  fetch(`${pageName}.html`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Page ${pageName}.html not found.`);
       }
+      return response.text();
+    })
+    .then((html) => {
+      if (pageName === "transaction") {
+        fetchUserDataAndCheckAccess(html, pageName);
+      } else {
+        displayPage(html, pageName);
+      }
+    })
+    .catch((error) => {
+      console.error(error.message);
+    });
+}
+
+function fetchUserDataAndCheckAccess(html, pageName) {
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      firestore
+        .collection("users")
+        .doc(user.uid)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const userData = doc.data();
+            const userRole = userData.role;
+
+            if (pageName === "transaction" && userRole === "user") {
+              sessionStorage.setItem("activePage", "dashboard");
+              deniedModal(
+                "Access denied: Users are not authorized to access the Transaction page."
+              ).then(() => {
+                window.location.href = "../pages/dashboard.html";
+              });
+            } else {
+              displayPage(html, pageName);
+            }
+          } else {
+            console.log("User data not found");
+            window.location.href = "../pages/auth.html";
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting user data:", error);
+        });
+    } else {
+      console.log("User is signed out");
     }
-  };
-  xhttp.open("GET", `${pageName}.html`, true);
-  xhttp.send();
+  });
 }
 
 function initializePage(pageName) {
-  const userRole = sessionStorage.getItem("userRole");
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      firestore
+        .collection("users")
+        .doc(user.uid)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const userData = doc.data();
+            const userRole = userData.role;
 
-  if (pageName === "transaction" && userRole === "user") {
-    deniedModal(
-      "Access denied: Users are not authorized to access the Transaction page."
-    );
-    sessionStorage.setItem("activePage", "dashboard");
-    return;
-  }
+            if (pageName === "transaction" && userRole === "user") {
+              deniedModal(
+                "Access denied: Users are not authorized to access the Transaction page."
+              )
+                .then(() => {
+                  sessionStorage.setItem("activePage", "dashboard");
+
+                  window.location.href = "../pages/dashboard.html";
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
+            }
+          } else {
+            console.log("User data not found");
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting user data:", error);
+        });
+    } else {
+      console.log("User is signed out");
+    }
+  });
 
   switch (pageName) {
     case "transaction":
+      loadAndInitialize();
     case "sales":
     case "product":
       break;
     default:
       break;
   }
+}
+
+function displayPage(html, pageName) {
+  if (pageName !== "dashboard") {
+    document.getElementById("main-content").innerHTML = html;
+  }
+
+  initializePage(pageName);
 }
 
 function loadScript(scriptName) {
@@ -230,8 +314,4 @@ window.addEventListener("click", function (event) {
   if (event.target !== dropdownBtn && !dropdownContent.contains(event.target)) {
     dropdownContent.classList.remove("show");
   }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  checkAuthStatus();
 });

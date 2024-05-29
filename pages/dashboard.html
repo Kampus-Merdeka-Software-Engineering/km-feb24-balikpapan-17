@@ -291,6 +291,7 @@
       <div id="filterInfo"></div>
     </div>
     <div class="d-none" style="display: none; opacity: 0">
+      <table id="transactionTable"></table>
       <canvas id="productSalesChart"></canvas>
       <canvas id="productChart"></canvas>
       <canvas id="forecastChart"></canvas>
@@ -308,74 +309,14 @@
       <span id="averageRevenueGrowth"></span>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="../js/auth.js"></script>
-    <script src="../js/dashboard.js"></script>
     <script src="../js/chart.js"></script>
-    <script>
-      function showLoadingScreen() {
-        document.getElementById("loadingScreen").style.display = "block";
-      }
-
-      function hideLoadingScreen() {
-        document.getElementById("loadingScreen").style.display = "none";
-      }
-      function checkAuthStatus() {
-        showLoadingScreen();
-
-        auth.onAuthStateChanged((user) => {
-          if (user) {
-            firestore
-              .collection("users")
-              .doc(user.uid)
-              .get()
-              .then((doc) => {
-                if (doc.exists) {
-                  const userData = doc.data();
-                  const userRole =
-                    userData.role || sessionStorage.getItem("userRole");
-
-                  if (userRole === "admin") {
-                    console.log("Welcome Admin!");
-                    document.getElementById("transaction").style.display =
-                      "block";
-                  } else if (userRole === "user") {
-                    console.log("Welcome User!");
-                    document.getElementById("transaction").style.display =
-                      "none";
-                  } else {
-                    console.log("User role is not recognized");
-                    window.location.href = "../index.html";
-                  }
-                } else {
-                  console.log("User data not found");
-                  window.location.href = "./auth.html";
-                }
-              })
-              .catch((error) => {
-                console.error("Error getting user data:", error);
-                window.location.href = "./auth.html";
-              })
-              .finally(() => {
-                hideLoadingScreen();
-              });
-          } else {
-            console.log("User is signed out");
-            window.location.href = "./auth.html";
-            hideLoadingScreen();
-          }
-        });
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        checkAuthStatus();
-      });
-    </script>
+    <script src="../js/dashboard.js"></script>
   </body>
 </html>
