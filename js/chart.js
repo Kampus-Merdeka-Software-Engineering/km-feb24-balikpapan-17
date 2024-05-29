@@ -1548,5 +1548,3 @@ document.addEventListener("DOMContentLoaded", () => {
   updateFilterInfoFromLocalStorage();
   loadMonthFilters();
 });
-
-loadAndInitialize();

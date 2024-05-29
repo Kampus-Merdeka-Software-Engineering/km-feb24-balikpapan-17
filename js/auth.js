@@ -127,7 +127,6 @@ function register() {
                     .set(user_data)
                     .then(() => {
                       sessionStorage.setItem("isAuthenticated", "true");
-                      sessionStorage.setItem("userRole", "user");
 
                       Swal.fire({
                         title: "Success!",
@@ -197,10 +196,10 @@ function login() {
                 const userData = doc.data();
                 const userRole = userData.role;
                 sessionStorage.setItem("isAuthenticated", "true");
-                sessionStorage.setItem("userRole", userRole);
+
                 if (userRole === "admin" || userRole === "user") {
                   window.location.href = "../pages/dashboard.html";
-                  sessionStorage.setItem("activePage", "dashboard");
+                  sessionStorage.setItem("activePage", "main");
                 } else {
                   console.log("User role is not recognized");
                   showEModal("User role is not recognized");
@@ -245,7 +244,7 @@ function googleSignIn() {
               .set(user_data)
               .then(() => {
                 sessionStorage.setItem("isAuthenticated", "true");
-                sessionStorage.setItem("userRole", "user");
+
                 showSucModal("User Created!!");
                 window.location.href = "../pages/profile.html";
               })
@@ -259,12 +258,9 @@ function googleSignIn() {
               })
               .then(() => {
                 sessionStorage.setItem("isAuthenticated", "true");
-                userRef.get().then((updatedDoc) => {
-                  const userRole = updatedDoc.data().role;
-                  sessionStorage.setItem("userRole", userRole);
-                  showSucModal("User Logged In!!");
-                  window.location.href = "../index.html";
-                });
+
+                showSucModal("User Logged In!!");
+                window.location.href = "../index.html";
               })
               .catch((error) => {
                 showEModal(error.message);
