@@ -3,77 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile</title>
-    <link rel="stylesheet" href="../css/style.css" />
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="/css/profile.css" />
   </head>
   <body>
     <div id="loadingScreen" style="display: none">
       <div>Loading...</div>
     </div>
-    <div class="profile-container">
-      <h2>Profile</h2>
-      <p>Welcome to your profile page!</p>
-      <div id="userData">
-        <p><strong>Username:</strong> <span id="username"></span></p>
-        <p><strong>Email:</strong> <span id="email"></span></p>
-        <p><strong>Role:</strong> <span id="role"></span></p>
-      </div>
-      <p><a href="../index.html">Home</a></p>
-      <p><a href="#" onclick="logout()">Logout</a></p>
-    </div>
+    <div class="container">
+      <h2>Edit Profile</h2>
+      <form action="/submit-profile" method="POST" class="edit-profile-form">
+          <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" id="username" name="username" required>
+          </div>
+          <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" required>
+          </div>
+          <div class="form-group">
+              <label for="confirm-password">Confirm Password</label>
+              <input type="password" id="confirm-password" name="confirm-password" required>
+          </div>
+          <div class="form-group">
+              <label for="role">Role</label>
+              <textarea id="role" name="role" rows="1"></textarea>
+          </div>
+          <button type="submit">Save Changes</button>
+      </form>
 
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
-    <script src="../js/auth.js"></script>
-
-    <script>
-      function showLoadingScreen() {
-        document.getElementById("loadingScreen").style.display = "block";
-      }
-
-      function hideLoadingScreen() {
-        document.getElementById("loadingScreen").style.display = "none";
-      }
-
-      function checkAuthStatus() {
-        showLoadingScreen();
-
-        auth.onAuthStateChanged((user) => {
-          if (user) {
-            console.log("User is signed in");
-            hideLoadingScreen();
-            // Get user data and display it
-            firestore
-              .collection("users")
-              .doc(user.uid)
-              .get()
-              .then((doc) => {
-                if (doc.exists) {
-                  const userData = doc.data();
-                  document.getElementById("username").textContent =
-                    userData.username;
-                  document.getElementById("email").textContent = userData.email;
-                  document.getElementById("role").textContent =
-                    userData.role || "User";
-                } else {
-                  console.log("No such document!");
-                }
-              })
-              .catch((error) => {
-                console.log("Error getting document:", error);
-              });
-          } else {
-            console.log("User is signed out");
-            hideLoadingScreen();
-            window.location.href = "./auth.html";
-          }
-        });
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        checkAuthStatus();
-      });
-    </script>
-  </body>
+  </div>
+</body>
 </html>
+ 
+
