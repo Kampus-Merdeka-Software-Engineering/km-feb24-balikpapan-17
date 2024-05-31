@@ -4,40 +4,133 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile</title>
-    <link rel="stylesheet" href="/css/profile.css" />
+    <link rel="stylesheet" href="../css/profile.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+    <script src="../firebaseConfig.js"></script>
   </head>
   <body>
-    <div id="loadingScreen" style="display: none">
-      <div>Loading...</div>
+    <div id="loadingScreen" class="loading-screen">
+      <div class="loading-text">Loading...</div>
     </div>
-    <div class="container">
-      <h2>Edit Profile</h2>
-      <form action="/submit-profile" method="POST" class="edit-profile-form">
+    <div class="profile-page">
+      <div class="profile-container">
+        <h2>Profile</h2>
+        <div class="user-details">
+          <p><strong>Username:</strong> <span id="username"></span></p>
+          <p><strong>Email:</strong> <span id="email"></span></p>
+          <p><strong>Role:</strong> <span id="role"></span></p>
+        </div>
+        <div class="profile-actions">
+          <button class="btn" onclick="editProfile()">Edit Profile</button>
+          <button class="btn" onclick="logout()">Logout</button>
+        </div>
+      </div>
+      <div class="container edit-profile-container" id="editProfileContainer">
+        <h2>Edit Profile</h2>
+        <form action="/submit-profile" method="POST" class="edit-profile-form">
           <div class="form-group">
-              <label for="username">Username</label>
-              <input type="text" id="username" name="username" required>
+            <label for="edit-username">Username</label>
+            <input type="text" id="edit-username" name="username" required />
           </div>
           <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" required>
+            <label for="edit-email">Email</label>
+            <input type="email" id="edit-email" name="email" required />
           </div>
           <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" id="password" name="password" required>
-          </div>
-          <div class="form-group">
-              <label for="confirm-password">Confirm Password</label>
-              <input type="password" id="confirm-password" name="confirm-password" required>
-          </div>
-          <div class="form-group">
-              <label for="role">Role</label>
-              <textarea id="role" name="role" rows="1"></textarea>
+            <label for="current-password">Current Password</label>
+            <input
+              type="password"
+              id="current-password"
+              name="current-password"
+              required
+            />
           </div>
           <button type="submit">Save Changes</button>
-      </form>
 
-  </div>
-</body>
+          <button
+            type="button"
+            class="btn cancel-btn"
+            onclick="closeEditProfile()"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+      function showLoadingScreen() {
+        document.getElementById("loadingScreen").style.display = "flex";
+      }
+
+      function hideLoadingScreen() {
+        document.getElementById("loadingScreen").style.display = "none";
+      }
+
+      function checkAuthStatus() {
+        showLoadingScreen();
+
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            console.log("User is signed in");
+            hideLoadingScreen();
+            // Get user data and display it
+            firestore
+              .collection("users")
+              .doc(user.uid)
+              .get()
+              .then((doc) => {
+                if (doc.exists) {
+                  const userData = doc.data();
+                  document.getElementById("username").textContent =
+                    userData.username;
+                  document.getElementById("email").textContent = userData.email;
+                  document.getElementById("role").textContent =
+                    userData.role || "User";
+                  document.getElementById("edit-username").value =
+                    userData.username || "";
+                  document.getElementById("edit-username").placeholder =
+                    userData.username || "Current Username";
+                  document.getElementById("edit-email").value =
+                    userData.email || "";
+                  document.getElementById("edit-email").placeholder =
+                    userData.email || "Current Email";
+                } else {
+                  console.log("No such document!");
+                }
+              })
+              .catch((error) => {
+                console.log("Error getting document:", error);
+              });
+          } else {
+            console.log("User is signed out");
+            hideLoadingScreen();
+            window.location.href = "./auth.html";
+          }
+        });
+      }
+
+      function editProfile() {
+        document.getElementById("editProfileContainer").style.display = "block";
+      }
+
+      function closeEditProfile() {
+        document.getElementById("editProfileContainer").style.display = "none";
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        checkAuthStatus();
+      });
+    </script>
+  </body>
 </html>
- 
-
