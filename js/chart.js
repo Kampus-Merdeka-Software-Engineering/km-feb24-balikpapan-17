@@ -1,4 +1,6 @@
-function initIndexedDB() {
+Chart.defaults.font.family = "Urbanist, sans-serif";
+
+async function initIndexedDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("dataDB", 1);
 
@@ -17,7 +19,7 @@ function initIndexedDB() {
   });
 }
 
-function saveDataToIndexedDB(db, data) {
+async function saveDataToIndexedDB(db, data) {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(["dataStore"], "readwrite");
     const store = transaction.objectStore("dataStore");
@@ -34,7 +36,7 @@ function saveDataToIndexedDB(db, data) {
   });
 }
 
-function loadDataFromIndexedDB(db) {
+async function loadDataFromIndexedDB(db) {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(["dataStore"], "readonly");
     const store = transaction.objectStore("dataStore");
@@ -81,8 +83,9 @@ async function loadAndInitialize() {
     const selectedCategories = JSON.parse(
       localStorage.getItem("selectedCategories")
     ) || ["all"];
+    let sortOrder = "default";
 
-    updateDashboard(selectedStartMonth, selectedEndMonth);
+    updateDashboard(selectedStartMonth, selectedEndMonth, sortOrder);
     updateFilterInfo(selectedStartMonth, selectedEndMonth, selectedCategories);
     updateDropdownBtnText(selectedCategories);
   } catch (error) {
@@ -139,14 +142,40 @@ function populateMonthFilter(data) {
     endMonthFilter.appendChild(optionEnd);
   });
 
-  startMonthFilter.value = "Jan";
-  endMonthFilter.value = "Jun";
+  startMonthFilter.value = localStorage.getItem("selectedStartMonth") || "Jan";
+  endMonthFilter.value = localStorage.getItem("selectedEndMonth") || "Jun";
+}
+
+function updateMonthFilters(selectedStartMonth, selectedEndMonth) {
+  const startMonthFilter = document.getElementById("startMonthFilter");
+  const endMonthFilter = document.getElementById("endMonthFilter");
+
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+
+  startMonthFilter.innerHTML = "";
+  endMonthFilter.innerHTML = "";
+
+  months.forEach((month) => {
+    const optionStart = document.createElement("option");
+    optionStart.value = month;
+    optionStart.textContent = month;
+    startMonthFilter.appendChild(optionStart);
+
+    const optionEnd = document.createElement("option");
+    optionEnd.value = month;
+    optionEnd.textContent = month;
+    endMonthFilter.appendChild(optionEnd);
+  });
+
+  startMonthFilter.value = selectedStartMonth;
+  endMonthFilter.value = selectedEndMonth;
 }
 
 const handleMonthFilterChange = () => {
   const selectedStartMonth = document.getElementById("startMonthFilter").value;
   const selectedEndMonth = document.getElementById("endMonthFilter").value;
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+  let sortOrder = "default";
 
   const startIndex = months.indexOf(selectedStartMonth);
   const endIndex = months.indexOf(selectedEndMonth);
@@ -165,7 +194,7 @@ const handleMonthFilterChange = () => {
     document.querySelectorAll(".categoryFilter:checked")
   ).map((cb) => cb.value);
 
-  updateDashboard(selectedStartMonth, selectedEndMonth);
+  updateDashboard(selectedStartMonth, selectedEndMonth, sortOrder);
   updateFilterInfo(selectedStartMonth, selectedEndMonth, selectedCategories);
 };
 
@@ -254,9 +283,10 @@ function populateCategoryFilter(data) {
       const selectedCategories = Array.from(
         document.querySelectorAll(".categoryFilter:checked")
       ).map((cb) => cb.value);
+      let sortOrder = "default";
 
       saveCategoryFilters();
-      updateDashboard(selectedStartMonth, selectedEndMonth);
+      updateDashboard(selectedStartMonth, selectedEndMonth, sortOrder);
       updateFilterInfo(
         selectedStartMonth,
         selectedEndMonth,
@@ -319,6 +349,19 @@ function updateFilterInfoFromLocalStorage() {
   updateDropdownBtnText(selectedCategories);
 }
 
+window.addEventListener("load", () => {
+  initIndexedDB().then(() => {
+    loadMonthFilters();
+    updateFilterInfoFromLocalStorage();
+    const selectedStartMonth =
+      document.getElementById("startMonthFilter").value;
+    const selectedEndMonth = document.getElementById("endMonthFilter").value;
+    let sortOrder = "default";
+    updateMonthFilters(selectedStartMonth, selectedEndMonth);
+    updateDashboard(selectedStartMonth, selectedEndMonth, sortOrder);
+  });
+});
+
 function updateFilterInfo(
   selectedStartMonth,
   selectedEndMonth,
@@ -345,29 +388,35 @@ function updateFilterInfo(
   filterInfo.innerHTML = `<p>Selected Categories :${categoriesText}</p>`;
 }
 
-async function updateDashboard(selectedStartMonth, selectedEndMonth) {
+async function updateDashboard(
+  selectedStartMonth,
+  selectedEndMonth,
+  sortOrder = "default"
+) {
   try {
     const db = await initIndexedDB();
     const cachedData = await loadDataFromIndexedDB(db);
     let filteredData;
 
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+    const startIndex = months.indexOf(selectedStartMonth);
+    const endIndex = months.indexOf(selectedEndMonth);
+
+    if (startIndex > endIndex) {
+      showErrorModal("End month cannot be before start month.");
+      return;
+    }
+
     if (cachedData) {
-      filteredData = cachedData;
+      filteredData = cachedData.filter((item) => {
+        const itemMonthIndex = months.indexOf(item.month_name);
+        return itemMonthIndex >= startIndex && itemMonthIndex <= endIndex;
+      });
     } else {
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-      const startIndex = months.indexOf(selectedStartMonth);
-      const endIndex = months.indexOf(selectedEndMonth);
-
-      if (startIndex > endIndex) {
-        showErrorModal("End month cannot be before start month.");
-        return;
-      }
-
       filteredData = window.data.filter((item) => {
         const itemMonthIndex = months.indexOf(item.month_name);
         return itemMonthIndex >= startIndex && itemMonthIndex <= endIndex;
       });
-
       await saveDataToIndexedDB(db, filteredData);
     }
 
@@ -418,16 +467,10 @@ async function updateDashboard(selectedStartMonth, selectedEndMonth) {
       createSalesRevenueRelationChart,
     ];
 
-    let index = 0;
-    const initNextChart = () => {
-      if (index < createCharts.length) {
-        createCharts[index](filteredData);
-        index++;
-        requestAnimationFrame(initNextChart);
-      }
-    };
+    createCharts.forEach((createChartFn) => {
+      createChartFn(filteredData);
+    });
 
-    initNextChart();
     updateTopSellingProductsList(filteredData);
 
     let timeFrame = selectedStartMonth;
@@ -439,6 +482,8 @@ async function updateDashboard(selectedStartMonth, selectedEndMonth) {
     timeFrameElements.forEach((element) => {
       element.textContent = timeFrame;
     });
+
+    updateMonthFilters(selectedStartMonth, selectedEndMonth);
   } catch (error) {
     console.error("Error updating dashboard:", error);
   }
