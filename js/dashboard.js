@@ -1,65 +1,49 @@
 document.addEventListener("DOMContentLoaded", function () {
-  loadAndInitialize();
-  checkAuthStatus();
+  loadAll();
 });
 
-function checkAuthStatus() {
+async function loadAll() {
+  loadAndInitialize();
+  await checkAuthStatus();
+  updateFilterInfoFromLocalStorage();
+  loadMonthFilters();
+  setupSidebarLinks();
+  setupDropdownMenu();
+}
+
+async function checkAuthStatus() {
   showLoadingScreen();
 
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      firestore
-        .collection("users")
-        .doc(user.uid)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            const userData = doc.data();
-            const userRole = userData.role;
+  auth.onAuthStateChanged(async (user) => {
+    try {
+      if (user) {
+        const doc = await firestore.collection("users").doc(user.uid).get();
+        if (doc.exists) {
+          const userData = doc.data();
+          const userRole = userData.role;
 
-            if (userRole === "admin") {
-              handleAdminAccess();
-            } else if (userRole === "user") {
-              handleUserAccess();
-            } else {
-              handleUnknownRole();
-            }
-          } else {
-            handleUserDataNotFound();
-          }
-        })
-        .catch(handleError)
-        .finally(hideLoadingScreen);
-    } else {
-      handleUserSignedOut();
+          handleUserAccess(userRole);
+        } else {
+          handleUserDataNotFound();
+        }
+      } else {
+        handleUserSignedOut();
+      }
+    } catch (error) {
+      handleError(error);
+    } finally {
       hideLoadingScreen();
     }
   });
 }
 
-function handleAdminAccess() {
-  console.log("Welcome Admin!");
-  document.getElementById("transaction").style.display = "block";
-}
-
-function handleUserAccess() {
+function handleUserAccess(userRole) {
   console.log("Welcome User!");
-  document.getElementById("transaction").style.display = "none";
-}
-
-function handleUnknownRole() {
-  console.log("User role is not recognized");
-  redirectToIndex();
+  document.getElementById("transaction").style.display = "block";
 }
 
 function handleUserDataNotFound() {
   console.log("User data not found");
-  redirectToAuthPage();
-}
-
-function handleError(error) {
-  console.error("Error:", error);
-  sessionStorage.setItem("activePage", "dashboard");
   redirectToAuthPage();
 }
 
@@ -68,12 +52,18 @@ function handleUserSignedOut() {
   redirectToAuthPage();
 }
 
-function redirectToIndex() {
-  window.location.href = "../index.html";
+function handleError(error) {
+  console.error("Error:", error);
+  const errorMessage =
+    error instanceof Error ? error.message : "An unknown error occurred.";
+  sessionStorage.setItem("activePage", "dashboard");
+  redirectToAuthPage(errorMessage);
 }
 
-function redirectToAuthPage() {
-  window.location.href = "../pages/auth.html";
+function redirectToAuthPage(errorMessage) {
+  const url = new URL("../pages/auth.html", window.location.href);
+  url.searchParams.append("error", errorMessage);
+  window.location.href = url.href;
 }
 
 function showLoadingScreen() {
@@ -84,7 +74,7 @@ function hideLoadingScreen() {
   document.getElementById("loadingScreen").style.display = "none";
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+function setupSidebarLinks() {
   const links = document.querySelectorAll(".sidebar a");
 
   links.forEach((link) => {
@@ -99,18 +89,15 @@ document.addEventListener("DOMContentLoaded", function () {
       this.classList.add("active");
 
       if (contentId === "dashboard") {
-        window.location.hash = "#";
         sessionStorage.setItem("activePage", "dashboard");
-
-        window.location.reload();
+        window.location.hash = "#";
       } else {
         const newUrl = window.location.pathname + "#" + contentId;
         history.pushState(null, "", newUrl);
         sessionStorage.setItem("activePage", contentId);
-
-        loadPage(contentId);
-        window.location.reload();
       }
+
+      window.location.reload();
     });
   });
 
@@ -136,115 +123,46 @@ document.addEventListener("DOMContentLoaded", function () {
   if (initialPage !== "dashboard") {
     loadPage(initialPage);
   }
-});
+}
 
-function loadPage(pageName) {
-  showLoadingScreen();
-
-  if (!pageName) {
-    pageName = sessionStorage.getItem("activePage") || "dashboard";
-  }
-
-  fetch(`${pageName}.html`)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Page ${pageName}.html not found.`);
-      }
-      return response.text();
-    })
-    .then((html) => {
-      if (pageName === "transaction") {
-        fetchUserDataAndCheckAccess(html, pageName);
-      } else {
-        displayPage(html, pageName);
-      }
-    })
-    .catch((error) => {
-      console.error(error.message);
+function setupDropdownMenu() {
+  document
+    .getElementById("dropdownBtn")
+    .addEventListener("click", function (event) {
+      var dropdownContent = document.getElementById("categoryFilterContainer");
+      dropdownContent.classList.toggle("show");
+      event.stopPropagation();
     });
-}
 
-function fetchUserDataAndCheckAccess(html, pageName) {
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      firestore
-        .collection("users")
-        .doc(user.uid)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            const userData = doc.data();
-            const userRole = userData.role;
-
-            if (pageName === "transaction" && userRole === "user") {
-              sessionStorage.setItem("activePage", "dashboard");
-              deniedModal(
-                "Access denied: Users are not authorized to access the Transaction page."
-              ).then(() => {
-                window.location.href = "../pages/dashboard.html";
-              });
-            } else {
-              displayPage(html, pageName);
-            }
-          } else {
-            console.log("User data not found");
-            window.location.href = "../pages/auth.html";
-          }
-        })
-        .catch((error) => {
-          console.error("Error getting user data:", error);
-        });
-    } else {
-      console.log("User is signed out");
+  window.addEventListener("click", function (event) {
+    var dropdownContent = document.getElementById("categoryFilterContainer");
+    var dropdownBtn = document.getElementById("dropdownBtn");
+    if (
+      event.target !== dropdownBtn &&
+      !dropdownContent.contains(event.target)
+    ) {
+      dropdownContent.classList.remove("show");
     }
   });
 }
 
-function initializePage(pageName) {
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      firestore
-        .collection("users")
-        .doc(user.uid)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            const userData = doc.data();
-            const userRole = userData.role;
+async function loadPage(pageName) {
+  try {
+    showLoadingScreen();
 
-            if (pageName === "transaction" && userRole === "user") {
-              deniedModal(
-                "Access denied: Users are not authorized to access the Transaction page."
-              )
-                .then(() => {
-                  sessionStorage.setItem("activePage", "dashboard");
-
-                  window.location.href = "../pages/dashboard.html";
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
-            }
-          } else {
-            console.log("User data not found");
-          }
-        })
-        .catch((error) => {
-          console.error("Error getting user data:", error);
-        });
-    } else {
-      console.log("User is signed out");
+    if (!pageName) {
+      pageName = sessionStorage.getItem("activePage") || "dashboard";
     }
-  });
 
-  switch (pageName) {
-    case "transaction":
-      loadAndInitialize();
-    case "sales":
-    case "product":
-      break;
-    default:
-      break;
+    const response = await fetch(`${pageName}.html`);
+    if (!response.ok) {
+      throw new Error(`Page ${pageName}.html not found.`);
+    }
+
+    const html = await response.text();
+    displayPage(html, pageName);
+  } catch (error) {
+    handleError(error);
   }
 }
 
@@ -254,6 +172,21 @@ function displayPage(html, pageName) {
   }
 
   initializePage(pageName);
+}
+
+function initializePage(pageName) {
+  switch (pageName) {
+    case "dashboard":
+      break;
+    case "transaction":
+      break;
+    case "sales":
+      break;
+    case "product":
+      break;
+    default:
+      break;
+  }
 }
 
 function loadScript(scriptName) {
@@ -303,8 +236,7 @@ document
   .getElementById("dropdownBtn")
   .addEventListener("click", function (event) {
     var dropdownContent = document.getElementById("categoryFilterContainer");
-    dropdownContent.classList.toggle("show");
-
+    dropdownContent.classList.toggle("showFilter");
     event.stopPropagation();
   });
 
@@ -312,6 +244,6 @@ window.addEventListener("click", function (event) {
   var dropdownContent = document.getElementById("categoryFilterContainer");
   var dropdownBtn = document.getElementById("dropdownBtn");
   if (event.target !== dropdownBtn && !dropdownContent.contains(event.target)) {
-    dropdownContent.classList.remove("show");
+    dropdownContent.classList.remove("showFilter");
   }
 });
