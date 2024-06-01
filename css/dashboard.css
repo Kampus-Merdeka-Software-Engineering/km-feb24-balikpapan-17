@@ -667,7 +667,9 @@ div#topProductContainer {
 #filterInfo li {
   margin: 5px 0;
 }
-
+.showFilter {
+  display: none;
+}
 .dropbtn {
   background-color: transparent;
   border: 1px solid #857e7e;
@@ -691,16 +693,21 @@ div#topProductContainer {
   z-index: 1;
 }
 
-.dropdown-content.show {
+.dropdown-content.showFilter {
   position: absolute;
   background-color: #f9f9f9;
   border-radius: 12px;
 }
 
 .dropdown-content label {
+  cursor: pointer;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+}
+
+.categoryFilter {
+  cursor: pointer;
 }
 
 .show {
@@ -827,7 +834,7 @@ option {
     display: flex;
   }
   .app-main {
-    padding: 6% 8px 8px 8px;
+    padding: 10% 8px 8px 8px;
   }
   .chart-info-wrapper h2 {
     text-wrap: wrap;
@@ -905,7 +912,7 @@ option {
     right: 0.8rem;
   }
 
-  .dropdown-content.show {
+  .dropdown-content.showFilter {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 2px;
