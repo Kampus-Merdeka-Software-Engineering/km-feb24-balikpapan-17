@@ -126,11 +126,24 @@ input {
   height: auto;
 }
 
-@keyframes rotateBackground {
+@-webkit-keyframes rotateBackground {
   0% {
+    -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
   100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotateBackground {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }
@@ -144,6 +157,7 @@ input {
   width: 768px;
   max-width: 100%;
   min-height: 480px;
+  z-index: 3;
 }
 
 .container::before {
@@ -151,12 +165,14 @@ input {
   position: absolute;
   top: 0;
   left: 0;
-  width: 200%;
-  height: 200%;
-  background: url("../assets/images/beans.png") center/cover no-repeat;
+  width: 150%;
+  height: 120%;
+  background: url("../assets/images/blend.png") center/cover no-repeat;
   background-size: 70% 120%;
-  background-position: center left;
+  background-position: center center;
+  -webkit-animation: rotateBackground 30s linear infinite;
   animation: rotateBackground 30s linear infinite;
+  -webkit-transform-origin: center;
   transform-origin: center;
   z-index: -1;
 }
@@ -171,7 +187,7 @@ input {
   background-color: #18191908;
   backdrop-filter: blur(16px) saturate(85%) contrast(100%);
   -webkit-backdrop-filter: blur(16px) saturate(85%) contrast(100%);
-  z-index: 0;
+  z-index: 1;
   border-radius: 25px;
 }
 

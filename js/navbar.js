@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("logoImage").src = "./assets/images/lgo.png";
       } else {
         document.getElementById("logoImage").classList.add("logo-img");
-        document.getElementById("logoImage").src = "./assets/images/nvlogo.png";
+        document.getElementById("logoImage").src = "./assets/images/nvlg.png";
         document.getElementById("logoImage").style.opacity = "1";
       }
     });

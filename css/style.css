@@ -3,14 +3,27 @@
   font-family: "Urbanist", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  scroll-behavior: smooth;
   transition: all 0.5s ease;
+  box-sizing: border-box;
 }
 
 html,
 body {
   margin: 0;
   padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  background-color: var(--text-color-lght);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: -0.8px;
 }
 
 section {
@@ -18,14 +31,17 @@ section {
 }
 
 button {
-  border-radius: 8px;
+  text-transform: capitalize;
+  letter-spacing: -0.8px;
+  border-radius: 10px;
   border: none;
   background-color: var(--text-color-drk);
   color: #ffffff;
-  font-size: 12px;
-  font-weight: bold;
-  padding: 12px 45px;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 12px 35px;
   transition: transform 80ms ease-in;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 button.custom-cancel-button,
@@ -37,6 +53,30 @@ button.custom-cancel-button,
   padding: 12px 45px !important;
   text-transform: uppercase !important;
   transition: transform 80ms ease-in !important;
+}
+
+#scrollTopBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 2rem;
+  padding: 7px 12px;
+  background-color: var(--text-color-drk);
+  color: var(--text-color-lght);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(100px);
+  transition: all 0.3s ease-out;
+}
+
+#scrollTopBtn.show {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 #loadingScreen {
@@ -113,4 +153,99 @@ div:where(.swal2-icon) {
 
 .swipe-out-to-bottom {
   animation: swipeOutToBottom 0.5s ease-out;
+}
+
+.loader {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+/* .aos {
+  opacity: 0;
+  transform: translateY(150px);
+  transition: opacity 0.8s ease-out, transform 1s ease-in-out;
+} */
+.aos {
+  opacity: 0;
+  transition: opacity 0.8s ease-in, transform 1s ease-out;
+}
+
+/* Animations for different directions */
+.aos.afl {
+  transform: translateX(-50px);
+}
+.aos.afr {
+  transform: translateX(50px);
+}
+.aos.aft {
+  transform: translateY(-50px);
+}
+.aos.afb {
+  transform: translateY(50px);
+}
+
+/* Active state to reset transform */
+.aos.active {
+  opacity: 1;
+  transform: translateX(0);
+  transform: translateY(0);
+}
+
+/* Class for delay */
+.d1 {
+  transition-delay: 0.1s;
+}
+.d2 {
+  transition-delay: 0.2s;
+}
+.d3 {
+  transition-delay: 0.3s;
+}
+.d4 {
+  transition-delay: 0.4s;
+}
+.d5 {
+  transition-delay: 0.5s;
+}
+.d6 {
+  transition-delay: 0.6s;
+}
+.d7 {
+  transition-delay: 0.7s;
+}
+.d8 {
+  transition-delay: 0.8s;
+}
+.d9 {
+  transition-delay: 0.9s;
+}
+.d10 {
+  transition-delay: 1s;
+}
+.d12 {
+  transition-delay: 1.2s;
+}
+.d13 {
+  transition-delay: 1.3s;
 }

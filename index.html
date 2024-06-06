@@ -18,7 +18,7 @@
       href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.min.css"
       rel="stylesheet"
     />
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/theme.css" />
     <link rel="stylesheet" href="./css/navbar.css" />
@@ -43,10 +43,11 @@
         </div>
         <div class="navbar-right">
           <ul class="nav-menu">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#menu">Menu's</a></li>
-            <li><a href="#team">Team</a></li>
+            <li><a href="#home">HOME</a></li>
+            <li><a href="#about">ABOUT</a></li>
+            <li><a href="#menu">MENU</a></li>
+            <li><a href="#team">TEAM</a></li>
+            <li><a href="#bottom">CONTACT</a></li>
             <li class="submenu-li" id="loginLi">
               <a>
                 <i class="fa-solid fa-mug-hot fa-lg"></i>
@@ -54,17 +55,17 @@
               <ul class="submenu">
                 <li>
                   <a href="./pages/profile.html">
-                    <i class="fas fa-user"></i> Profile
+                    <i class="fas fa-user"></i> PROFILE
                   </a>
                 </li>
                 <li id="dashboardLi">
                   <a href="./pages/dashboard.html">
-                    <i class="fa-solid fa-chalkboard"></i> Dashboard
+                    <i class="fa-solid fa-chalkboard"></i> DASHBOARD
                   </a>
                 </li>
                 <li>
                   <a href="#" id="logoutButton">
-                    <i class="fa-solid fa-power-off"></i> Logout
+                    <i class="fa-solid fa-power-off"></i> LOGOUT
                   </a>
                 </li>
               </ul>
@@ -73,10 +74,11 @@
           <div class="dropdown">
             <button class="dropbtn" onclick="toggleDropdown()"></button>
             <div class="dropdown-content" id="dropdownContent">
-              <a href="#home">Home</a>
-              <a href="#about">About</a>
-              <a href="#menu">Menu's</a>
-              <a href="#team">Team</a>
+              <a href="#home">HOME</a>
+              <a href="#about">ABOUT</a>
+              <a href="#menu">MENU</a>
+              <a href="#team">TEAM</a>
+              <a href="#contact">CONTACT</a>
             </div>
           </div>
         </div>
@@ -87,20 +89,24 @@
       <div class="home-container">
         <div class="home-content">
           <div class="home-text">
-            <h2 id="maven" class="maven-coffee">Maven Coffee</h2>
-            <p>
-              Unearth perfection in every single drop of Maven Coffee: The
+            <h2 id="maven" class="maven-coffee">Hi Welcome!</h2>
+            <p class="home-par" data-aos="fade-right" data-aos-delay="700">
+              Unearth perfection in every single drop of Maven Coffee : The
               sanctuary where bliss cascades into every glass, crafting moments
               of pure delight and satisfaction.
             </p>
 
-            <button type="button">Buy Now!</button>
+            <button
+              id="discoverBtn"
+              type="button"
+              data-aos="fade-up"
+              data-aos-anchor-placement="top-bottom"
+              data-aos-delay="1000"
+            >
+              Discover Now!
+            </button>
           </div>
-          <img
-            class="home-image"
-            src="./assets/images/blend.png"
-            alt="Home Image"
-          />
+          <div id="threedcontainer" class="threedcontainer"></div>
         </div>
       </div>
     </section>
@@ -114,21 +120,27 @@
         </div>
         <div class="Info">
           <div class="styled-list">
-            <h1>Welcome to Maven Coffee!</h1>
+            <h1 data-aos="fade-down" data-aos-delay="300">
+              Welcome to Maven Coffee!
+            </h1>
+
+            <p data-aos="fade-right" data-aos-delay="100">
+              We are a team of devoted coffee enthusiasts, passionate about
+              creating unforgettable coffee experiences. Here, we serve
+              high-quality coffee with a touch of warmth and friendliness. Each
+              cup is crafted with expertise and love.
+            </p>
+
+            <p data-aos="fade-right" data-aos-delay="200">
+              We take great pride in our commitment to quality and innovation.
+              We are also dedicated to environmental sustainability and
+              supporting local coffee farmers.
+            </p>
             <br />
-
-            We are a team of devoted coffee enthusiasts, passionate about
-            creating unforgettable coffee experiences. Here, we serve
-            high-quality coffee with a touch of warmth and friendliness. Each
-            cup is crafted with expertise and love.
-            <br /><br />
-            We take great pride in our commitment to quality and innovation. We
-            are also dedicated to environmental sustainability and supporting
-            local coffee farmers.
-            <br /><br />
-
-            Thank you for choosing Maven Coffee. We look forward to welcoming
-            you and sharing our love for coffee. Warm regards, Team 17!
+            <p data-aos="fade-right" data-aos-delay="300">
+              Thank you for choosing Maven Coffee. We look forward to welcoming
+              you and sharing our love for coffee. Warm regards, Team 17!
+            </p>
           </div>
         </div>
       </div>
@@ -137,9 +149,11 @@
     <section id="about" class="section">
       <div class="mision-container">
         <div class="row">
-          <h1 class="titleAb">About</h1>
-          <div class="block"></div>
-          <p>
+          <h1 class="widget-title" data-aos="fade-up" data-aos-delay="300">
+            About Us
+            <span></span>
+          </h1>
+          <p data-aos="fade-up" data-aos-delay="500">
             Our cozy coffee shop offers a warm, inviting space to enjoy freshly
             brewed coffee and delicious baked goods. We source our beans from
             local roasters and bake everything from scratch daily using
@@ -149,16 +163,22 @@
         </div>
         <div class="row">
           <div class="six columns">
-            <h3><i class="fa-solid fa-stairs"></i> Our Process</h3>
-            <p>
+            <h3 class="widget-title" data-aos="fade-up" data-aos-delay="400">
+              <i class="fa-solid fa-stairs"></i>
+              Our Process<span></span>
+            </h3>
+            <p data-aos="fade-up" data-aos-delay="600">
               Expertly brewed coffee using premium beans and fresh-baked treats
               prepared in our kitchen every morning with high-quality
               ingredients to ensure superior taste and freshness.
             </p>
           </div>
           <div class="six columns">
-            <h3><i class="fa-solid fa-pen-clip"></i> Our Mission</h3>
-            <p>
+            <h3 class="widget-title" data-aos="fade-up" data-aos-delay="500">
+              <i class="fa-solid fa-pen-clip"></i> Our Mission
+              <span></span>
+            </h3>
+            <p data-aos="fade-up" data-aos-delay="700">
               To sustainably source local products, minimize environmental
               impact, support other small businesses, and create a community
               gathering space that enriches the neighborhood.
@@ -166,16 +186,22 @@
           </div>
           <div class="row">
             <div class="six columns">
-              <h3><i class="fa-solid fa-gears"></i> Our Goal</h3>
-              <p>
+              <h3 class="widget-title" data-aos="fade-up" data-aos-delay="500">
+                <i class="fa-solid fa-gears"></i> Our Goal
+                <span></span>
+              </h3>
+              <p data-aos="fade-up" data-aos-delay="800">
                 To provide an exceptional cafe experience by delivering
                 outstanding products, friendly service, and a warm, welcoming
                 environment for customers to relax and socialize.
               </p>
             </div>
             <div class="six columns">
-              <h3><i class="fa-solid fa-store"></i> Our Store</h3>
-              <p>
+              <h3 class="widget-title" data-aos="fade-up" data-aos-delay="600">
+                <i class="fa-solid fa-store"></i> Our Store
+                <span></span>
+              </h3>
+              <p data-aos="fade-up" data-aos-delay="100">
                 Our charming coffee shop features a modern yet rustic decor with
                 plentiful seating for catching up with friends or getting work
                 done over a delicious beverage and treat.
@@ -187,305 +213,224 @@
     </section>
 
     <section id="menu" class="section">
-      <h2>Our Menu's</h2>
-      <div class="menu-container">
-        <div class="menu-content">
-          <div class="menu-text">
-            <h1>Espresso</h1>
-            <p>
-              Intense, rich coffee with a strong flavor and aroma. Perfect for a
-              quick energy boost.
-            </p>
-            <button class="price">$ 3.75</button>
-          </div>
-          <img
-            src="./assets/images/coffeeEspresso.jpg"
-            alt="Espresso"
-            class="main-image"
-          />
-        </div>
+      <div class="thx">
+        <h1 data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+          Our Menu's
+        </h1>
       </div>
-
-      <div class="menu-container">
-        <div class="menu-content">
-          <img
-            src="./assets/images/coffeeLatte.jpg"
-            alt="Latte"
-            class="main-image"
-          />
-          <div class="menu-text">
-            <h1>Latte</h1>
-            <p>
-              Smooth blend of espresso and steamed milk, topped with foam. Ideal
-              for a sweet, gentle coffee experience.
-            </p>
-            <button class="price">$ 4.52</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="menu-container">
-        <div class="menu-content">
-          <div class="menu-text">
-            <h1>Drink Chocolate</h1>
-            <p>
-              Rich, creamy cocoa drink perfect for cold days. Enjoy with whipped
-              cream topping.
-            </p>
-            <button class="price">$ 4.75</button>
-          </div>
-          <img
-            src="./assets/images/drinkChoco.jpg"
-            alt="Hot Chocolate"
-            class="main-image"
-          />
-        </div>
-      </div>
-
-      <div class="menu-container">
-        <div class="menu-content">
-          <img
-            src="./assets/images/looseTea.jpg"
-            alt="Loose Tea"
-            class="main-image"
-          />
-          <div class="menu-text">
-            <h1>Loose Tea</h1>
-            <p>
-              Authentic tea flavors brewed from selected tea leaves. Offers a
-              rich tea-drinking experience.
-            </p>
-            <button class="price">$ 2.55</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="menu-container">
-        <div class="menu-content">
-          <div class="menu-text">
-            <h1>Croissant</h1>
-            <p>
-              Traditional French pastry with flaky layers and buttery softness.
-              Perfect for breakfast or snacks.
-            </p>
-            <button class="price">$ 3.25</button>
-          </div>
-          <img
-            src="./assets/images/croissant.jpg"
-            alt="Croissant"
-            class="main-image"
-          />
-        </div>
-      </div>
-
-      <div class="menu-container">
-        <div class="menu-content">
-          <img
-            src="./assets/images/coffeBeans.jpg"
-            alt="Coffee Beans"
-            class="main-image"
-          />
-          <div class="menu-text">
-            <h1>Coffee Beans</h1>
-            <p>
-              Select roasted coffee beans for home brewing. From strong to mild,
-              catering to true coffee lovers.
-            </p>
-            <button class="price">$ 20.45</button>
-          </div>
-        </div>
-      </div>
-      <h2>Team</h2>
+      <div id="menu-content"></div>
     </section>
 
     <section id="team" class="section">
+      <div class="thx">
+        <h1 data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+          Team Member's
+        </h1>
+      </div>
       <div class="team-container">
-        <div class="team-member">
-          <img src="/assets/images/Woman.jpg" alt="Member 1" />
-          <h3>Nabila Ummul Husna</h3>
-          <p>Team Leadrer</p>
-        </div>
-        <div class="team-member">
-          <img src="/assets/images/Man.jpg" alt="Member 2" />
-          <h3>Muhammad Farhan</h3>
-          <p>Front End</p>
-        </div>
-        <div class="team-member">
-          <img src="/assets/images/Man.jpg" alt="Member 3" />
-          <h3>Aditya Muhammad Fadillah Umar</h3>
-          <p>Front End</p>
-        </div>
-        <div class="team-member">
-          <img src="/assets/images/Man.jpg" alt="Member 4" />
-          <h3>Ahmadi</h3>
-          <p>Front End</p>
-        </div>
-        <div class="team-member">
-          <img src="/assets/images/Man.jpg" alt="Member 5" />
-          <h3>Alex Saputra</h3>
-          <p>Front End</p>
-        </div>
-        <div class="team-member">
-          <img src="/assets/images/Woman.jpg" alt="Member 6" />
-          <h3>Salsa Bila Putri Maharani</h3>
-          <p>Deployment</p>
-        </div>
-        <div class="team-member">
-          <img src="/assets/images/Woman.jpg" alt="Member 7" />
-          <h3>Riski Anabela</h3>
-          <p>Pitch Deck</p>
-        </div>
-        <div class="team-member">
-          <img src="/assets/images/Woman.jpg" alt="Member 8" />
-          <h3>Hannah Zakiyya Silvizi Hijra</h3>
-          <p>Pitch Deck</p>
-        </div>
-        <div class="team-member">
-          <img src="/assets/images/Woman.jpg" alt="Member 9" />
-          <h3>Fitria Putri Andreanita</h3>
-          <p>Quality Assurance</p>
-        </div>
-        <div class="team-member">
-          <img src="/assets/images/Woman.jpg" alt="Member 10" />
-          <h3>Tiara Hanida</h3>
-          <p>Quality Assurance</p>
-        </div>
-        <div class="team-member">
-          <img src="/assets/images/Man.jpg" alt="Member 11" />
-          <h3>Carlos Panjaitan</h3>
-          <p>Quality Assurance</p>
-        </div>
+        <div id="profiles-container" class="category_container"></div>
+      </div>
+      <div class="team-container">
+        <div id="profiles-container2" class="category_container"></div>
+      </div>
+      <div class="team-container">
+        <div id="profiles-container3" class="category_container"></div>
       </div>
     </section>
 
-    <footer>
-      <div class="footer">
-        <div class="social">
-          <h1>Maven-Coffe</h1>
+    <section id="stack" class="stack">
+      <div class="thx">
+        <h1 data-aos="fade-up" data-aos-anchor-placement="top-bottom">Stack</h1>
+      </div>
+      <div class="stack-content" id="stack-content"></div>
+    </section>
 
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit nulla,
-            nesciunt accusantium odit fuga beatae voluptatum qui tenetur magnam
-            mollitia quos perferendis aliquid placeat quas ex animi
-            reprehenderit dignissimos iste nostrum magni expedita? Debitis
-            blanditiis nulla sapiente? Nihil voluptatibus dolor iusto nemo quia
-            minima, earum eaque unde. Laboriosam, sequi numquam.
-          </p>
-
-          <br />
-          <br />
-
-          <a href="#"><i class="fa-brands fa-instagram"></i></a>
-
-          <a href=""><i class="fa-brands fa-facebook"></i></a>
-
-          <a href=""><i class="fa-brands fa-square-twitter"></i></a>
-
-          <a href=""><i class="fa-brands fa-linkedin"></i></a>
+    <div id="bottom" class="section">
+      <div
+        id="contact"
+        class="team-bottom section"
+        data-aos="fade-up"
+        data-aos-duration="3000"
+      >
+        <div class="credits-container">
+          <div class="credits-content">
+            <h1>Credits and Acknowledgments</h1>
+            <p>
+              We, the team, would like to extend our heartfelt gratitude to
+              everyone who has supported and contributed to our project. Your
+              encouragement and assistance have been invaluable to our success.
+            </p>
+            <p>
+              We appreciate your dedication, hard work, and collaboration
+              throughout this journey. Thank you for being an essential part of
+              our team!
+            </p>
+            <p>Sincerely,</p>
+            <p>[Balikpapan 17]</p>
+          </div>
         </div>
-
-        <ul>
-          <li>
-            <a href="">Home</a>
-          </li>
-
-          <li>
-            <a href="">About us</a>
-          </li>
-
-          <li>
-            <a href="">Contact us</a>
-          </li>
-
-          <li>
-            <a href="">Get started</a>
-          </li>
-        </ul>
       </div>
 
-      <p class="copy-right">
-        Copyright @2024 all right reserved by Maven-Coffe
-      </p>
-    </footer>
+      <footer id="footer" class="main-footer">
+        <div class="footer-content">
+          <div class="footer-container">
+            <div class="footer-row">
+              <div class="footer-column maven">
+                <div class="footer-widget">
+                  <h5 class="widget-title">Maven Coffee<span></span></h5>
+                  <p>
+                    Unearth perfection in every single drop of Maven Coffee :
+                    The sanctuary where bliss cascades into every glass,
+                    crafting moments of pure delight and satisfaction.
+                  </p>
+                </div>
+                <form id="feedback-form">
+                  <label for="feedback-message">Your Feedback :</label>
+                  <div class="feedback-content">
+                    <textarea
+                      id="feedback-message"
+                      name="message"
+                      rows="4"
+                      cols="50"
+                      placeholder="Write your message here..."
+                    ></textarea
+                    ><br />
+                    <button type="submit">Send</button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="footer-column">
+                <div class="footer-widget">
+                  <h5 class="widget-title">Quick Links<span></span></h5>
+                  <ul class="footer-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#menu">Our Menu's</a></li>
+                    <li><a href="#team">Team Member's </a></li>
+                    <li><a href="#footer">Contact</a></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="footer-column">
+                <div class="footer-widget">
+                  <h5 class="widget-title">Contact Us<span></span></h5>
+                  <p>
+                    <i class="fa-solid fa-envelope"></i>
+                    <a href="mailto:info@mavencoffee.com" class="mail">
+                      info@mavencoffee.com
+                    </a>
+                  </p>
+                  <p>
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <a href="#" class="mail"> +62 999 9999 9999 </a>
+                  </p>
+                </div>
+              </div>
+
+              <div class="footer-column partnership">
+                <div class="footer-widget">
+                  <h5 class="widget-title">Partnership<span></span></h5>
+                  <a href="">
+                    <img src="./assets/images/revoU.png" alt="" srcset="" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-copyright">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-12 text-center">
+                <p>Copyright Maven Coffee © 2024. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <button id="scrollTopBtn"><i class="fa-solid fa-caret-up"></i></button>
 
     <script src="./js/navbar.js"></script>
+    <script type="module" src="/js/3D.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
-    <script src="../js/auth.js"></script>
-
+    <script src="./js/auth.js"></script>
+    <script src="./js/index.js"></script>
+    <script src="./js/cardMenu.js"></script>
+    <script src="./js/cardTeam.js"></script>
+    <script src="./js/cardStack.js"></script>
     <script>
-      function showLoadingScreen() {
-        console.log("Loading started...");
-        document.getElementById("loadingScreen").style.display = "flex";
-      }
+      document
+        .getElementById("feedback-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
 
-      function hideLoadingScreen() {
-        console.log("Loading finished...");
-        document.getElementById("loadingScreen").style.display = "none";
-      }
+          var message = document.getElementById("feedback-message").value;
 
-      showLoadingScreen();
-
-      setTimeout(hideLoadingScreen, 500);
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const loginLi = document.getElementById("loginLi");
-        const dropdownContent = document.getElementById("dropdownContent");
-
-        auth.onAuthStateChanged((user) => {
-          if (!user) {
-            loginLi.innerHTML = '<button id="loginButton">Login</button>';
-            document
-              .getElementById("loginButton")
-              .addEventListener("click", function () {
-                window.location.href = "./pages/auth.html?#";
-              });
-
-            dropdownContent.innerHTML = `
-              <a href="#home">Home</a>
-              <a href="#about">About</a>
-              <a href="#menu">Menu's</a>
-              <a href="#team">Team</a>
-              <button id="loginA">Login</button>
-            `;
-            document
-              .getElementById("loginA")
-              .addEventListener("click", function () {
-                window.location.href = "./pages/auth.html?#";
-              });
+          var user = firebase.auth().currentUser;
+          if (user) {
+            var senderName = user.email;
+            sendFeedback(message, senderName);
           } else {
-            loginLi.innerHTML = `
-              <a >
-                <i class="fa-solid fa-mug-hot fa-lg"></i>
-              </a>
-              <ul class="submenu">
-                <li>
-                  <a href="./pages/profile.html"><i class="fas fa-user"></i> Profile</a>
-                </li>
-                <li id="dashboardLi">
-                  <a href="./pages/dashboard.html"><i class="fa-solid fa-chalkboard"></i> Dashboard</a>
-                </li>
-                <li>
-                  <button  id="logoutButton" onclick="logout()"><i class="fa-solid fa-power-off"></i> Logout</button>
-                </li>
-              </ul>
-            `;
-
-            dropdownContent.innerHTML = `
-              <a href="#home">Home</a>
-              <a href="#about">About</a>
-              <a href="#menu">Menu's</a>
-              <a href="#team">Team</a>
-              <a href="./pages/profile.html">Profile</a>
-              <a id="dropdownDashboardLink" href="./pages/dashboard.html">Dashboard</a>
-              <a href="#" id="dropdownLogoutButton" onclick="logout()"><i class="fa-solid fa-power-off"></i> LogOut</a>
-            `;
+            Swal.fire({
+              title: "Feedback",
+              text: "Masukkan nama Anda:",
+              input: "text",
+              showCancelButton: true,
+              confirmButtonText: "Kirim",
+              cancelButtonText: "Batal",
+              confirmButtonColor: "#5e3229",
+              cancelButtonColor: "#d33",
+              preConfirm: (name) => {
+                if (!name) {
+                  Swal.showValidationMessage("Nama tidak boleh kosong");
+                }
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                var senderName = result.value;
+                sendFeedback(message, senderName);
+              }
+            });
           }
         });
-      });
+
+      function sendFeedback(message, senderName) {
+        firestore
+          .collection("feedback")
+          .add({
+            message: message,
+            sender: senderName,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          })
+          .then(function (docRef) {
+            Swal.fire({
+              title: "Sukses",
+              text: "Feedback Anda berhasil dikirim",
+              icon: "success",
+              confirmButtonColor: "#5e3229",
+            });
+          })
+          .catch(function (error) {
+            Swal.fire({
+              title: "Error",
+              text: "Terjadi kesalahan dalam mengirim feedback",
+              icon: "error",
+              confirmButtonColor: "#5e3229",
+            });
+          });
+      }
     </script>
   </body>
 </html>

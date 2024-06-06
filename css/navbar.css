@@ -19,10 +19,7 @@ header {
   padding: 0;
   display: flex;
   align-items: center;
-}
-
-.nav-menu li {
-  margin-right: 30px;
+  gap: 25px;
 }
 
 .nav-menu li:last-child {
@@ -30,30 +27,31 @@ header {
 }
 
 .nav-menu li a {
+  letter-spacing: -1px;
   text-decoration: none;
   transition: color 0.3s ease;
-  font-size: calc(6px + 1vw);
+  /* font-size: calc(2px + 1vw); */
   color: var(--text-color-drk);
 }
 
 .nav-menu li a.active {
-  font-weight: bold;
-  font-size: calc(6.5px + 1vw);
+  font-weight: 900;
+  font-size: calc(5px + 1vw);
 }
 
 .nav-menu li a:hover {
-  color: var(--text-color-lght);
+  color: #797878;
 }
 
 #loginButton {
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
   padding: 0.5rem 1rem;
   display: block;
   background-color: var(--text-color-drk);
   border: 1px solid transparent;
   color: var(--text-color-lght);
-  font-weight: 200;
+  /* font-weight: 200; */
   -webkit-border-radius: 18px;
   border-radius: 12px;
   -webkit-transition: all 0.3s ease-in-out;
@@ -138,6 +136,12 @@ a#loginA {
   font-weight: 900;
 }
 
+@media (max-width: 1024px) {
+  .nav-menu li a {
+    font-size: 1.2rem !important;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar {
     flex-direction: row;
@@ -177,7 +181,7 @@ a#loginA {
 }
 
 .logo img {
-  max-width: calc(6rem + 1vw);
+  max-width: calc(6.5rem + 1vw);
   height: auto;
 }
 
@@ -209,9 +213,6 @@ a#loginA {
 
 .navbar-about {
   background-color: var(--text-color-lght);
-  box-shadow: 0px -3px 12px 4px rgba(0, 0, 0, 0.65);
-  -webkit-box-shadow: 0px -3px 12px 4px rgba(0, 0, 0, 0.65);
-  -moz-box-shadow: 0px -3px 12px 4px rgba(0, 0, 0, 0.65);
 }
 
 .submenu {
