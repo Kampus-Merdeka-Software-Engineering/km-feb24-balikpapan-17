@@ -231,6 +231,7 @@ function createProductSalesChart(data) {
 
   const labels = Object.keys(productSales);
   const dataValues = Object.values(productSales);
+  const backgroundColors = labels.map((label) => getColor(label));
 
   const ctx = document.getElementById("productSalesChart").getContext("2d");
   if (window.productSalesChart) {
@@ -245,7 +246,7 @@ function createProductSalesChart(data) {
         {
           label: "Total Product Sales",
           data: dataValues,
-          backgroundColor: "#90C114",
+          backgroundColor: backgroundColors,
           borderWidth: 1,
         },
       ],

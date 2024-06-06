@@ -15,6 +15,7 @@ function createTopSellingProductsChart(data) {
     .slice(0, 5);
   const labels = sortedCategories.map((category) => category[0]);
   const dataValues = sortedCategories.map((category) => category[1]);
+  const backgroundColors = labels.map((label) => getColor(label));
 
   var ctx = document.getElementById("topSellingProductsChart").getContext("2d");
   if (window.topSellingProductsChart) {
@@ -29,8 +30,8 @@ function createTopSellingProductsChart(data) {
         {
           label: "Total Product Sales",
           data: dataValues,
-          backgroundColor: "#90C114",
-          borderColor: "#90C114",
+          backgroundColor: backgroundColors,
+          borderColor: backgroundColors,
           borderWidth: 1,
         },
       ],
@@ -63,71 +64,6 @@ function createTopSellingProductsChart(data) {
           },
           grid: {
             color: "#212121",
-            lineWidth: 0.2,
-          },
-        },
-      },
-    },
-  });
-}
-
-function createProductChart(data) {
-  const productSales = {};
-  data.forEach((entry) => {
-    if (productSales[entry.product_category]) {
-      productSales[entry.product_category] += entry.transaction_qty;
-    } else {
-      productSales[entry.product_category] = entry.transaction_qty;
-    }
-  });
-
-  const labels = Object.keys(productSales);
-  const dataValues = Object.values(productSales);
-
-  var ctx = document.getElementById("productChart").getContext("2d");
-
-  if (window.productChart) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  }
-
-  window.productChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Total Product Sales",
-          data: dataValues,
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
-          borderColor: "rgba(255, 99, 132, 1)",
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      scales: {
-        y: {
-          ticks: {
-            beginAtZero: true,
-          },
-          grid: {
-            color: "rgba(200, 200, 200, 0.08)",
-            lineWidth: 1,
-          },
-        },
-        x: {
-          title: {
-            display: true,
-            text: "Month",
-            font: {
-              weight: "bold",
-            },
-          },
-          ticks: {
-            beginAtZero: true,
-          },
-          grid: {
-            color: "#21212100",
             lineWidth: 0.2,
           },
         },
@@ -308,6 +244,7 @@ function createRevenueByProductChart(data) {
 
   const labels = sortedProducts.map((product) => product[0]);
   const dataValues = sortedProducts.map((product) => product[1]);
+  const backgroundColors = labels.map((label) => getColor(label));
 
   var ctx = document.getElementById("revenueByProductChart").getContext("2d");
   if (window.revenueByProductChart) {
@@ -322,8 +259,8 @@ function createRevenueByProductChart(data) {
         {
           label: "Product Revenue",
           data: dataValues,
-          backgroundColor: "#90C114",
-          borderColor: "#90C114",
+          backgroundColor: backgroundColors,
+          borderColor: backgroundColors,
           borderWidth: 1,
         },
       ],
