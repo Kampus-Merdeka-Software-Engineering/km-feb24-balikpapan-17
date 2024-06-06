@@ -1,95 +1,69 @@
 Chart.defaults.font.family = "Urbanist, sans-serif";
 
 async function initIndexedDB() {
+  const request = indexedDB.open("dataDB", 1);
+  request.onupgradeneeded = (event) => {
+    const db = event.target.result;
+    db.createObjectStore("dataStore", { keyPath: "id" });
+  };
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open("dataDB", 1);
-
-    request.onupgradeneeded = (event) => {
-      const db = event.target.result;
-      db.createObjectStore("dataStore", { keyPath: "id" });
-    };
-
-    request.onsuccess = (event) => {
-      resolve(event.target.result);
-    };
-
-    request.onerror = (event) => {
-      reject(event.target.error);
-    };
+    request.onsuccess = (event) => resolve(event.target.result);
+    request.onerror = (event) => reject(event.target.error);
   });
 }
 
 async function saveDataToIndexedDB(db, data) {
+  const transaction = db.transaction(["dataStore"], "readwrite");
+  const store = transaction.objectStore("dataStore");
+  const request = store.put({ id: "data", value: data });
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction(["dataStore"], "readwrite");
-    const store = transaction.objectStore("dataStore");
-
-    const request = store.put({ id: "data", value: data });
-
-    request.onsuccess = () => {
-      resolve();
-    };
-
-    request.onerror = (event) => {
-      reject(event.target.error);
-    };
+    request.onsuccess = () => resolve();
+    request.onerror = (event) => reject(event.target.error);
   });
 }
 
 async function loadDataFromIndexedDB(db) {
+  const transaction = db.transaction(["dataStore"], "readonly");
+  const store = transaction.objectStore("dataStore");
+  const request = store.get("data");
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction(["dataStore"], "readonly");
-    const store = transaction.objectStore("dataStore");
-
-    const request = store.get("data");
-
-    request.onsuccess = (event) => {
+    request.onsuccess = (event) =>
       resolve(event.target.result ? event.target.result.value : null);
-    };
-
-    request.onerror = (event) => {
-      reject(event.target.error);
-    };
+    request.onerror = (event) => reject(event.target.error);
   });
 }
 
 async function loadAndInitialize() {
   try {
+    showLoadingScreen();
     const db = await initIndexedDB();
-    const cachedData = await loadDataFromIndexedDB(db);
-    let data;
-
-    if (cachedData) {
-      data = cachedData;
-    } else {
+    let data = await loadDataFromIndexedDB(db);
+    if (!data) {
       const response = await fetch("../data/data.json");
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
-      }
       data = await response.json();
       await saveDataToIndexedDB(db, data);
     }
-
     window.data = data;
-
     populateMonthFilter(data);
     populateCategoryFilter(data);
     loadMonthFilters();
     loadCategoryFilters();
-
     const selectedStartMonth =
       localStorage.getItem("selectedStartMonth") || "Jan";
     const selectedEndMonth = localStorage.getItem("selectedEndMonth") || "Jun";
     const selectedCategories = JSON.parse(
       localStorage.getItem("selectedCategories")
     ) || ["all"];
-    let sortOrder = "default";
-
-    updateDashboard(selectedStartMonth, selectedEndMonth, sortOrder);
+    const sortOrder = "default";
+    await updateDashboard(selectedStartMonth, selectedEndMonth, sortOrder);
     updateFilterInfo(selectedStartMonth, selectedEndMonth, selectedCategories);
     updateDropdownBtnText(selectedCategories);
   } catch (error) {
     console.error("Error fetching data:", error);
+  } finally {
+    hideLoadingScreen();
   }
 }
 
@@ -455,7 +429,6 @@ async function updateDashboard(
 
     const createCharts = [
       createProductSalesChart,
-      createProductChart,
       createRevenueAndSalesChart,
       createForecastChart,
       createRevenueByMonthChart,

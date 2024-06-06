@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <link rel="icon" type="image/x-icon" href="../assets/images/icon.png" />
     <title>Dashboard</title>
     <link
@@ -25,16 +25,15 @@
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/theme.css" />
     <script src="../firebaseConfig.js"></script>
-    <script src="../js/worker/worker.js"></script>
   </head>
-  <body id="dashboardContent" class="dashboard-container">
+
+  <body>
     <div id="loadingScreen" style="display: none">
       <div>Loading...</div>
     </div>
-
     <div class="app-left sidebar">
       <div class="top-menu">
-        <a class="logo" href="../index.html">
+        <button class="logo" onclick="goHome()">
           <div class="app-logo">
             <img
               src="../assets/images/nvlg.png"
@@ -43,15 +42,20 @@
               id="logoImage"
             />
           </div>
-        </a>
+        </button>
 
         <button class="close-menu">
           <i class="fa-solid fa-xmark fa-lg" style="color: #5e3229"></i>
         </button>
       </div>
       <ul class="nav-list">
-        <li class="nav-list-item active">
-          <a class="nav-list-link" id="dashboard" href="#">
+        <li class="nav-list-item">
+          <a
+            class="nav-list-link"
+            id="dashboard"
+            href="#"
+            data-content="content-overview"
+          >
             <i class="fa-regular fa-eye fa-lg"></i>
             Overview
           </a>
@@ -61,27 +65,37 @@
             class="nav-list-link"
             id="transaction"
             href="#"
-            style="display: none"
+            data-content="content-transaction"
           >
             <i class="fa-solid fa-table fa-lg"></i>
             Transaction
           </a>
         </li>
         <li class="nav-list-item">
-          <a class="nav-list-link" id="sales" href="#">
+          <a
+            class="nav-list-link"
+            id="sales"
+            href="#"
+            data-content="content-sales"
+          >
             <i class="fa-solid fa-chart-column fa-lg"></i>
             Sales
           </a>
         </li>
         <li class="nav-list-item">
-          <a class="nav-list-link" id="product" href="#">
+          <a
+            class="nav-list-link"
+            id="product"
+            href="#"
+            data-content="content-product"
+          >
             <i class="fa-solid fa-boxes-packing fa-lg"></i>
             Product
           </a>
         </li>
       </ul>
-      <div class="nav-list-item logout">
-        <h2 class="nav-list-link" id="loggedout" onclick="logout()">
+      <div class="nav-btm-item logout">
+        <h2 class="nav-btm-link" onclick="logout()">
           <i class="fa-solid fa-power-off fa-lg"></i>
           LogOut
         </h2>
@@ -108,136 +122,258 @@
       </div>
     </div>
 
-    <div class="app-main content" id="main-content">
-      <div class="chart-row three">
-        <div class="chart-container-wrapper">
-          <div class="chart-container">
-            <div class="chart-info-wrapper">
-              <h2>Total Revenue</h2>
-              <span id="totalRevenue"></span>
+    <div class="app-main" id="main-content">
+      <div id="content-overview" class="content">
+        <div class="chart-row three">
+          <div class="chart-container-wrapper">
+            <div class="chart-container">
+              <div class="chart-info-wrapper">
+                <h2>Total Revenue</h2>
+                <span id="totalRevenue"></span>
+              </div>
+              <div class="chart-svg">
+                <div class="circular-chart">
+                  <i class="fa-solid fa-circle-dollar-to-slot"></i>
+                </div>
+              </div>
             </div>
-            <div class="chart-svg">
-              <div class="circular-chart">
-                <i class="fa-solid fa-circle-dollar-to-slot"></i>
+          </div>
+          <div class="chart-container-wrapper">
+            <div class="chart-container">
+              <div class="chart-info-wrapper">
+                <h2>#Of Transaction</h2>
+                <span id="totalTransaction"></span>
+              </div>
+              <div class="chart-svg">
+                <div class="circular-chart">
+                  <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chart-container-wrapper">
+            <div class="chart-container">
+              <div class="chart-info-wrapper">
+                <h2>Sales Amount</h2>
+                <span id="salesAmount"></span>
+              </div>
+              <div class="chart-svg">
+                <div class="circular-chart">
+                  <i class="fa-solid fa-money-bill-transfer"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chart-container-wrapper">
+            <div class="chart-container">
+              <div class="chart-info-wrapper">
+                <h2>--Rev Growth</h2>
+                <span id="averageRevenueGrowth"></span>
+              </div>
+              <div class="chart-svg">
+                <div class="circular-chart">
+                  <i class="fa-solid fa-money-bill-trend-up"></i>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="chart-container-wrapper">
-          <div class="chart-container">
-            <div class="chart-info-wrapper">
-              <h2>#Of Transaction</h2>
-              <span id="totalTransaction"></span>
-            </div>
-            <div class="chart-svg">
-              <div class="circular-chart">
-                <i class="fa-solid fa-file-invoice-dollar"></i>
+
+        <div class="chart-row two">
+          <div class="chart-container-wrapper big">
+            <div class="chart-container">
+              <div class="chart-container-header">
+                <h2>Revenue & Sales Trend</h2>
+                <span id="timeFrame"></span>
+              </div>
+              <div class="line-chart">
+                <canvas id="revenueAndSalesChart"></canvas>
+              </div>
+              <div class="chart-data-details">
+                <div class="chart-details-header"></div>
               </div>
             </div>
           </div>
+          <div class="chart-container-wrapper small">
+            <div class="chart-container" id="chartContainer"></div>
+            <!-- <div class="chart-container">
+              <div class="chart-container-header">
+                <h2>--Rev Growth</h2>
+                <span href="#">lorem</span>
+              </div>
+            </div> -->
+          </div>
         </div>
-        <div class="chart-container-wrapper">
-          <div class="chart-container">
-            <div class="chart-info-wrapper">
-              <h2>Sales Amount</h2>
-              <span id="salesAmount"></span>
-            </div>
-            <div class="chart-svg">
-              <div class="circular-chart">
-                <i class="fa-solid fa-money-bill-transfer"></i>
+        <div class="chart-row two">
+          <div class="chart-container-wrapper big">
+            <div class="chart-container">
+              <div class="chart-container-header">
+                <h2>Revenue vs Forecast</h2>
+                <span id="timeFrame"></span>
+              </div>
+              <div class="line-chart">
+                <canvas id="forecastChart"></canvas>
+              </div>
+              <div class="chart-data-details">
+                <div class="chart-details-header"></div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="chart-container-wrapper">
-          <div class="chart-container">
-            <div class="chart-info-wrapper">
-              <h2>--Rev Growth</h2>
-              <span id="averageRevenueGrowth"></span>
-            </div>
-            <div class="chart-svg">
-              <div class="circular-chart">
-                <i class="fa-solid fa-money-bill-trend-up"></i>
+          <div class="chart-container-wrapper bigbang">
+            <div class="chart-container">
+              <div class="chart-container-header">
+                <h2>Total Product Sales</h2>
+                <span id="timeFrame"></span>
+              </div>
+              <div class="line-chart">
+                <canvas id="productSalesChart"></canvas>
+              </div>
+              <div class="chart-data-details">
+                <div class="chart-details-header"></div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="chart-row two">
-        <div class="chart-container-wrapper big">
-          <div class="chart-container">
-            <div class="chart-container-header">
-              <h2>Revenue & Sales Trend</h2>
-              <span id="timeFrame"></span>
+      <div id="content-transaction" class="content">
+        <table id="transactionTable" class="display" style="width: 100%">
+          <thead>
+            <tr>
+              <th>#No.</th>
+              <th>Transaction Date</th>
+              <th>Time</th>
+              <th>Product ID</th>
+              <th>Product Category</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="content-sales" class="content">
+        <div class="chart-row two">
+          <div class="chart-container-wrapper big">
+            <div class="chart-container">
+              <div class="chart-container-header">
+                <h2>Revenue By Month</h2>
+                <span id="timeFrame"></span>
+              </div>
+              <div class="line-chart">
+                <canvas id="revenueByMonthChart"></canvas>
+              </div>
+              <div class="chart-data-details">
+                <div class="chart-details-header"></div>
+              </div>
             </div>
-            <div class="line-chart">
-              <canvas id="revenueAndSalesChart"></canvas>
-            </div>
-            <div class="chart-data-details">
-              <div class="chart-details-header"></div>
+          </div>
+          <div class="chart-container-wrapper big">
+            <div class="chart-container">
+              <div class="chart-container-header">
+                <h2>Revenue vs Forecast</h2>
+                <span id="timeFrame"></span>
+              </div>
+              <div class="line-chart">
+                <canvas id="forecastChart"></canvas>
+              </div>
+              <div class="chart-data-details">
+                <div class="chart-details-header"></div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="chart-container-wrapper small">
-          <div class="chart-container" id="chartContainer"></div>
-          <div class="chart-container">
-            <div class="chart-container-header">
-              <h2>--Rev Growth</h2>
-              <span href="#">lorem</span>
+        <div class="chart-row two">
+          <div class="chart-container-wrapper big">
+            <div class="chart-container">
+              <div class="chart-container-header">
+                <h2>Sales & Revenue Relation</h2>
+                <span id="timeFrame"></span>
+              </div>
+              <div class="line-chart">
+                <canvas id="salesRevenueRelationChart"></canvas>
+              </div>
+              <div class="chart-data-details">
+                <div class="chart-details-header"></div>
+              </div>
             </div>
-            <div class="chart-progres">
-              <svg viewBox="0 0 36 36" class="circular-chart blue">
-                <path
-                  class="circle-bg"
-                  d="M18 2.0845
-            a 15.9155 15.9155 0 0 1 0 31.831
-            a 15.9155 15.9155 0 0 1 0 -31.831"
-                ></path>
-                <path
-                  class="circle"
-                  stroke-dasharray="13.30, 100"
-                  d="M18 2.0845
-            a 15.9155 15.9155 0 0 1 0 31.831
-            a 15.9155 15.9155 0 0 1 0 -31.831"
-                ></path>
-                <text
-                  x="18"
-                  y="20.35"
-                  class="percentage"
-                  id="averageRevenueGrowth"
-                ></text>
-              </svg>
+          </div>
+          <div class="chart-container-wrapper big">
+            <div class="chart-container">
+              <div class="chart-container-header">
+                <h2>Revenue Growth(%)</h2>
+                <span id="timeFrame"></span>
+              </div>
+              <div class="line-chart">
+                <canvas id="revenueGrowthChart"></canvas>
+              </div>
+              <div class="chart-data-details">
+                <div class="chart-details-header"></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="chart-row two">
-        <div class="chart-container-wrapper big">
-          <div class="chart-container">
-            <div class="chart-container-header">
-              <h2>Revenue vs Forecast</h2>
-              <span id="timeFrame"></span>
+
+      <div id="content-product" class="content">
+        <div class="chart-row two">
+          <div class="chart-container-wrapper big">
+            <div class="chart-container">
+              <div class="chart-container-header">
+                <h2>Top 5 Selling Product</h2>
+                <span id="timeFrame"></span>
+              </div>
+              <div class="line-chart">
+                <canvas id="topSellingProductsChart"></canvas>
+              </div>
+              <div class="chart-data-details">
+                <div class="chart-details-header"></div>
+              </div>
             </div>
-            <div class="line-chart">
-              <canvas id="forecastChart"></canvas>
-            </div>
-            <div class="chart-data-details">
-              <div class="chart-details-header"></div>
+          </div>
+          <div class="chart-container-wrapper big">
+            <div class="chart-container">
+              <div class="chart-container-header">
+                <h2>Revenue By Product</h2>
+                <span id="timeFrame"></span>
+              </div>
+              <div class="line-chart">
+                <canvas id="revenueByProductChart"></canvas>
+              </div>
+              <div class="chart-data-details">
+                <div class="chart-details-header"></div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="chart-container-wrapper bigbang">
-          <div class="chart-container">
-            <div class="chart-container-header">
-              <h2>Total Product Sales</h2>
-              <span id="timeFrame"></span>
+        <div class="chart-row two">
+          <div class="chart-container-wrapper big">
+            <div class="chart-container">
+              <div class="chart-container-header">
+                <h2>Product Performance By Revenue</h2>
+                <span id="timeFrame"></span>
+              </div>
+              <div class="line-chart">
+                <canvas id="revenueByProductDoughnutChart"></canvas>
+              </div>
+              <div class="chart-data-details">
+                <div class="chart-details-header"></div>
+              </div>
             </div>
-            <div class="line-chart">
-              <canvas id="productSalesChart"></canvas>
-            </div>
-            <div class="chart-data-details">
-              <div class="chart-details-header"></div>
+          </div>
+          <div class="chart-container-wrapper big">
+            <div class="chart-container">
+              <div class="chart-container-header">
+                <h2>Product Performance By Sales</h2>
+                <span id="timeFrame"></span>
+              </div>
+              <div class="line-chart">
+                <canvas id="revenueBySalesDoughnutChart"></canvas>
+              </div>
+              <div class="chart-data-details">
+                <div class="chart-details-header"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -287,24 +423,7 @@
       </div>
       <div id="filterInfo"></div>
     </div>
-    <div class="d-none" style="display: none; opacity: 0">
-      <table id="transactionTable"></table>
-      <canvas id="productSalesChart"></canvas>
-      <canvas id="productChart"></canvas>
-      <canvas id="forecastChart"></canvas>
-      <canvas id="revenueAndSalesChart"></canvas>
-      <canvas id="revenueByMonthChart"></canvas>
-      <canvas id="revenueGrowthChart"></canvas>
-      <canvas id="topSellingProductsChart"></canvas>
-      <canvas id="revenueByProductChart"></canvas>
-      <canvas id="revenueByProductDoughnutChart"></canvas>
-      <canvas id="revenueBySalesDoughnutChart"></canvas>
-      <canvas id="salesRevenueRelationChart"></canvas>
-      <span id="totalRevenue"></span>
-      <span id="totalTransaction"></span>
-      <span id="salesAmount"></span>
-      <span id="averageRevenueGrowth"></span>
-    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>

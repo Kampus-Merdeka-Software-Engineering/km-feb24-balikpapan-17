@@ -95,120 +95,61 @@ function updateTopSellingProductsList(data) {
         productSalesPerMonth[month] = {};
       }
       const category = entry.product_category;
-      if (productSalesPerMonth[month][category]) {
-        productSalesPerMonth[month][category] += entry.transaction_qty;
-      } else {
-        productSalesPerMonth[month][category] = entry.transaction_qty;
-      }
+      productSalesPerMonth[month][category] =
+        (productSalesPerMonth[month][category] || 0) + entry.transaction_qty;
     }
   });
 
-  let totalTransactionsInRange = 0;
-  for (
-    let monthIndex = startMonthIndex;
-    monthIndex <= endMonthIndex;
-    monthIndex++
-  ) {
-    const month = monthOrder[monthIndex];
-    if (productSalesPerMonth[month]) {
-      for (const category in productSalesPerMonth[month]) {
-        totalTransactionsInRange += productSalesPerMonth[month][category];
+  const topProductsOverall = Object.values(productSalesPerMonth).reduce(
+    (acc, monthData) => {
+      for (const [category, qty] of Object.entries(monthData)) {
+        acc[category] = (acc[category] || 0) + qty;
       }
-    }
-  }
+      return acc;
+    },
+    {}
+  );
 
-  const topProductsOverall = {};
-
-  for (const month in productSalesPerMonth) {
-    for (const category in productSalesPerMonth[month]) {
-      if (topProductsOverall[category]) {
-        topProductsOverall[category] += productSalesPerMonth[month][category];
-      } else {
-        topProductsOverall[category] = productSalesPerMonth[month][category];
-      }
-    }
-  }
-
-  let timeFrame = selectedStartMonth;
-  if (selectedStartMonth !== selectedEndMonth) {
-    timeFrame += ` - ${selectedEndMonth}`;
-  }
-
+  const totalTransactionsInRange = Object.values(topProductsOverall).reduce(
+    (sum, qty) => sum + qty,
+    0
+  );
   const sortedCategoriesOverall = Object.entries(topProductsOverall)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5);
 
-  let listHTML = "";
+  const timeFrame =
+    selectedStartMonth === selectedEndMonth
+      ? selectedStartMonth
+      : `${selectedStartMonth} - ${selectedEndMonth}`;
 
-  listHTML += `
+  let listHTML = `
     <div class="chart-container-header">
       <h2>Top 5 Product</h2>
       <span>${timeFrame}</span>
     </div>
     <div class="acquisitions-bar">`;
 
-  sortedCategoriesOverall.forEach((category, index) => {
-    const totalSales = category[1];
+  sortedCategoriesOverall.forEach(([category, totalSales]) => {
     const percentage = ((totalSales / totalTransactionsInRange) * 100).toFixed(
       2
     );
-
-    let progressClass = "";
-    switch (index) {
-      case 0:
-        progressClass = "applications";
-        break;
-      case 1:
-        progressClass = "shortlisted";
-        break;
-      case 2:
-        progressClass = "on-hold";
-        break;
-      case 3:
-        progressClass = "rejected";
-        break;
-      case 4:
-        progressClass = "fivt";
-        break;
-      default:
-        progressClass = "";
-    }
-
-    const barWidth = percentage + "%";
-
-    listHTML += `
-      <span class="bar-progress ${progressClass}" style="width: ${barWidth}"></span>
-    `;
+    listHTML += `<span class="bar-progress" style="width: ${percentage}%; background-color: ${getColor(
+      category
+    )};"></span>`;
   });
 
   listHTML += `</div>`;
 
-  sortedCategoriesOverall.forEach((category, index) => {
-    const totalSales = category[1];
-    let progressClass = "";
-    switch (index) {
-      case 0:
-        progressClass = "applications";
-        break;
-      case 1:
-        progressClass = "shortlisted";
-        break;
-      case 2:
-        progressClass = "on-hold";
-        break;
-      case 3:
-        progressClass = "rejected";
-        break;
-      case 4:
-        progressClass = "fivt";
-        break;
-      default:
-        progressClass = "";
-    }
-
+  sortedCategoriesOverall.forEach(([category, totalSales], index) => {
+    const progressClass =
+      ["applications", "shortlisted", "on-hold", "rejected", "fivt"][index] ||
+      "";
     listHTML += `<div class="progress-bar-info ${progressClass}">
-      <span class="progress-color ${progressClass}"></span>
-      <span class="progress-type">${category[0]}</span>
+      <span class="progress-color ${progressClass}" style="background-color: ${getColor(
+      category
+    )};"></span>
+      <span class="progress-type">${category}</span>
       <span class="progress-amount">${totalSales} units</span>
     </div>`;
   });

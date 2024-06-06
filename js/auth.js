@@ -390,7 +390,7 @@ function checkEmailVerification() {
   });
 }
 
-async function logout() {
+function logout() {
   Swal.fire({
     title: "Are you sure?",
     text: "You will be logged out!",
@@ -432,6 +432,7 @@ async function logout() {
           .then(function () {
             sessionStorage.removeItem("isAuthenticated");
             sessionStorage.removeItem("userRole");
+            localStorage.removeItem("hasSeenWelcomeAlert");
             window.location.href = "../pages/auth.html?#";
           })
           .catch(function (error) {

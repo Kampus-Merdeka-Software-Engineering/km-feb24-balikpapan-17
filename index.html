@@ -385,16 +385,16 @@
           } else {
             Swal.fire({
               title: "Feedback",
-              text: "Masukkan nama Anda:",
+              text: "Input your name !",
               input: "text",
               showCancelButton: true,
-              confirmButtonText: "Kirim",
-              cancelButtonText: "Batal",
+              confirmButtonText: "Send",
+              cancelButtonText: "Cancel",
               confirmButtonColor: "#5e3229",
               cancelButtonColor: "#d33",
               preConfirm: (name) => {
                 if (!name) {
-                  Swal.showValidationMessage("Nama tidak boleh kosong");
+                  Swal.showValidationMessage("Name cannot be empty");
                 }
               },
             }).then((result) => {
@@ -416,8 +416,8 @@
           })
           .then(function (docRef) {
             Swal.fire({
-              title: "Sukses",
-              text: "Feedback Anda berhasil dikirim",
+              title: "Success",
+              text: "Your feedback has been successfully sent!",
               icon: "success",
               confirmButtonColor: "#5e3229",
             });
@@ -425,7 +425,7 @@
           .catch(function (error) {
             Swal.fire({
               title: "Error",
-              text: "Terjadi kesalahan dalam mengirim feedback",
+              text: "An error occurred in sending feedback!",
               icon: "error",
               confirmButtonColor: "#5e3229",
             });
