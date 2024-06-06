@@ -276,279 +276,6 @@ function googleSignIn() {
     });
 }
 
-// function resetPassword() {
-//   const email = document.getElementById("reset_email").value;
-
-//   if (!validate_email(email)) {
-//     showEModal("Please enter a valid Email Address!!");
-//     return;
-//   }
-
-//   auth
-//     .sendPasswordResetEmail(email)
-//     .then(() => {
-//       showNotifModal("Password reset email sent. Please check your email.");
-//       // Show modal for setting new password
-//       showResetPasswordModal();
-//     })
-//     .catch((error) => {
-//       console.error("Error sending password reset email:", error);
-//       showEModal(error.message);
-//     });
-// }
-
-// function resetPassword() {
-//   const email = document.getElementById("reset_email").value;
-
-//   if (!validate_email(email)) {
-//     showEModal("Please enter a valid Email Address!!");
-//     return;
-//   }
-
-//   auth
-//     .sendPasswordResetEmail(email)
-//     .then(() => {
-//       showNotifModal("Password reset email sent. Please check your email.");
-//     })
-//     .catch((error) => {
-//       console.error("Error sending password reset email:", error);
-//       showEModal(error.message);
-//     });
-// }
-
-// // Function to handle password reset and automatic login
-// function handlePasswordReset() {
-//   const oobCode = new URLSearchParams(window.location.search).get("oobCode");
-//   const email = new URLSearchParams(window.location.search).get("email");
-
-//   if (!oobCode || !email) {
-//     showEModal("Invalid or missing action code.");
-//     return;
-//   }
-
-//   Swal.fire({
-//     title: "Reset Password",
-//     html:
-//       '<input type="password" id="new_password" class="swal2-input" placeholder="New Password">' +
-//       '<input type="password" id="confirm_new_password" class="swal2-input" placeholder="Confirm New Password">',
-//     focusConfirm: false,
-//     preConfirm: () => {
-//       const newPassword = document.getElementById("new_password").value;
-//       const confirmNewPassword = document.getElementById(
-//         "confirm_new_password"
-//       ).value;
-
-//       if (!newPassword || !confirmNewPassword) {
-//         Swal.showValidationMessage(
-//           "Please enter both new password and confirm new password"
-//         );
-//         return false;
-//       }
-
-//       if (newPassword !== confirmNewPassword) {
-//         Swal.showValidationMessage("Passwords do not match");
-//         return false;
-//       }
-
-//       return { newPassword: newPassword };
-//     },
-//   }).then((result) => {
-//     if (result.isConfirmed) {
-//       const newPassword = result.value.newPassword;
-
-//       auth
-//         .verifyPasswordResetCode(oobCode)
-//         .then(() => {
-//           auth
-//             .confirmPasswordReset(oobCode, newPassword)
-//             .then(() => {
-//               showSucModal("Password has been successfully reset.");
-
-//               // Automatically log in the user after resetting the password
-//               auth
-//                 .signInWithEmailAndPassword(email, newPassword)
-//                 .then(() => {
-//                   window.location.href = "../pages/profile.html";
-//                 })
-//                 .catch((error) => {
-//                   showEModal(error.message);
-//                 });
-//             })
-//             .catch((error) => {
-//               showEModal(error.message);
-//             });
-//         })
-//         .catch((error) => {
-//           showEModal("The action code is invalid or expired.");
-//         });
-//     }
-//   });
-// }
-
-//
-// document.addEventListener("DOMContentLoaded", () => {
-//   const oobCode = new URLSearchParams(window.location.search).get("oobCode");
-//   const email = new URLSearchParams(window.location.search).get("email");
-
-//   if (oobCode && email) {
-//     handlePasswordReset();
-//   }
-// });
-
-// function updateProfile(event) {
-//   event.preventDefault();
-
-//   const user = auth.currentUser;
-//   if (user) {
-//     const username = document.getElementById("edit-username").value;
-//     const email = document.getElementById("edit-email").value;
-//     const currentPassword = document.getElementById("current-password").value;
-
-//     if (!validate_field(username) && !validate_field(email)) {
-//       showEModal("Please fill in at least one field to update.");
-//       return;
-//     }
-
-//     if (!validate_field(currentPassword)) {
-//       showEModal("Current password is required for verification!");
-//       return;
-//     }
-
-//     // Re-authenticate the user
-//     const credential = firebase.auth.EmailAuthProvider.credential(
-//       user.email,
-//       currentPassword
-//     );
-//     user
-//       .reauthenticateWithCredential(credential)
-//       .then(() => {
-//         // Proceed to update profile
-//         const promises = [];
-//         if (username && username !== user.displayName) {
-//           promises.push(
-//             firestore.collection("users").doc(user.uid).update({ username })
-//           );
-//         }
-
-//         if (email && validate_email(email) && email !== user.email) {
-//           // Check if the new email is already in use
-//           firestore
-//             .collection("users")
-//             .where("email", "==", email)
-//             .get()
-//             .then((querySnapshot) => {
-//               if (!querySnapshot.empty) {
-//                 showEModal(
-//                   "The email is already in use. Please choose a different email."
-//                 );
-//                 return;
-//               } else {
-//                 promises.push(
-//                   user
-//                     .updateEmail(email)
-//                     .then(() => {
-//                       return user.sendEmailVerification().then(() => {
-//                         showNotifModal(
-//                           "Verification email sent to new email address. Please verify your email to complete the update."
-//                         );
-//                         // Prompt user to create new password after email verification
-//                         Swal.fire({
-//                           title: "Create New Password",
-//                           html: `
-//                       <input type="password" id="new-password" class="swal2-input" placeholder="New Password" required>
-//                       <input type="password" id="confirm-new-password" class="swal2-input" placeholder="Confirm New Password" required>
-//                     `,
-//                           confirmButtonText: "Save Changes",
-//                           showLoaderOnConfirm: true,
-//                           preConfirm: () => {
-//                             const newPassword =
-//                               document.getElementById("new-password").value;
-//                             const confirmNewPassword = document.getElementById(
-//                               "confirm-new-password"
-//                             ).value;
-//                             if (newPassword !== confirmNewPassword) {
-//                               return Swal.showValidationMessage(
-//                                 "Passwords do not match!"
-//                               );
-//                             }
-//                             // Update password
-//                             return user
-//                               .updatePassword(newPassword)
-//                               .catch((error) => {
-//                                 console.error(
-//                                   "Error updating password:",
-//                                   error
-//                                 );
-//                                 throw new Error(error.message);
-//                               });
-//                           },
-//                         })
-//                           .then((result) => {
-//                             if (result.isConfirmed) {
-//                               showSucModal("Password updated successfully.");
-//                               // Delete old account after updating password
-//                               user
-//                                 .delete()
-//                                 .then(() => {
-//                                   showSucModal(
-//                                     "Old account deleted successfully."
-//                                   );
-//                                   // Redirect user to appropriate page or log them out
-//                                   // For demonstration, redirect to home page
-//                                   window.location.href = "../index.html";
-//                                 })
-//                                 .catch((error) => {
-//                                   console.error(
-//                                     "Error deleting old account:",
-//                                     error
-//                                   );
-//                                   showEModal(
-//                                     "Error deleting old account: " +
-//                                       error.message
-//                                   );
-//                                 });
-//                             }
-//                           })
-//                           .catch((error) => {
-//                             console.error("Error updating password:", error);
-//                             showEModal(error.message);
-//                           });
-//                       });
-//                     })
-//                     .catch((error) => {
-//                       console.error("Error updating email:", error);
-//                       showEModal(error.message);
-//                     })
-//                 );
-//               }
-//             })
-//             .catch((error) => {
-//               console.error("Error checking email:", error);
-//               showEModal("Error checking email: " + error.message);
-//             });
-//         }
-
-//         Promise.all(promises)
-//           .then(() => {
-//             showSucModal("Profile updated successfully.");
-//             // Optionally refresh the profile information displayed on the page
-//             document.getElementById("username").textContent =
-//               username || user.displayName;
-//             document.getElementById("email").textContent = email || user.email;
-//           })
-//           .catch((error) => {
-//             console.error("Error updating profile:", error);
-//             showEModal(error.message);
-//           });
-//       })
-//       .catch((error) => {
-//         console.error("Error re-authenticating:", error);
-//         showEModal("Re-authentication failed. Please check your password.");
-//       });
-//   } else {
-//     console.log("No user is signed in");
-//   }
-// }
 function confirmPasswordReset(oobCode, newPassword) {
   auth
     .confirmPasswordReset(oobCode, newPassword)
@@ -569,11 +296,10 @@ function updateProfile(event) {
   const user = auth.currentUser;
   if (user) {
     const username = document.getElementById("edit-username").value;
-    const email = document.getElementById("edit-email").value;
     const currentPassword = document.getElementById("current-password").value;
 
-    if (!validate_field(username) && !validate_field(email)) {
-      showEModal("Please fill in at least one field to update.");
+    if (!validate_field(username)) {
+      showEModal("Please fill in the username field to update.");
       return;
     }
 
@@ -589,77 +315,82 @@ function updateProfile(event) {
     user
       .reauthenticateWithCredential(credential)
       .then(() => {
-        const promises = [];
         if (username && username !== user.displayName) {
-          promises.push(
-            firestore.collection("users").doc(user.uid).update({ username })
-          );
-        }
-
-        if (email && validate_email(email) && email !== user.email) {
-          user
-            .updateEmail(email)
-            .then(() => {
-              // Send email verification
-              return user.sendEmailVerification();
-            })
-            .then(() => {
-              showNotifModal(
-                "Verification email sent. Please verify your new email address."
-              ).then(() => {
-                document.getElementById("username").textContent =
-                  username || user.displayName;
-                document.getElementById("email").textContent =
-                  email || user.email;
-              });
-            })
-            .catch((error) => {
-              console.error("Error updating email:", error);
-              showEModal(error.message);
-            });
-        } else {
-          Promise.all(promises)
-            .then(() => {
-              showSucModal("Profile updated successfully.").then(() => {
-                document.getElementById("username").textContent =
-                  username || user.displayName;
-                document.getElementById("email").textContent =
-                  email || user.email;
-              });
-            })
-            .catch((error) => {
-              console.error("Error updating profile:", error);
-              showEModal(error.message);
-            });
+          return firestore
+            .collection("users")
+            .doc(user.uid)
+            .update({ username });
         }
       })
+      .then(() => {
+        showSucModal("Profile updated successfully.").then(() => {
+          document.getElementById("username").textContent =
+            username || user.displayName;
+          closeEditProfile();
+        });
+      })
       .catch((error) => {
-        console.error("Error re-authenticating:", error);
-        showEModal("Re-authentication failed. Please check your password.");
+        console.error("Error updating profile:", error);
+        showEModal(error.message);
       });
   } else {
     console.log("No user is signed in");
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const editProfileForm = document.querySelector(".edit-profile-form");
-  if (editProfileForm) {
-    editProfileForm.addEventListener("submit", updateProfile);
-  }
+function updateEmail(event) {
+  event.preventDefault();
+  const newEmail = document.getElementById("new-email").value;
+  const password = document.getElementById("email-password").value;
 
   const user = auth.currentUser;
-  if (user) {
-    document.getElementById("edit-username").value = user.displayName || "";
-    document.getElementById("edit-username").placeholder =
-      user.displayName || "Current Username";
-    document.getElementById("edit-email").value = user.email || "";
-    document.getElementById("edit-email").placeholder =
-      user.email || "Current Email";
-  }
-});
+  const credentials = firebase.auth.EmailAuthProvider.credential(
+    user.email,
+    password
+  );
 
-function logout() {
+  user
+    .reauthenticateWithCredential(credentials)
+    .then(() => {
+      return user.verifyBeforeUpdateEmail(newEmail);
+    })
+    .then(() => {
+      Swal.fire(
+        "Email Verification Sent",
+        "Please verify the new email address. Check your inbox for a verification email.",
+        "info"
+      );
+      closeEditEmail();
+    })
+    .catch((error) => {
+      Swal.fire("Error", error.message, "error");
+    });
+}
+
+function checkEmailVerification() {
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      user.reload().then(() => {
+        if (user.emailVerified) {
+          firestore
+            .collection("users")
+            .doc(user.uid)
+            .update({
+              email: user.email,
+            })
+            .then(() => {
+              Swal.fire("Success", "Email updated successfully", "success");
+            })
+            .catch((error) => {
+              Swal.fire("Error", error.message, "error");
+            });
+        }
+      });
+    }
+  });
+}
+
+async function logout() {
   Swal.fire({
     title: "Are you sure?",
     text: "You will be logged out!",

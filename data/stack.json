@@ -1,0 +1,56 @@
+[
+  {
+    "name": "HTML",
+    "image": "./assets/images/stack/html.png",
+    "alt": "html",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/HTML"
+  },
+  {
+    "name": "CSS",
+    "image": "./assets/images/stack/css.png",
+    "alt": "css",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/CSS"
+  },
+  {
+    "name": "FontAwesome",
+    "image": "./assets/images/stack/fontawesome.png",
+    "alt": "fontawesome",
+    "link": "https://fontawesome.com/"
+  },
+  {
+    "name": "JavaScript",
+    "image": "./assets/images/stack/javascript.png",
+    "alt": "javascript",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/JavaScript"
+  },
+  {
+    "name": "GitHub",
+    "image": "./assets/images/stack/github.png",
+    "alt": "github",
+    "link": "https://github.com/"
+  },
+  {
+    "name": "Firebase",
+    "image": "./assets/images/stack/firebase.png",
+    "alt": "firebase",
+    "link": "https://firebase.google.com/"
+  },
+  {
+    "name": "JSON",
+    "image": "./assets/images/stack/json.png",
+    "alt": "json",
+    "link": "https://www.json.org/"
+  },
+  {
+    "name": "Three.js",
+    "image": "./assets/images/stack/three.png",
+    "alt": "three",
+    "link": "https://threejs.org/"
+  },
+  {
+    "name": "Vercel",
+    "image": "./assets/images/stack/vercel.png",
+    "alt": "vercel",
+    "link": "https://vercel.com/"
+  }
+]

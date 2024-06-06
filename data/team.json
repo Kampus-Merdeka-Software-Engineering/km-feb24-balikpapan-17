@@ -1,0 +1,80 @@
+{
+  "team1": [
+    {
+      "name": "Raul Ilma Rajasa",
+      "image": "../assets/images/team/raul.jpeg",
+      "role": "Mentor Software Engineering KM Batch 5",
+      "quote": ""
+    },
+    {
+      "name": "Nabila Ummul Husna",
+      "image": "../assets/images/team/nabilaUmmulHusna.jpg",
+      "role": "Data Visualization + Team Leader",
+      "quote": "''The future belongs to those who believe in the beauty of their dreams.''"
+    },
+    {
+      "name": "Muhammad Farhan",
+      "image": "../assets/images/team/muhammadFarhan.jpg",
+      "role": "Team Leader + Frontend",
+      "quote": "''The best way to predict the future is to invent it.''"
+    },
+    {
+      "name": "Aditya Muhamad Fadhillah Umar",
+      "image": "../assets/images/team/adit.jpeg",
+      "role": "Data Visualization + Frontend",
+      "quote": "''Code is like a jokes. When you have to explain it, it’s bad.''"
+    }
+  ],
+  "team2": [
+    {
+      "name": "Alex Saputra",
+      "image": "../assets/images/team/alexSaputra.jpg",
+      "role": "Data Visualization + Frontend",
+      "quote": "''Code is like humor. When you have to explain it, it’s bad.''"
+    },
+    {
+      "name": "Ahmadi Adi",
+      "image": "../assets/images/team/ahmadi.jpg",
+      "role": "Data Cleaning + Frontend",
+      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+    },
+    {
+      "name": "Salsa Bila Putri Maharani",
+      "image": "../assets/images/team/salsaBilaPutriMaharani.jpg",
+      "role": "Data Cleaning + Deployment",
+      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+    },
+    {
+      "name": "Riski Anabela",
+      "image": "../assets/images/team/riskiAnabela.jpg",
+      "role": "Data Cleaning + Pitch Deck",
+      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+    }
+  ],
+  "team3": [
+    {
+      "name": "Hannah Zakiyya",
+      "image": "../assets/images/team/hannahZakiyya.jpg",
+      "role": "Data Comunication + Pitch Deck",
+      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+    },
+    {
+      "name": "Tiara Hanida",
+      "image": "../assets/images/team/tiaraHanida.jpg",
+      "role": "Data Comunication + Quality Assurance",
+      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+    },
+    {
+      "name": "Carlos Panjaitan",
+      "image": "../assets/images/team/carlosPanjaitan.jpg",
+      "role": "Data Analysis + Quality Assurance",
+      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+    },
+    {
+      "name": "Fitria Putri Andreanita",
+      "image": "../assets/images/team/fitriaPutri.jpg",
+      "role": "Dadta Analysis + Quality Assurance",
+      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+    }
+  ]
+}

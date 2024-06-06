@@ -1,82 +1,289 @@
-/* #team {
-  text-align: center;
-  padding: 50px 0;
-  background-color: #f3e2e2;
-  height: auto;
-} */
-
-#team {
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: auto;
-  background: url("../assets/images/flipThumbnail.jpg") center/cover no-repeat;
+:root {
+  --light: #ffe6e6;
+  --dark: #0c0c0c;
+  --gap: 0.5rem;
 }
 
-/* .team-container {
-  position: relative;
-  width: 100%;
+#team {
+  padding: 2rem 1rem;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-} */
-
-#team h2 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
-  color: #333;
 }
 
 .team-container {
+  overflow: clip;
   position: relative;
-  width: 100%;
-  height: 100%;
-  /* display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px; */
   display: flex;
-  flex-wrap: wrap;
-  align-items: start;
   justify-content: center;
-  gap: 20px;
-  /* padding: 0 20px; */
-  /* justify-items: center; */
+  align-items: center;
+  padding: 4px 0px;
+  width: 100%;
+  height: 70vh;
 }
 
-.team-member {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
+.category_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: calc(var(--gap) * 1);
   width: 100%;
-  max-width: 250px;
-  height: 300px;
-  padding: 20px;
+  height: 100%;
+}
+
+.team-content {
+  cursor: pointer;
+  overflow: clip;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 2.5rem;
+  width: calc((100% / 3) - var(--gap));
+  height: 100%;
+  border-radius: 0.5rem;
+  transition: width 0.5s ease-in-out;
+}
+
+.team-content:hover {
+  width: calc(70% - var(--gap));
+}
+
+.team-content::before {
+  content: "";
+  position: absolute;
+  z-index: -10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0c0c0cd0;
+  opacity: 0.6;
+}
+
+.team-content img {
+  position: absolute;
+  z-index: -20;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+  -o-object-position: center;
+  object-position: center;
+}
+
+.team-content .profile_image {
+  opacity: calc(1 - var(--active));
+  transition: opacity 0.3s ease-in-out;
+}
+
+.profile_detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 7rem;
+  transition: transform 0.5s cubic-bezier(0.23, 0.93, 0.77, 1) 0.01s;
+}
+
+.profile_detail span {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--light);
+  text-wrap: wrap;
+}
+
+.profile_detail p {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--light);
+}
+
+.profile_quote {
+  width: 15rem;
+  transform: translate(0, calc((1 - var(--active)) * (100% + 2.5rem)));
+}
+
+.profile_quote p {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--light);
+  transform: translate(0, calc((1 - var(--active)) * (100% + 2.5rem)));
+  transition: transform 0.5s cubic-bezier(0.23, 0.93, 0.77, 1) 0.1s;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows 0.5s cubic-bezier(0.23, 0.93, 0.77, 1) 0.01s;
+  transition: grid-template-rows 0.5s cubic-bezier(0.23, 0.93, 0.77, 1) 0.01s,
+    -ms-grid-rows 0.5s cubic-bezier(0.23, 0.93, 0.77, 1) 0.01s;
+}
+
+.profile_quote {
+  min-height: 0;
+  transform: translateY(50%);
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out,
+    transform 0.8s cubic-bezier(0.23, 0.93, 0.77, 1) 0.01s;
+}
+
+.team-content:hover .wrapper {
+  grid-template-rows: 1fr;
+}
+
+.team-content:hover .profile_quote {
+  transform: none;
+  opacity: 1;
+}
+
+dialog {
+  position: absolute;
+  z-index: 1;
+  background: none;
+  color: white;
+  border: 0;
+  font-size: 0.8rem;
+  padding: 0.5em;
+}
+
+dialog a {
+  color: whitesmoke;
+}
+
+.team-bottom {
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+}
+
+.credits-container {
+  border-radius: 10px;
+  max-width: 600px;
+  width: 100%;
+}
+
+.credits-content {
   text-align: center;
 }
 
-.team-member img {
-  border-radius: 5%;
-  width: 50%;
-  height: auto;
-  object-fit: cover;
-  margin-bottom: 10px;
+.credits-content h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
-.team-member h3 {
-  font-size: 1.5em;
-  /* margin: 10px 0; */
-  color: #333;
+.credits-content p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
 }
 
-.team-member p {
-  font-size: 1em;
-  color: #777;
+.credits-content p:last-child {
+  font-style: italic;
 }
 
-.team-member:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+@media (max-width: 868px) {
+  #team {
+    height: auto !important;
+    padding: 2rem;
+  }
+  .team-container {
+    height: auto !important;
+  }
+  .category_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    flex-wrap: wrap;
+    gap: calc(var(--gap) * 1);
+    width: 100%;
+    height: auto;
+  }
+  .team-content {
+    padding: 4rem;
+    width: 100%;
+    border-radius: 0.5rem;
+  }
+  .team-content:hover {
+    width: 100%;
+    height: 750px;
+  }
+}
+@media (max-width: 768px) {
+  #team {
+    height: auto !important;
+    padding: 0rem;
+  }
+  .team-container {
+    height: auto !important;
+  }
+  .category_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    flex-wrap: wrap;
+    gap: calc(var(--gap) * 1);
+    width: 100%;
+    height: auto;
+  }
+  .team-content {
+    padding: 5rem;
+    width: 100%;
+    border-radius: 0;
+  }
+  .profile_detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    transition: transform 0.5s cubic-bezier(0.23, 0.93, 0.77, 1) 0.01s;
+  }
+  .team-content:hover .wrapper {
+    grid-template-rows: 3fr;
+  }
+  .team-content:hover {
+    width: 100%;
+    height: 500px;
+  }
+
+  .profile_detail {
+    width: 100%;
+  }
+
+  .profile_quote {
+    width: 100%;
+  }
+  .team-bottom {
+    padding: 2rem 3rem;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile_detail span {
+    font-size: 1.25rem;
+  }
+
+  .profile_detail p {
+    font-size: 0.65rem;
+  }
+
+  .profile_quote p {
+    font-size: 1.25rem;
+  }
+
+  .team-content {
+    padding: 1.5rem 1rem;
+  }
+
+  .profile_quote {
+    width: 100%;
+  }
 }

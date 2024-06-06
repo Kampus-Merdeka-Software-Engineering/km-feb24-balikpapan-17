@@ -27,19 +27,21 @@
         </div>
         <div class="profile-actions">
           <button class="btn" onclick="editProfile()">Edit Profile</button>
+          <button class="btn" onclick="editEmail()">Edit Email</button>
           <button class="btn" onclick="logout()">Logout</button>
         </div>
       </div>
-      <div class="container edit-profile-container" id="editProfileContainer">
+
+      <div
+        class="container edit-profile-container"
+        id="editProfileContainer"
+        style="display: none"
+      >
         <h2>Edit Profile</h2>
-        <form action="/submit-profile" method="POST" class="edit-profile-form">
+        <form id="edit-profile-form" class="edit-profile-form">
           <div class="form-group">
             <label for="edit-username">Username</label>
             <input type="text" id="edit-username" name="username" required />
-          </div>
-          <div class="form-group">
-            <label for="edit-email">Email</label>
-            <input type="email" id="edit-email" name="email" required />
           </div>
           <div class="form-group">
             <label for="current-password">Current Password</label>
@@ -51,11 +53,50 @@
             />
           </div>
           <button type="submit">Save Changes</button>
-
           <button
             type="button"
             class="btn cancel-btn"
             onclick="closeEditProfile()"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+
+      <div
+        class="container edit-email-container"
+        id="editEmailContainer"
+        style="display: none"
+      >
+        <h2>Edit Email</h2>
+        <form id="edit-email-form" class="edit-email-form">
+          <div class="form-group">
+            <label for="current-email">Current Email</label>
+            <input
+              type="email"
+              id="current-email"
+              name="current-email"
+              disabled
+            />
+          </div>
+          <div class="form-group">
+            <label for="new-email">New Email</label>
+            <input type="email" id="new-email" name="new-email" required />
+          </div>
+          <div class="form-group">
+            <label for="email-password">Password</label>
+            <input
+              type="password"
+              id="email-password"
+              name="email-password"
+              required
+            />
+          </div>
+          <button type="submit">Update Email</button>
+          <button
+            type="button"
+            class="btn cancel-btn"
+            onclick="closeEditEmail()"
           >
             Cancel
           </button>
@@ -101,10 +142,8 @@
                     userData.username || "";
                   document.getElementById("edit-username").placeholder =
                     userData.username || "Current Username";
-                  document.getElementById("edit-email").value =
+                  document.getElementById("current-email").value =
                     userData.email || "";
-                  document.getElementById("edit-email").placeholder =
-                    userData.email || "Current Email";
                 } else {
                   console.log("No such document!");
                 }
@@ -119,14 +158,30 @@
           }
         });
       }
-
       function editProfile() {
         document.getElementById("editProfileContainer").style.display = "block";
+        document.getElementById("editEmailContainer").style.display = "none";
       }
 
       function closeEditProfile() {
         document.getElementById("editProfileContainer").style.display = "none";
       }
+
+      function editEmail() {
+        document.getElementById("editEmailContainer").style.display = "block";
+        document.getElementById("editProfileContainer").style.display = "none";
+      }
+
+      function closeEditEmail() {
+        document.getElementById("editEmailContainer").style.display = "none";
+      }
+
+      document
+        .getElementById("edit-profile-form")
+        .addEventListener("submit", updateProfile);
+      document
+        .getElementById("edit-email-form")
+        .addEventListener("submit", updateEmail);
 
       document.addEventListener("DOMContentLoaded", function () {
         checkAuthStatus();

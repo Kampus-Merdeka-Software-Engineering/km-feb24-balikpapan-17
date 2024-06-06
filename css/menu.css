@@ -1,10 +1,8 @@
 #menu {
-  background-color: var(--text-color-lght);
-  padding: 0;
+  padding: 2rem 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   height: auto;
 }
 
@@ -15,10 +13,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+.menu-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #dadbdd00;
+  backdrop-filter: blur(35px) saturate(85%) contrast(100%);
+  -webkit-backdrop-filter: blur(35px) saturate(85%) contrast(100%);
+  z-index: 0;
 }
 
 .menu-content {
   position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   padding-inline: 10rem;
@@ -27,9 +40,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 10%;
-  background-color: #dadbdd00;
-  backdrop-filter: blur(35px) saturate(85%) contrast(100%);
-  -webkit-backdrop-filter: blur(35px) saturate(85%) contrast(100%);
 }
 
 .main-image {
@@ -66,28 +76,30 @@ button.price {
   border: 2px solid var(--text-color-lght);
 }
 
+.menu-container:nth-child(1) {
+  background: url("../assets/images/menu/coffeeEspresso.jpg") center/cover
+    no-repeat;
+}
+
 .menu-container:nth-child(2) {
-  background: url("../assets/images/coffeeEspresso.jpg") center/cover no-repeat;
+  background: url("../assets/images/menu/coffeeLatte.jpg") center/cover
+    no-repeat;
 }
 
 .menu-container:nth-child(3) {
-  background: url("../assets/images/coffeeLatte.jpg") center/cover no-repeat;
+  background: url("../assets/images/menu/drinkChoco.jpg") center/cover no-repeat;
 }
 
 .menu-container:nth-child(4) {
-  background: url("../assets/images/drinkChoco.jpg") center/cover no-repeat;
+  background: url("../assets/images/menu/looseTea.jpg") center/cover no-repeat;
 }
 
 .menu-container:nth-child(5) {
-  background: url("../assets/images/looseTea.jpg") center/cover no-repeat;
+  background: url("../assets/images/menu/croissant.jpg") center/cover no-repeat;
 }
 
 .menu-container:nth-child(6) {
-  background: url("../assets/images/croissant.jpg") center/cover no-repeat;
-}
-
-.menu-container:nth-child(7) {
-  background: url("../assets/images/coffeBeans.jpg") center/cover no-repeat;
+  background: url("../assets/images/menu/coffeBeans.jpg") center/cover no-repeat;
 }
 
 @media (max-width: 768px) {

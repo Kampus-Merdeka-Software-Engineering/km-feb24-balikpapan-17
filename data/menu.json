@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Espresso",
+    "description": "Intense, rich coffee with a strong flavor and aroma. Perfect for a quick energy boost.",
+    "price": "3.75",
+    "image": "../assets/images/menu/coffeeEspresso.jpg"
+  },
+  {
+    "name": "Latte",
+    "description": "Smooth blend of espresso and steamed milk, topped with foam. Ideal for a sweet, gentle coffee experience.",
+    "price": "4.52",
+    "image": "../assets/images/menu/coffeeLatte.jpg"
+  },
+  {
+    "name": "Drink Chocolate",
+    "description": "Rich, creamy cocoa drink perfect for cold days. Enjoy with whipped cream topping.",
+    "price": "4.75",
+    "image": "../assets/images/menu/drinkChoco.jpg"
+  },
+  {
+    "name": "Loose Tea",
+    "description": "Authentic tea flavors brewed from selected tea leaves. Offers a rich tea-drinking experience.",
+    "price": "2.55",
+    "image": "../assets/images/menu/looseTea.jpg"
+  },
+  {
+    "name": "Croissant",
+    "description": "Traditional French pastry with flaky layers and buttery softness. Perfect for breakfast or snacks.",
+    "price": "3.25",
+    "image": "../assets/images/menu/croissant.jpg"
+  },
+  {
+    "name": "Coffee Beans",
+    "description": "Select roasted coffee beans for home brewing. From strong to mild, catering to true coffee lovers.",
+    "price": "20.45",
+    "image": "../assets/images/menu/coffeBeans.jpg"
+  }
+]
