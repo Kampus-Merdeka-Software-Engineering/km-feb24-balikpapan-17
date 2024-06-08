@@ -74,6 +74,13 @@ function formatDate(dateString) {
   return date.toLocaleDateString("en-GB", options);
 }
 
+function formatCurrency(value) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(value);
+}
+
 const showErrorModal = (message) => {
   Swal.fire({
     title: "Error!",
@@ -370,7 +377,7 @@ async function updateDashboard(
   try {
     const db = await initIndexedDB();
     const cachedData = await loadDataFromIndexedDB(db);
-    let filteredData;
+    let filteredData = [];
 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
     const startIndex = months.indexOf(selectedStartMonth);
@@ -411,6 +418,7 @@ async function updateDashboard(
       "productSalesChart",
       "productChart",
       "revenueAndSalesChart",
+      "revenueByProductPie",
       "forecastChart",
       "revenueByMonthChart",
       "revenueGrowthChart",
@@ -431,6 +439,7 @@ async function updateDashboard(
     const createCharts = [
       createProductSalesChart,
       createRevenueAndSalesChart,
+      overviewRevenueByProductPie,
       createForecastChart,
       createRevenueByMonthChart,
       createRevenueGrowthChart,

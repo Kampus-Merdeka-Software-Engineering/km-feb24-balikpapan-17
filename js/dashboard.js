@@ -70,7 +70,6 @@ function handleError(error) {
   console.error("Error:", error);
   const errorMessage =
     error instanceof Error ? error.message : "An unknown error occurred.";
-  sessionStorage.setItem("activePage", "dashboard");
   redirectToAuthPage(errorMessage);
 }
 

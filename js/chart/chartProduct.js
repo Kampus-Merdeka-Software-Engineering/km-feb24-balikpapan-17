@@ -127,9 +127,6 @@ function createRevenueByProductDoughnutChart(data) {
         duration: 1000,
         easing: "easeOutBack",
       },
-      layout: {
-        padding: 30,
-      },
       plugins: {
         legend: {
           display: true,
@@ -204,9 +201,6 @@ function createRevenueBySalesDoughnutChart(filteredData) {
       animation: {
         duration: 1000,
         easing: "easeOutBack",
-      },
-      layout: {
-        padding: 30,
       },
       plugins: {
         legend: {

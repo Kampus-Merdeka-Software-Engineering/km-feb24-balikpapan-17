@@ -1,7 +1,3 @@
-* {
-  box-sizing: border-box;
-}
-
 :root {
   --app-bg-light: #5e3229;
   --app-logo: #5e3229;
@@ -320,7 +316,6 @@ button {
   width: 25%;
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
   justify-content: space-between;
 }
 .chart-row.two .small .chart-container {
@@ -355,6 +350,7 @@ button {
 
 .chart-container-wrapper {
   padding: 8px;
+  height: auto;
 }
 
 .chart-info-wrapper {
@@ -390,7 +386,19 @@ button {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-bottom: 12px;
+}
+
+.btm-header {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.btm-header h2 {
+  margin: 8px 0px 0px 8px !important;
+}
+canvas#revenueByProductPie {
+  height: 190px !important;
+  width: 190px !important;
 }
 
 .chart-container-header h2 {
@@ -664,6 +672,7 @@ div#topProductContainer {
   border: 1px solid #857e7e;
   padding: 10px;
   font-size: 14px;
+  text-wrap: nowrap;
   font-weight: normal;
   color: var(--secondary-color);
   font-variant-numeric: tabular-nums;
@@ -938,7 +947,7 @@ option {
     text-anchor: middle;
   }
   .app-main {
-    padding: 12% 24px 24px 24px;
+    padding: 12% 16px 16px 16px;
   }
 }
 
@@ -968,4 +977,88 @@ option {
 
 .dt-body-nowrap {
   white-space: nowrap;
+}
+
+.dt-layout-cell {
+  overflow-x: auto;
+}
+
+table {
+  overflow-x: auto !important;
+}
+th {
+  background-color: #5e3229 !important;
+  color: var(--applicant-bg) !important;
+  padding: 6px;
+  text-wrap: nowrap;
+}
+td {
+  text-align: center !important;
+}
+td:nth-child(5) {
+  text-align: start !important;
+}
+table.dataTable th.dt-type-numeric,
+table.dataTable th.dt-type-date,
+table.dataTable td.dt-type-numeric,
+table.dataTable td.dt-type-date {
+  text-align: start !important;
+}
+/* .dt-search {
+
+} */
+div.dt-container select.dt-input {
+  background-color: #f2f2f2 !important;
+  padding: 8px;
+}
+
+div.dt-container .dt-search label {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+div.dt-container .dt-input,
+div.dt-container .dt-search input {
+  font-size: 1rem;
+  padding: 8px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+th.sorting:after,
+span.dt-column-order::before,
+span.dt-column-order::after,
+th.sorting_desc:after {
+  font-family: "Font Awesome 5 Free" !important;
+  content: "\f0dc" !important;
+  font-size: 1.2rem !important;
+  line-height: 2px !important;
+  opacity: 0.5;
+}
+
+span.dt-column-order::before {
+  content: "\f0de" !important;
+  opacity: 1;
+}
+
+span.dt-column-order::after {
+  content: "\f0dd" !important;
+  opacity: 1;
+}
+button.dt-paging-button {
+  color: #f2f2f2 !important;
+  background-color: #d4d4d8 !important;
+  border-radius: 6px !important;
+}
+div.dt-container .dt-paging .dt-paging-button.current,
+button.dt-paging-button.current {
+  color: #f2f2f2 !important;
+  background-color: #5e3229 !important;
+  box-shadow: none;
+  transition: all 0.3s ease-in-out;
+}
+button.dt-paging-button:hover {
+  background-color: #857e7e !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
