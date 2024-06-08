@@ -32,6 +32,7 @@ section {
 
 button {
   text-transform: capitalize;
+  cursor: pointer;
   letter-spacing: -0.8px;
   border-radius: 10px;
   border: none;

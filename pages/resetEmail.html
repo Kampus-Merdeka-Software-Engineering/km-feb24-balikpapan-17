@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../assets/images/icon.png" />
+    <title>Edit Email</title>
+    <link rel="stylesheet" href="../css/profile.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+    <script src="../firebaseConfig.js"></script>
+  </head>
+  <body>
+    <div class="navbar">
+      <button class="btn-back" onclick="window.history.back()">
+        <i class="fa-solid fa-arrow-left fa-lg"></i> Back
+      </button>
+
+      <a href="../index.html" class="logo">
+        <img src="../assets/images/lgo.png" alt="logo" id="logoImage" />
+      </a>
+    </div>
+    <div id="loadingScreen" class="loading-screen">
+      <div class="loading-text">Loading...</div>
+    </div>
+    <div class="edit-email-container">
+      <h2>Edit Email</h2>
+      <form id="edit-email-form" class="edit-email-form">
+        <div class="form-group">
+          <label for="current-email">Current Email</label>
+          <input
+            type="email"
+            id="current-email"
+            name="current-email"
+            disabled
+          />
+        </div>
+        <div class="form-group">
+          <label for="new-email">New Email</label>
+          <input type="email" id="new-email" name="new-email" required />
+        </div>
+        <div class="form-group">
+          <label for="email-password">Password</label>
+          <input
+            type="password"
+            id="email-password"
+            name="email-password"
+            required
+          />
+        </div>
+        <div class="btn-actions">
+          <button class="btn" type="submit">Update</button>
+          <button
+            type="button"
+            class="btn cancel-btn"
+            onclick="closeEditEmail()"
+          >
+            Back
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+      function showLoadingScreen() {
+        document.getElementById("loadingScreen").style.display = "flex";
+      }
+
+      function hideLoadingScreen() {
+        document.getElementById("loadingScreen").style.display = "none";
+      }
+
+      function checkAuthStatus() {
+        showLoadingScreen();
+
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            console.log("User is signed in");
+            hideLoadingScreen();
+
+            firestore
+              .collection("users")
+              .doc(user.uid)
+              .get()
+              .then((doc) => {
+                if (doc.exists) {
+                  const userData = doc.data();
+                  document.getElementById("current-email").value =
+                    userData.email || "";
+                } else {
+                  console.log("No such document!");
+                }
+              })
+              .catch((error) => {
+                console.log("Error getting document:", error);
+              });
+          } else {
+            console.log("User is signed out");
+            hideLoadingScreen();
+            outAlert();
+          }
+        });
+      }
+
+      function closeEditEmail() {
+        window.location.href = "./profile.html";
+      }
+
+      document
+        .getElementById("edit-email-form")
+        .addEventListener("submit", updateEmail);
+
+      document.addEventListener("DOMContentLoaded", function () {
+        checkAuthStatus();
+      });
+    </script>
+  </body>
+</html>

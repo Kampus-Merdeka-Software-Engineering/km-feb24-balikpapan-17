@@ -89,7 +89,7 @@ class SpiralCoffee {
         model.traverse((child) => {
           if (child.isMesh) {
             child.castShadow = true;
-            child.material.color.set(0x8b14513);
+            child.material.color.set(0xa93010);
           }
         });
 

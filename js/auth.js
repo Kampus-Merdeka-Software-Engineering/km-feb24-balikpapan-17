@@ -276,20 +276,6 @@ function googleSignIn() {
     });
 }
 
-function confirmPasswordReset(oobCode, newPassword) {
-  auth
-    .confirmPasswordReset(oobCode, newPassword)
-    .then(() => {
-      showSucModal("Password has been successfully reset.");
-
-      window.location.href = "./auth.html";
-    })
-    .catch((error) => {
-      console.error("Error resetting password:", error);
-      showEModal(error.message);
-    });
-}
-
 function updateProfile(event) {
   event.preventDefault();
 
@@ -312,22 +298,32 @@ function updateProfile(event) {
       user.email,
       currentPassword
     );
+
     user
       .reauthenticateWithCredential(credential)
       .then(() => {
+        console.log("Reauthentication successful");
+
         if (username && username !== user.displayName) {
           return firestore
             .collection("users")
             .doc(user.uid)
-            .update({ username });
+            .update({ username })
+            .then(() => {
+              console.log("Username updated in Firestore");
+              return user.updateProfile({ displayName: username });
+            });
+        } else {
+          console.log("No username update needed");
+          return Promise.resolve();
         }
       })
       .then(() => {
-        showSucModal("Profile updated successfully.").then(() => {
-          document.getElementById("username").textContent =
-            username || user.displayName;
-          closeEditProfile();
-        });
+        console.log("Profile update successful");
+        document.getElementById("username").textContent =
+          username || user.displayName;
+        closeEditProfile();
+        return showSucModal("Profile updated successfully.");
       })
       .catch((error) => {
         console.error("Error updating profile:", error);
@@ -354,40 +350,35 @@ function updateEmail(event) {
     .then(() => {
       return user.verifyBeforeUpdateEmail(newEmail);
     })
-    .then(() => {
-      Swal.fire(
-        "Email Verification Sent",
-        "Please verify the new email address. Check your inbox for a verification email.",
-        "info"
-      );
-      closeEditEmail();
-    })
     .catch((error) => {
       Swal.fire("Error", error.message, "error");
     });
-}
 
-function checkEmailVerification() {
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      user.reload().then(() => {
-        if (user.emailVerified) {
-          firestore
-            .collection("users")
-            .doc(user.uid)
-            .update({
-              email: user.email,
-            })
-            .then(() => {
-              Swal.fire("Success", "Email updated successfully", "success");
-            })
-            .catch((error) => {
-              Swal.fire("Error", error.message, "error");
-            });
-        }
-      });
+  setTimeout(() => {
+    if (user.emailVerified) {
+      const userRef = firebase.firestore().collection("users").doc(user.uid);
+      userRef
+        .update({
+          email: newEmail,
+        })
+        .then(() => {
+          Swal.fire(
+            "Verification Sent",
+            "Verification email has been sent to your new email address. Please check your inbox and follow the instructions to verify.",
+            "info"
+          );
+        })
+        .catch((error) => {
+          Swal.fire("Error", error.message, "error");
+        });
+    } else {
+      Swal.fire(
+        "Verification Required",
+        "Please verify your new email address before updating.",
+        "warning"
+      );
     }
-  });
+  }, 3000);
 }
 
 function logout() {
@@ -454,6 +445,19 @@ function logout() {
             });
           });
       });
+    }
+  });
+}
+
+function outAlert() {
+  Swal.fire({
+    title: "Logout",
+    text: "You have been logged out.",
+    icon: "info",
+    confirmButtonText: "OK",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = "../pages/auth.html";
     }
   });
 }
