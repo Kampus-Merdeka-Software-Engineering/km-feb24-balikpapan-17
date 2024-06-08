@@ -96,6 +96,124 @@ function createRevenueByMonthChart(data) {
   });
 }
 
+function createRevenueVsQtyChart(data) {
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const groupedData = data.reduce(
+    (acc, { transaction_date, transaction_qty, revenue }) => {
+      const [month, day, year] = transaction_date.split("/");
+      const formattedDate = `${day} ${monthNames[month - 1]}`;
+
+      if (!acc[formattedDate]) {
+        acc[formattedDate] = {
+          label: formattedDate,
+          transaction_qty: 0,
+          revenue: 0,
+        };
+      }
+      acc[formattedDate].transaction_qty += transaction_qty;
+      acc[formattedDate].revenue += revenue;
+      return acc;
+    },
+    {}
+  );
+
+  const labels = Object.keys(groupedData).sort((a, b) => {
+    const [aDay, aMonth] = a.split(" ");
+    const [bDay, bMonth] = b.split(" ");
+    return (
+      new Date(`2023 ${aMonth} ${aDay}`) - new Date(`2023 ${bMonth} ${bDay}`)
+    );
+  });
+
+  const transactionQtyData = labels.map(
+    (label) => groupedData[label].transaction_qty
+  );
+  const revenueData = labels.map((label) => groupedData[label].revenue);
+
+  const ctx = document.getElementById("revenueVsQtyChart").getContext("2d");
+
+  if (window.revenueVsQtyChart) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
+  window.revenueVsQtyChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Revenue",
+          data: revenueData,
+          borderColor: "#5e3229",
+          backgroundColor: "#5e3229",
+          borderWidth: 1.2,
+          fill: false,
+          yAxisID: "y",
+          tension: 0.4,
+          pointRadius: 0,
+        },
+        {
+          label: "Total Sales",
+          data: transactionQtyData,
+          borderColor: "#90C114",
+          backgroundColor: "#90C114",
+          borderWidth: 1.2,
+          fill: false,
+          yAxisID: "y1",
+          tension: 0.4,
+          pointRadius: 0,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Transaction Date",
+            font: {
+              weight: "bold",
+            },
+          },
+        },
+
+        y: {
+          title: {
+            display: true,
+            text: "Revenue",
+            font: { weight: "bold" },
+          },
+          position: "left",
+          ticks: { stepSize: 200 },
+        },
+        y1: {
+          title: {
+            display: true,
+            text: "Total Sales",
+            font: { weight: "bold" },
+          },
+          position: "right",
+          ticks: { stepSize: 200 },
+        },
+      },
+    },
+  });
+}
+
 function createSalesRevenueRelationChart(data) {
   const groupedData = data.reduce((acc, curr) => {
     const key = formatDate(curr.transaction_date);

@@ -5,7 +5,7 @@ function updateTable(filteredData) {
     scrollX: true,
     responsive: true,
     pageLength: 25,
-    retrieve: true,
+    retrieve: false,
   });
   table.clear();
 

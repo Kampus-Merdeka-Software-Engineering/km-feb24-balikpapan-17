@@ -3,10 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../assets/images/icon.png" />
     <title>Profile</title>
     <link rel="stylesheet" href="../css/profile.css" />
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/theme.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link
       href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.min.css"
       rel="stylesheet"
@@ -14,93 +22,91 @@
     <script src="../firebaseConfig.js"></script>
   </head>
   <body>
+    <div class="navbar">
+      <button class="btn-back" onclick="window.history.back()">
+        <i class="fa-solid fa-arrow-left fa-lg"></i> Back
+      </button>
+
+      <a href="#" class="logo">
+        <img src="../assets/images/lgo.png" alt="logo" id="logoImage" />
+      </a>
+    </div>
     <div id="loadingScreen" class="loading-screen">
       <div class="loading-text">Loading...</div>
     </div>
     <div class="profile-page">
-      <div class="profile-container">
-        <h2>Profile</h2>
-        <div class="user-details">
-          <p><strong>Username:</strong> <span id="username"></span></p>
-          <p><strong>Email:</strong> <span id="email"></span></p>
-          <p><strong>Role:</strong> <span id="role"></span></p>
-        </div>
-        <div class="profile-actions">
-          <button class="btn" onclick="editProfile()">Edit Profile</button>
-          <button class="btn" onclick="editEmail()">Edit Email</button>
-          <button class="btn" onclick="logout()">Logout</button>
+      <div class="profile-main">
+        <!-- <div id="threedcontainer" class="threedcontainer"></div> -->
+        <div class="profile-container">
+          <div class="user-details">
+            <h1 id="username" class="text-ellipsis"></h1>
+            <div class="user-email text-ellipsis">
+              <i class="fa-solid fa-at"></i>
+              <span id="email"></span>
+            </div>
+            <div class="user-role text-ellipsis">
+              <i class="fa-solid fa-person"></i>
+              <span id="role"></span>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn edit" onclick="editProfile()">
+              <i class="fa-solid fa-pen"></i> Edit
+            </button>
+            <button class="btn" onclick="logout()">
+              <i class="fa-solid fa-power-off"></i> Logout
+            </button>
+          </div>
         </div>
       </div>
 
-      <div
-        class="container edit-profile-container"
-        id="editProfileContainer"
-        style="display: none"
-      >
-        <h2>Edit Profile</h2>
-        <form id="edit-profile-form" class="edit-profile-form">
-          <div class="form-group">
-            <label for="edit-username">Username</label>
-            <input type="text" id="edit-username" name="username" required />
+      <div id="editProfileContainer" style="display: none">
+        <div class="edit-profile">
+          <div class="edit-profile-container">
+            <h2>Edit Profile</h2>
+            <form id="edit-profile-form" class="edit-profile-form">
+              <div class="form-group">
+                <label for="edit-username">Username</label>
+                <input
+                  type="text"
+                  id="edit-username"
+                  name="username"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="current-email">Current Email</label>
+                <input
+                  type="email"
+                  id="current-email"
+                  name="current-email"
+                  disabled
+                />
+                <a href="./resetEmail.html">Change email?</a>
+              </div>
+              <div class="form-group">
+                <label for="current-password">Confirm Password</label>
+                <input
+                  type="password"
+                  id="current-password"
+                  name="current-password"
+                  required
+                />
+                <a href="./resetPass.html">Forgot password?</a>
+              </div>
+              <div class="btn-actions">
+                <button class="btn" type="submit">Save</button>
+                <button
+                  type="button"
+                  class="btn cancel-btn"
+                  onclick="closeEditProfile()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
-          <div class="form-group">
-            <label for="current-password">Current Password</label>
-            <input
-              type="password"
-              id="current-password"
-              name="current-password"
-              required
-            />
-          </div>
-          <button type="submit">Save Changes</button>
-          <button
-            type="button"
-            class="btn cancel-btn"
-            onclick="closeEditProfile()"
-          >
-            Cancel
-          </button>
-        </form>
-      </div>
-
-      <div
-        class="container edit-email-container"
-        id="editEmailContainer"
-        style="display: none"
-      >
-        <h2>Edit Email</h2>
-        <form id="edit-email-form" class="edit-email-form">
-          <div class="form-group">
-            <label for="current-email">Current Email</label>
-            <input
-              type="email"
-              id="current-email"
-              name="current-email"
-              disabled
-            />
-          </div>
-          <div class="form-group">
-            <label for="new-email">New Email</label>
-            <input type="email" id="new-email" name="new-email" required />
-          </div>
-          <div class="form-group">
-            <label for="email-password">Password</label>
-            <input
-              type="password"
-              id="email-password"
-              name="email-password"
-              required
-            />
-          </div>
-          <button type="submit">Update Email</button>
-          <button
-            type="button"
-            class="btn cancel-btn"
-            onclick="closeEditEmail()"
-          >
-            Cancel
-          </button>
-        </form>
+        </div>
       </div>
     </div>
 
@@ -109,6 +115,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
     <script src="../js/auth.js"></script>
+    <!-- <script src="../js/3D.js" type="module"></script> -->
     <script>
       function showLoadingScreen() {
         document.getElementById("loadingScreen").style.display = "flex";
@@ -125,7 +132,7 @@
           if (user) {
             console.log("User is signed in");
             hideLoadingScreen();
-            // Get user data and display it
+
             firestore
               .collection("users")
               .doc(user.uid)
@@ -138,12 +145,12 @@
                   document.getElementById("email").textContent = userData.email;
                   document.getElementById("role").textContent =
                     userData.role || "User";
+                  document.getElementById("current-email").value =
+                    userData.email || "";
                   document.getElementById("edit-username").value =
                     userData.username || "";
                   document.getElementById("edit-username").placeholder =
                     userData.username || "Current Username";
-                  document.getElementById("current-email").value =
-                    userData.email || "";
                 } else {
                   console.log("No such document!");
                 }
@@ -154,34 +161,22 @@
           } else {
             console.log("User is signed out");
             hideLoadingScreen();
-            window.location.href = "./auth.html";
+            outAlert();
           }
         });
       }
+
       function editProfile() {
         document.getElementById("editProfileContainer").style.display = "block";
-        document.getElementById("editEmailContainer").style.display = "none";
       }
 
       function closeEditProfile() {
         document.getElementById("editProfileContainer").style.display = "none";
       }
 
-      function editEmail() {
-        document.getElementById("editEmailContainer").style.display = "block";
-        document.getElementById("editProfileContainer").style.display = "none";
-      }
-
-      function closeEditEmail() {
-        document.getElementById("editEmailContainer").style.display = "none";
-      }
-
       document
         .getElementById("edit-profile-form")
         .addEventListener("submit", updateProfile);
-      document
-        .getElementById("edit-email-form")
-        .addEventListener("submit", updateEmail);
 
       document.addEventListener("DOMContentLoaded", function () {
         checkAuthStatus();
