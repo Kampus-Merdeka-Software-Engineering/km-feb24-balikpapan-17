@@ -2,10 +2,9 @@
 
 function updateTable(filteredData) {
   var table = $("#transactionTable").DataTable({
-    scrollX: true,
     responsive: true,
     pageLength: 25,
-    retrieve: false,
+    retrieve: true,
   });
   table.clear();
 
@@ -17,7 +16,7 @@ function updateTable(filteredData) {
       item.product_id,
       item.product_category,
       item.transaction_qty,
-      item.unit_price,
+      formatCurrency(item.unit_price),
     ]);
   });
 
@@ -125,7 +124,7 @@ function updateTopSellingProductsList(data) {
 
   let listHTML = `
     <div class="chart-container-header">
-      <h2>Top 5 Product</h2>
+      <h2>Top 5 Sales</h2>
       <span>${timeFrame}</span>
     </div>
     <div class="acquisitions-bar">`;
@@ -155,4 +154,79 @@ function updateTopSellingProductsList(data) {
   });
 
   document.getElementById("chartContainer").innerHTML = listHTML;
+}
+
+function overviewRevenueByProductPie(data) {
+  const productRev = {};
+  data.forEach((entry) => {
+    if (productRev[entry.product_category]) {
+      productRev[entry.product_category] += entry.revenue;
+    } else {
+      productRev[entry.product_category] = entry.revenue;
+    }
+  });
+
+  const totalRev = Object.values(productRev).reduce(
+    (acc, curr) => acc + curr,
+    0
+  );
+
+  const productsWithPercentage = Object.entries(productRev).map(
+    ([product, revenue]) => ({
+      product,
+      revenue,
+      percentage: ((revenue / totalRev) * 100).toFixed(2),
+    })
+  );
+
+  const sortedProducts = productsWithPercentage
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 5);
+
+  const labels = sortedProducts.map(({ product }) => product);
+  const revenueData = sortedProducts.map(({ revenue }) => revenue);
+  const percentageData = sortedProducts.map(({ percentage }) => percentage);
+  const backgroundColors = labels.map((product) => getColor(product));
+
+  const ctx = document.getElementById("revenueByProductPie").getContext("2d");
+
+  window.revenueByProductPie = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Revenue",
+          data: revenueData,
+          backgroundColor: backgroundColors,
+          borderColor: "#f2f2f200",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      animation: {
+        duration: 1000,
+        easing: "easeOutBack",
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              const label = context.label || "";
+              const value = context.raw || 0;
+              const percentage = percentageData[context.dataIndex] || "0.00";
+              return `${label}: $${value.toLocaleString()} (${percentage}%)`;
+            },
+          },
+        },
+      },
+      layout: {
+        padding: 20,
+      },
+    },
+  });
 }
