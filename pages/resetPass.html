@@ -45,7 +45,8 @@
         font-size: 14px;
         font-weight: bold;
         padding: 10px;
-        width: 300px;
+        width: 100%;
+        max-width: 300px;
       }
 
       .reset {
@@ -71,6 +72,14 @@
           transform: translateY(-5px);
         }
       }
+      @media (max-width: 768px) {
+        #sendVerifySection {
+          height: auto;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -87,6 +96,7 @@
       <input type="email" id="reset_email" placeholder="Enter your email" />
       <button class="reset" onclick="resetPassword()">Reset Password</button>
     </div>
+    <footer><p>Copyright Maven Coffee © 2024. All rights reserved.</p></footer>
 
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>

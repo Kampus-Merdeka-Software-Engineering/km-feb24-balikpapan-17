@@ -29,7 +29,7 @@
 
   <body>
     <div id="loadingScreen" style="display: none">
-      <div>Loading...</div>
+      <h1>Loading...</h1>
     </div>
     <div class="app-left sidebar">
       <div class="top-menu">
@@ -94,6 +94,21 @@
           </a>
         </li>
       </ul>
+      <div class="nav-btm-item mode">
+        <h2 class="nav-btm-link">
+          <i class="fa-solid fa-moon"></i>
+          <span class="link-name">Dark Mode</span>
+        </h2>
+        <div class="mode-toggle">
+          <span class="switch"></span>
+        </div>
+      </div>
+      <!-- <div class="nav-btm-item">
+        <h2 class="nav-btm-link">
+          <i class="fa-solid fa-moon fa-lg"></i>
+          <button id="darkModeToggle">Toggle Dark Mode</button>
+        </h2>
+      </div> -->
       <div class="nav-btm-item logout">
         <h2 class="nav-btm-link" onclick="logout()">
           <i class="fa-solid fa-power-off fa-lg"></i>
@@ -438,5 +453,25 @@
     <script src="../js/chart/chartSales.js"></script>
     <script src="../js/chart/chartProduct.js"></script>
     <script src="../js/dashboard.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const body = document.querySelector("body");
+        const modeToggle = document.querySelector(".mode-toggle .switch");
+
+        let getMode = localStorage.getItem("mode");
+        if (getMode && getMode === "dark") {
+          body.classList.add("dark");
+        }
+
+        modeToggle.addEventListener("click", () => {
+          body.classList.toggle("dark");
+          if (body.classList.contains("dark")) {
+            localStorage.setItem("mode", "dark");
+          } else {
+            localStorage.setItem("mode", "light");
+          }
+        });
+      });
+    </script>
   </body>
 </html>
