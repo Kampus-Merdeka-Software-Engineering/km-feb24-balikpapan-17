@@ -16,7 +16,7 @@
       "name": "Muhammad Farhan",
       "image": "../assets/images/team/muhammadFarhan.jpg",
       "role": "Team Leader + Frontend",
-      "quote": "''The best way to predict the future is to invent it.''"
+      "quote": "''Embrace the journey, for within each step lies the beauty of life.''"
     },
     {
       "name": "Aditya Muhamad Fadhillah Umar",
@@ -30,25 +30,25 @@
       "name": "Alex Saputra",
       "image": "../assets/images/team/alexSaputra.jpg",
       "role": "Data Visualization + Frontend",
-      "quote": "''Code is like humor. When you have to explain it, it’s bad.''"
+      "quote": "''Life is not about waiting for the storm to pass. It's about learning to dance in the rain.''"
     },
     {
       "name": "Ahmadi Adi",
       "image": "../assets/images/team/ahmadi.jpg",
       "role": "Data Cleaning + Frontend",
-      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+      "quote": "''Believe that life is worth living and your belief will help create the fact.''"
     },
     {
       "name": "Salsa Bila Putri Maharani",
       "image": "../assets/images/team/salsaBilaPutriMaharani.jpg",
       "role": "Data Cleaning + Deployment",
-      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+      "quote": "''Happiness is not something ready-made. It comes from your own actions.''"
     },
     {
       "name": "Riski Anabela",
       "image": "../assets/images/team/riskiAnabela.jpg",
       "role": "Data Cleaning + Pitch Deck",
-      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+      "quote": "''The best preparation for tomorrow is doing your best today.''"
     }
   ],
   "team3": [
@@ -56,7 +56,7 @@
       "name": "Hannah Zakiyya",
       "image": "../assets/images/team/hannahZakiyya.jpg",
       "role": "Data Comunication + Pitch Deck",
-      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+      "quote": "''If you cannot do great things, do small things in a great way.''"
     },
     {
       "name": "Tiara Hanida",
@@ -68,13 +68,13 @@
       "name": "Carlos Panjaitan",
       "image": "../assets/images/team/carlosPanjaitan.jpg",
       "role": "Data Analysis + Quality Assurance",
-      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+      "quote": "''The only limit to our realization of tomorrow will be our doubts of today.''"
     },
     {
       "name": "Fitria Putri Andreanita",
       "image": "../assets/images/team/fitriaPutri.jpg",
       "role": "Dadta Analysis + Quality Assurance",
-      "quote": "''Success is not the key to happiness. Happiness is the key to success.''"
+      "quote": "''The journey of a thousand miles begins with a single step.''"
     }
   ]
 }

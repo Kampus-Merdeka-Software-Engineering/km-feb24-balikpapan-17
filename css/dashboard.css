@@ -1,9 +1,10 @@
 :root {
-  --app-bg-light: #5e3229;
+  --app-bg-light: #f2f2f2;
   --app-logo: #5e3229;
-  --main-color: #5e3229;
-  --app-left: (#d4d4d8);
-  --secondary-color: #161616;
+  --main-color: #d4d4d8;
+  --app-left: #d4d4d8;
+  --text-color: #161616;
+  --textlght-color: #f2f2f2;
   --color-light: rgba(52, 129, 210, 0.2);
   --warning-bg: #ffe5e5;
   --warning-icon: #ff8181;
@@ -12,6 +13,24 @@
   --close-bg: #fff8e5;
   --close-icon: #fdbc64;
   --draft-bg: #fed8b3;
+  --draft-icon: #e9780e;
+}
+
+body.dark {
+  --app-bg-light: #161616;
+  --app-logo: #d4d4d8;
+  --main-color: #333333;
+  --app-left: #333333;
+  --text-color: #f2f2f2;
+  --textlght-color: #161616;
+  --color-light: rgba(52, 129, 210, 0.4);
+  --warning-bg: #4d1b1b;
+  --warning-icon: #ff8181;
+  --applicant-bg: #164e3b;
+  --applicant-icon: #61e1a1;
+  --close-bg: #4d3a1b;
+  --close-icon: #fdbc64;
+  --draft-bg: #4d331d;
   --draft-icon: #e9780e;
 }
 
@@ -25,10 +44,50 @@ body {
   display: flex;
   justify-content: center;
   font-family: "Urbanist", sans-serif;
-  background-color: #f2f2f2;
+  background-color: var(--app-bg-light) !important;
+  color: var(--text-color);
   background-repeat: no-repeat;
 }
 
+div.mode {
+  display: flex;
+  width: fit-content;
+}
+
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.mode-toggle .switch {
+  width: 40px;
+  height: 20px;
+  background-color: var(--app-logo);
+  border-radius: 10px;
+  position: relative;
+  transition: background-color 0.3s;
+}
+
+.mode-toggle .switch::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background-color: #f2f2f2;
+  border-radius: 50%;
+  transition: left 0.3s;
+}
+
+body.dark .mode-toggle .switch {
+  background-color: var(--textlght-color);
+}
+
+body.dark .mode-toggle .switch::before {
+  left: 22px;
+}
 .app-container {
   width: 100%;
   height: 100%;
@@ -39,7 +98,7 @@ body {
 
 .app-left {
   flex-basis: 240px;
-  background-color: #d4d4d8;
+  background-color: var(--app-left);
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
@@ -74,7 +133,7 @@ body {
 .app-right {
   flex-basis: 200px;
   width: 200px;
-  background-color: #d4d4d8;
+  background-color: var(--main-color);
   height: 100%;
   padding: 0;
   display: flex;
@@ -144,13 +203,13 @@ button.logo {
   border: none;
   background-color: transparent;
   padding: 0;
-  color: var(--main-color);
+  color: var(--app-logo);
   cursor: pointer;
   width: 40px;
   height: 40px;
   padding: 0;
-  border: 2px solid var(--main-color);
-  color: var(--main-color);
+  border: 2px solid var(--app-logo);
+  color: var(--app-logo);
   border-radius: 6px;
 }
 .app-right .close-right {
@@ -160,13 +219,13 @@ button.logo {
   border: none;
   background-color: transparent;
   padding: 0;
-  color: var(--main-color);
+  color: var(--app-logo);
   cursor: pointer;
   width: 40px;
   height: 40px;
   padding: 0;
-  border: 2px solid var(--main-color);
-  color: var(--main-color);
+  border: 2px solid var(--app-logo);
+  color: var(--app-logo);
   border-radius: 6px;
 }
 
@@ -194,7 +253,7 @@ button {
 }
 
 .sidebar a:hover {
-  color: var(--main-color);
+  color: var(--app-logo);
   font-weight: 600;
 }
 
@@ -204,7 +263,7 @@ button {
   font-size: 14px;
   line-height: 24px;
   padding: 8px 24px;
-  color: var(--secondary-color);
+  color: var(--text-color);
   display: flex;
   align-items: center;
   position: relative;
@@ -244,8 +303,8 @@ button {
 }
 
 .nav-list-link:hover {
-  background-color: #666;
-  color: white;
+  background-color: var(--app-logo);
+  color: var(--text-color);
 }
 
 .nav-list-link.active::after {
@@ -280,7 +339,7 @@ button {
 }
 
 .main-header-line h1 {
-  color: var(--main-color);
+  color: var(--app-logo);
   margin: 0;
   font-size: 24px;
   line-height: 32px;
@@ -334,7 +393,7 @@ button {
   width: 100%;
   /* height: 100%; */
   border-radius: 18px;
-  background-color: #d4d4d8;
+  background-color: var(--main-color);
   box-shadow: 3px 7px 9px -4px rgba(0, 0, 0, 0.52);
   -webkit-box-shadow: 3px 7px 9px -4px rgba(0, 0, 0, 0.52);
   -moz-box-shadow: 3px 7px 9px -4px rgba(0, 0, 0, 0.52);
@@ -359,7 +418,7 @@ button {
 }
 
 .chart-info-wrapper h2 {
-  color: var(--secondary-color);
+  color: var(--text-color);
   font-size: 15px;
   text-wrap: nowrap;
   line-height: 16px;
@@ -369,7 +428,7 @@ button {
 }
 
 .chart-info-wrapper span {
-  color: var(--main-color);
+  color: var(--app-logo);
   font-size: 24px;
   line-height: 32px;
   font-weight: 500;
@@ -403,7 +462,7 @@ canvas#revenueByProductPie {
 
 .chart-container-header h2 {
   margin: 0;
-  color: var(--secondary-color);
+  color: var(--text-color);
   font-size: 20px;
   line-height: 18px;
   opacity: 0.8;
@@ -436,7 +495,7 @@ canvas#revenueByProductPie {
 
 .progress-bar {
   width: 100%;
-  background-color: #f2f2f2;
+  background-color: var(--app-bg-light);
   border-radius: 5px;
 }
 .progress-bar-fill {
@@ -452,7 +511,7 @@ canvas#revenueByProductPie {
 }
 .circle-bg {
   fill: none;
-  stroke: #eee;
+  stroke: var(--main-color);
   stroke-width: 1.2;
 }
 
@@ -484,7 +543,7 @@ canvas#revenueByProductPie {
 }
 
 .percentage {
-  fill: #fff;
+  fill: var(--textlght-color);
   font-size: 0.5em;
   text-anchor: middle;
   font-weight: 400;
@@ -512,12 +571,12 @@ canvas#revenueByProductPie {
 .app-right-section-header h2 {
   font-size: 14px;
   line-height: 24px;
-  color: var(--secondary-color);
+  color: var(--text-color);
 }
 
 .app-right-section-header span {
   display: inline-block;
-  color: var(--secondary-color);
+  color: var(--text-color);
   position: relative;
 }
 
@@ -525,9 +584,9 @@ canvas#revenueByProductPie {
   display: none;
   justify-content: center;
   align-items: center;
-  border: 2px solid var(--main-color);
+  border: 2px solid var(--app-logo);
   background-color: transparent;
-  color: var(--main-color);
+  color: var(--app-logo);
   border-radius: 6px;
   height: 40px;
   width: 40px;
@@ -542,8 +601,8 @@ canvas#revenueByProductPie {
   align-items: center;
   padding: 0;
   background-color: transparent;
-  border: 2px solid var(--main-color);
-  color: var(--main-color);
+  border: 2px solid var(--app-logo);
+  color: var(--app-logo);
   border-radius: 6px;
 }
 
@@ -566,7 +625,7 @@ canvas#revenueByProductPie {
   display: inline-block;
 }
 .bar-progress.applications {
-  background-color: #5e3229;
+  background-color: var(--app-logo);
 }
 .bar-progress.shortlisted {
   background-color: rgba(139, 69, 19, 1);
@@ -614,13 +673,13 @@ div#topProductContainer {
 }
 
 .progress-type {
-  color: var(--secondary-color);
+  color: var(--text-color);
   font-size: 12px;
   line-height: 16px;
 }
 
 .progress-amount {
-  color: var(--secondary-color);
+  color: var(--text-color);
   font-size: 12px;
   line-height: 16px;
   margin-left: auto;
@@ -674,7 +733,7 @@ div#topProductContainer {
   font-size: 14px;
   text-wrap: nowrap;
   font-weight: normal;
-  color: var(--secondary-color);
+  color: var(--text-color);
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   text-transform: none;
@@ -693,7 +752,7 @@ div#topProductContainer {
 
 .dropdown-content.showFilter {
   position: absolute;
-  background-color: #f9f9f9;
+  background-color: var(--app-bg-light);
   border-radius: 12px;
 }
 
@@ -840,7 +899,7 @@ option {
 
   .filter-button {
     display: flex;
-    color: var(--main-color);
+    color: var(--app-logo);
   }
 }
 
@@ -987,7 +1046,7 @@ table {
   overflow-x: auto !important;
 }
 th {
-  background-color: #5e3229 !important;
+  background-color: var(--app-logo) !important;
   color: var(--applicant-bg) !important;
   padding: 6px;
   text-wrap: nowrap;
@@ -1008,7 +1067,7 @@ table.dataTable td.dt-type-date {
 
 } */
 div.dt-container select.dt-input {
-  background-color: #f2f2f2 !important;
+  background-color: var(--app-bg-light) !important;
   padding: 8px;
 }
 
@@ -1046,13 +1105,13 @@ span.dt-column-order::after {
   opacity: 1;
 }
 button.dt-paging-button {
-  color: #f2f2f2 !important;
-  background-color: #d4d4d8 !important;
+  color: var(--app-bg-light) !important;
+  background-color: var(--main-color) !important;
   border-radius: 6px !important;
 }
 div.dt-container .dt-paging .dt-paging-button.current,
 button.dt-paging-button.current {
-  color: #f2f2f2 !important;
+  color: var(--textlght-color) !important;
   background-color: #5e3229 !important;
   box-shadow: none;
   transition: all 0.3s ease-in-out;

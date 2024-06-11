@@ -297,3 +297,16 @@ a {
   width: 100%;
   height: auto;
 }
+
+footer {
+  position: fixed;
+  display: block;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+}
+footer p {
+  font-size: 14px;
+  text-align: center;
+}

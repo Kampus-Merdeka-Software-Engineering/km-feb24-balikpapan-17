@@ -3,8 +3,8 @@ fetch("../data/menu.json")
   .then((data) => {
     const menuContainer = document.getElementById("menu-content");
     const createMenuDiv = (item, index) => {
-      const menuTextDelay = index * 100;
-      const imageDelay = index * 100 + 10;
+      const menuTextDelay = index * 50;
+      const imageDelay = index * 50 + 5;
 
       if (index % 2 === 0) {
         return `
@@ -27,7 +27,7 @@ fetch("../data/menu.json")
           item.name
         }" class="main-image" data-aos="fade-right" data-aos-delay="${imageDelay}" />
                       <div class="menu-text" data-aos="fade-right" data-aos-delay="${
-                        menuTextDelay + 200
+                        menuTextDelay + 100
                       }">
                           <h1>${item.name}</h1>
                           <p>${item.description}</p>

@@ -93,9 +93,10 @@ button.custom-cancel-button,
   z-index: 9999999;
 }
 
-#loadingScreen div {
+#loadingScreen h1 {
   text-align: center;
-  background-color: white;
+  font-size: 1rem;
+  font-weight: 500;
   padding: 20px;
   position: absolute;
   top: 50%;
